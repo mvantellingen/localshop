@@ -1,3 +1,6 @@
+import datetime
+import xmlrpclib
+
 from localshop.packages import models
 
 
@@ -16,7 +19,6 @@ def get_package_urls(slug, package=None):
     # XXX: Ask pypi to make it case-insensitive?
     if not versions:
         for item in client.search({'name': slug}):
-            print '-> ', item['name'].lower(), slug
             if slug == item['name'].lower():
                 package.name = slug = item['name']
                 break
