@@ -1,0 +1,19 @@
+<html>
+    <head>
+        <meta charset="utf-8" />
+
+        <title>Links for pip</title>
+
+        <style>
+            a { display: block; }
+        </style>
+    </head>
+    <body>
+
+    <h1>Links for pip</h1>
+
+{% for release in object.releases.all %}
+    {% for file in release.files.all %}
+<a href="{% url packages:download pk=file.pk filename=file.filename %}">{{ file.filename }}</a>
+    {% endfor %}
+{% endfor %}
