@@ -23,7 +23,7 @@ def get_package_urls(slug, package=None):
                 package.name = slug = item['name']
                 break
         else:
-             return
+            return
 
         # Retry retrieving the versions with the new/correct name
         versions = client.package_releases(package.name, True)
@@ -54,5 +54,3 @@ def get_package_urls(slug, package=None):
 
     package.update_timestamp = datetime.datetime.utcnow()
     return package
-
-
