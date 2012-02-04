@@ -1,10 +1,15 @@
+import logging
+
 from django.core.exceptions import ObjectDoesNotExist
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.shortcuts import redirect
 
 from localshop.packages import models
-from localshop.packages.utils import get_package_urls
+from localshop.packages.pypi import get_package_urls
+from localshop.packages import tasks
+
+logger = logging.getLogger(__name__)
 
 
 class SimpleIndex(ListView):
@@ -26,5 +31,10 @@ class SimpleDetail(DetailView):
 
 
 def download_file(request, pk, filename):
-    file = models.ReleaseFile.objects.get(pk=pk)
-    return redirect(file)
+    release_file = models.ReleaseFile.objects.get(pk=pk)
+    if not release_file.file:
+        logger.info("Queueing %s for mirroring", release_file.url)
+        tasks.download_file.delay(pk=release_file.pk)
+        return redirect(release_file.url)
+
+    return redirect(release_file.file.url)

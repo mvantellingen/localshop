@@ -14,6 +14,6 @@
 
 {% for release in object.releases.all %}
     {% for file in release.files.all %}
-<a href="{% url packages:download pk=file.pk filename=file.filename %}">{{ file.filename }}</a>
+<a href="{{ file.get_absolute_url }}">{{ file.filename }}</a>
     {% endfor %}
 {% endfor %}

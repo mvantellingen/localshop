@@ -5,13 +5,8 @@ class LocalShopWorker(Service):
     name = 'worker'
 
     def run(self):
-        from localshop.queue.client import broker
-        from localshop.queue.worker import Worker
+        from celery.bin import celeryd
+        from djcelery.app import app
 
-        from kombu.utils.debug import setup_logging
-        setup_logging(loglevel="INFO")
-
-        try:
-            Worker(broker.connection).run()
-        except KeyboardInterrupt:
-            print("bye bye")
+        worker = celeryd.WorkerCommand(app=app)
+        worker.run()

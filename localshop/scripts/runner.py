@@ -15,6 +15,7 @@ from localshop import VERSION, commands
 ALL_COMMANDS = (
     'init',
     'start',
+    'stop',
 
     # These should probably be hidden by default
     'manage',

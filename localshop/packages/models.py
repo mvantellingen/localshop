@@ -1,4 +1,7 @@
+import os
+
 from django.db import models
+from django.core.urlresolvers import reverse
 
 from model_utils import Choices
 from model_utils.fields import AutoCreatedField, AutoLastModifiedField
@@ -31,6 +34,10 @@ class Release(models.Model):
     version = models.CharField(max_length=512)
 
 
+def release_file_upload_to(instance, filename):
+    return os.path.join(instance.release.package.name, filename)
+
+
 class ReleaseFile(models.Model):
 
     TYPES = Choices(
@@ -51,7 +58,7 @@ class ReleaseFile(models.Model):
 
     type = models.CharField(max_length=25, choices=TYPES)
 
-    file = models.FileField(upload_to='tmp', max_length=512)
+    file = models.FileField(upload_to=release_file_upload_to, max_length=512)
 
     filename = models.CharField(max_length=200, blank=True, null=True)
 
@@ -65,4 +72,7 @@ class ReleaseFile(models.Model):
         unique_together = ("release", "type", "python_version", "filename")
 
     def get_absolute_url(self):
-        return self.url
+        url = reverse('packages:download', kwargs={
+            'pk': self.pk, 'filename': self.filename
+        })
+        return '%s#md5=%s' % (url, self.digest)
