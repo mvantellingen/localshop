@@ -10,7 +10,7 @@ from localshop.packages import models
 
 class TestTasks(TestCase):
     def test_download_file(self):
-        package = models.Package(name='test-package')
+        package = models.Package(name='localshop')
         package.save()
 
         release = models.Release(
@@ -19,7 +19,9 @@ class TestTasks(TestCase):
 
         release_file = models.ReleaseFile(
             release=release,
-            url='http://pypi.python.org/packages/source/p/pip/pip-0.3.tar.gz'
+            python_version='source',
+            url='http://pypi.python.org/packages/source/l/localshop/' \
+                'localshop-0.1.tar.gz'
         )
         release_file.save()
 
@@ -31,3 +33,6 @@ class TestTasks(TestCase):
 
         release_file = models.ReleaseFile.objects.get(pk=release_file.pk)
         self.assertEqual(release_file.file.read(), 'test')
+
+        self.assertEqual(release_file.file.name,
+            'source/l/localshop/localshop-0.1.tar.gz')
