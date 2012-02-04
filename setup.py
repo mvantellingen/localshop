@@ -7,11 +7,15 @@ tests_require = [
 ]
 
 install_requires = [
+    'Django>=1.3.1',
     'django-kombu==0.9.4',
     'eventlet>=0.9.15',
     'kombu>=1.5.1',
     'gunicorn>=0.13.4',
     'python-daemon>=1.6',
+    'django-celery',
+    'django-model-utils>=1.0',
+    'requests>=0.10',
 ]
 
 setup(
