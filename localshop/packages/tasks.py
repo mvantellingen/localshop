@@ -1,10 +1,11 @@
 import logging
 import os
-import requests
 from shutil import copyfileobj
-from celery.task import task
 from tempfile import NamedTemporaryFile
+
+import requests
 from django.core.files import File
+from celery.task import task
 
 from localshop.packages import models
 

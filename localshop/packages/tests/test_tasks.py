@@ -1,13 +1,14 @@
+import mock
+from cStringIO import StringIO
 from django.test import TestCase
+from requests.packages.urllib3.response import HTTPResponse
+
 from localshop.packages import utils
 from localshop.packages import tasks
 from localshop.packages import models
 
 
-class UtilsTest(TestCase):
-    def test_get_package_urls(self):
-        pass
-
+class TestTasks(TestCase):
     def test_download_file(self):
         package = models.Package(name='test-package')
         package.save()
@@ -22,6 +23,11 @@ class UtilsTest(TestCase):
         )
         release_file.save()
 
-        tasks.download_file(release_file.pk)
+        with mock.patch('requests.get') as mock_obj:
+            mock_obj.return_value = mock.Mock()
+            mock_obj.return_value.raw = HTTPResponse()
+            mock_obj.return_value.raw._fp = StringIO('test')
+            tasks.download_file(release_file.pk)
 
         release_file = models.ReleaseFile.objects.get(pk=release_file.pk)
+        self.assertEqual(release_file.file.read(), 'test')

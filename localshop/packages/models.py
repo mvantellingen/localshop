@@ -56,6 +56,8 @@ class ReleaseFile(models.Model):
 
     release = models.ForeignKey(Release, related_name="files")
 
+    size = models.IntegerField(null=True)
+
     type = models.CharField(max_length=25, choices=TYPES)
 
     file = models.FileField(upload_to=release_file_upload_to, max_length=512)

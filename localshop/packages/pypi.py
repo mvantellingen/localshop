@@ -1,12 +1,17 @@
 import datetime
+import logging
 import xmlrpclib
 
 from localshop.packages import models
 
 
-def get_package_urls(slug, package=None):
+logger = logging.getLogger(__name__)
+
+
+def get_package_urls(name, package=None):
+    """Retrieve metadata information for the given package name"""
     if not package:
-        package = models.Package(name=slug)
+        package = models.Package(name=name)
         releases = {}
     else:
         releases = package.get_all_releases()
@@ -18,11 +23,12 @@ def get_package_urls(slug, package=None):
     # then we search for it
     # XXX: Ask pypi to make it case-insensitive?
     if not versions:
-        for item in client.search({'name': slug}):
-            if slug == item['name'].lower():
-                package.name = slug = item['name']
+        for item in client.search({'name': name}):
+            if name.lower() == item['name'].lower():
+                package.name = name = item['name']
                 break
         else:
+            logger.info("No packages found matching %r", name)
             return
 
         # Retry retrieving the versions with the new/correct name
