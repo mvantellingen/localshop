@@ -1,7 +1,7 @@
 import os
 
 # Django settings for localshop project.
-PROJECT_ROOT = os.path.join(os.path.dirname(__file__))
+PROJECT_ROOT = os.path.join(os.path.dirname(__file__), os.pardir)
 
 DEBUG = True
 TEMPLATE_DEBUG = DEBUG
@@ -153,3 +153,4 @@ LOGGING = {
         },
     }
 }
+
