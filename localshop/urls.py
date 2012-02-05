@@ -7,6 +7,8 @@ admin.autodiscover()
 
 
 urlpatterns = patterns('',
+    url(r'^$', 'localshop.views.frontpage', name='frontpage'),
+
     url(r'^packages/',
         include('localshop.packages.urls', namespace='packages')),
 

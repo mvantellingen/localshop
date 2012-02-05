@@ -32,7 +32,6 @@ class Package(models.Model):
     def get_absolute_url(self):
         return ('packages:detail', None, {'name': self.name})
 
-
     def get_all_releases(self):
         result = {}
         for release in self.releases.all():

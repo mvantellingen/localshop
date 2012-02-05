@@ -18,6 +18,11 @@ logger = logging.getLogger(__name__)
 
 
 class SimpleIndex(ListView):
+    """Index view with all available packages used by /simple url
+
+    This page is used by pip/easy_install to find packages.
+
+    """
     queryset = models.Package.objects.values('name')
     context_object_name = 'packages'
     http_method_names = ['get', 'post']
@@ -42,6 +47,11 @@ class SimpleIndex(ListView):
 
 
 class SimpleDetail(DetailView):
+    """List all available files for a specific package.
+
+    This page is used by pip/easy_install to find the files.
+
+    """
     model = models.Package
     context_object_name = 'package'
     template_name = 'packages/simple_package_detail.html'
@@ -57,6 +67,11 @@ class SimpleDetail(DetailView):
         return self.render_to_response(context)
 
 
+class Index(ListView):
+    model = models.Package
+    context_object_name = 'packages'
+
+
 class Detail(DetailView):
     model = models.Package
     slug_url_kwarg = 'name'
@@ -66,11 +81,6 @@ class Detail(DetailView):
         # Could be dropped when we use django 1.4
         self.kwargs['slug'] = self.kwargs.get(self.slug_url_kwarg, None)
         return super(Detail, self).get_object(queryset)
-
-
-class Index(ListView):
-    model = models.Package
-    context_object_name = 'packages'
 
 
 def download_file(request, name, pk, filename):
