@@ -115,4 +115,4 @@ class ReleaseFile(models.Model):
         url = reverse('packages:download', kwargs={
             'pk': self.pk, 'filename': self.filename
         })
-        return '%s#md5=%s' % (url, self.digest)
+        return '%s#md5=%s' % (url, self.md5_digest)
