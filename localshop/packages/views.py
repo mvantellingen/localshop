@@ -21,6 +21,7 @@ class SimpleIndex(ListView):
     queryset = models.Package.objects.values('name')
     context_object_name = 'packages'
     http_method_names = ['get', 'post']
+    template_name = 'packages/simple_package_list.html'
 
     @method_decorator(csrf_exempt)
     def dispatch(self, request, *args, **kwargs):
@@ -43,6 +44,7 @@ class SimpleIndex(ListView):
 class SimpleDetail(DetailView):
     model = models.Package
     context_object_name = 'package'
+    template_name = 'packages/simple_package_detail.html'
 
     def get(self, request, slug):
         try:
