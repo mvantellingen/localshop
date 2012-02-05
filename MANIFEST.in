@@ -1,0 +1,4 @@
+include setup.py README.rst MANIFEST.in LICENSE AUTHORS CHANGES
+recursive-include localshop/templates *
+recursive-include localshop/static *
+global-exclude *~
