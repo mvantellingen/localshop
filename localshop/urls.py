@@ -19,13 +19,9 @@ urlpatterns = patterns('',
         include('localshop.accounts.urls', namespace='accounts')),
 
     url(r'^admin/', include(admin.site.urls)),
+
+    url(r'^_static/(?P<path>.*)$', 'localshop.views.static_media',
+        name='static'),
 )
 
 urlpatterns += staticfiles_urlpatterns()
-
-
-urlpatterns += patterns('',
-    url(r'^media/(?P<path>.*)$', 'django.views.static.serve', {
-        'document_root': settings.MEDIA_ROOT,
-    }),
-)
