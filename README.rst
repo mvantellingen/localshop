@@ -9,19 +9,19 @@ Note that this is currently really, really alpha :-)
 
 
 Getting started
----------------
+===============
 
-Download and install localshop via the following command:
+Download and install localshop via the following command::
 
     pip install localshop
 
 This should best be done in a new virtualenv. Now initialize your localshop 
-environment by issuing the following command:
+environment by issuing the following command::
 
     localshop init
     localshop upgrade
 
-And then start it via:
+And then start it via::
 
     localshop start http --daemon
     localshop start worker --daemon
@@ -35,7 +35,7 @@ Create an initial user via the following command::
 
 
 How does it work
-----------------
+================
 Packages which are requested and are unknown are looked up on pypi via the 
 xmlrpc interface.  At the moment the client downloads one of the files which
 is not yet mirror'ed a 302 redirect is issued to the correct file (on pypi).  
@@ -45,7 +45,7 @@ available within your own shop!
 
 
 Uploading local/private packages
---------------------------------
+================================
 To upload your own packages to your shop you need to modify/create a .pypirc 
 file.  See the following example::
 
@@ -66,9 +66,9 @@ It should now be available via the webinterace
 
 
 Using the shop for package installation
----------------------------------------
+=======================================
 
-To install packages with pip from your localshop add `-i` flag, e.g.:
+To install packages with pip from your localshop add `-i` flag, e.g.::
     
     pip install -i http://localhost:8900/simple/ localshop
 

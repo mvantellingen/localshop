@@ -64,7 +64,7 @@ setup(
     author_email='michaelvantellingen@gmail.com',
     url='http://github.com/mvantellingen/localshop',
     description='A private pypi server including auto-mirroring of pypi.',
-    long_description=readme,
+    long_description='\n'.join(readme),
     packages=find_packages(),
     zip_safe=False,
     install_requires=install_requires,
