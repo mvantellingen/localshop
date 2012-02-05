@@ -12,13 +12,13 @@ class PypiReleaseDataForm(forms.ModelForm):
 class ReleaseForm(forms.ModelForm):
     class Meta:
         model = models.Release
-        exclude = ['classifiers', 'package']
+        exclude = ['classifiers', 'package', 'user']
 
 
 class ReleaseFileForm(forms.ModelForm):
     class Meta:
         model = models.ReleaseFile
-        exclude = ['size', 'release', 'filename']
+        exclude = ['size', 'release', 'filename', 'user']
 
     def __init__(self, *args, **kwargs):
         super(ReleaseFileForm, self).__init__(*args, **kwargs)

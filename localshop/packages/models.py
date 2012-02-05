@@ -1,6 +1,7 @@
 import os
 
 import docutils.core
+from django.contrib.auth.models import User
 from django.db import models
 from django.core.urlresolvers import reverse
 from model_utils import Choices
@@ -28,6 +29,8 @@ class Package(models.Model):
 
     #: Timestamp when we last retrieved the metadata
     update_timestamp = models.DateTimeField(null=True)
+
+    owners = models.ManyToManyField(User)
 
     def __unicode__(self):
         return self.name
@@ -74,11 +77,14 @@ class Release(models.Model):
 
     summary = models.TextField(blank=True)
 
+    user = models.ForeignKey(User, null=True)
+
     version = models.CharField(max_length=512)
 
     @property
     def description_html(self):
-        parts = docutils.core.publish_parts(self.description, writer_name='html4css1')
+        parts = docutils.core.publish_parts(
+            self.description, writer_name='html4css1')
         return parts['fragment']
 
 
@@ -124,6 +130,8 @@ class ReleaseFile(models.Model):
     python_version = models.CharField(max_length=25)
 
     url = models.URLField(max_length=1024, blank=True)
+
+    user = models.ForeignKey(User, null=True)
 
     class Meta:
         unique_together = ('release', 'filetype', 'python_version', 'filename')

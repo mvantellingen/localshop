@@ -1,8 +1,10 @@
+from django.contrib.auth.decorators import login_required
 from django.template.response import TemplateResponse
 
 from localshop.packages.models import Package, Release, ReleaseFile
 
 
+@login_required
 def frontpage(request):
 
     recent_local = (Release.objects

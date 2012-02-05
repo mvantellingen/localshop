@@ -11,6 +11,7 @@
 {% block content %}
 
     <h1>{{ package.name }}</h1>
+    <p>{{ release.summary }}</p>
     <ul class="nav nav-tabs" id="package-tabs">
         <li class="active">
             <a href="#information" data-toggle="tab">METADATA</a>
@@ -29,14 +30,18 @@
 
             <div class="row-fluid">
                 <div class="span7">
-
+                    {% if package.is_local %}
+                    <h2>Owners</h2>
+                    <p>The following users are owners of this local package</p>
+                    <ul>
+                        {% for user in package.owners.all %}
+                        <li>{{ user.username }}</li>
+                        {% endfor %}
+                    </ul>
+                    {% endif %}
                     <h2>Metadata</h2>
                     <table class="table table-striped table-condensed table-bordered">
                         <tbody>
-                            <tr>
-                                <td>Summary</td>
-                                <td>{{ release.summary }}</td>
-                            </tr>
                             <tr>
                                 <td>Version</td>
                                 <td>{{ release.version }}</td>

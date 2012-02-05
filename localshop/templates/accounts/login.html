@@ -1,0 +1,36 @@
+{% extends "layout.base.html" %}
+
+{% block body %}
+<div class="container-fixed">
+    <div class="row-fixed">
+        <div class="offset3 span6 ">
+            <h1>Login to localshop</h1>
+            <p>Enter your username and password to continue</p>
+
+            <form class="form-horizontal" action="" method="post">
+                {% if form.errors %}
+                Invalid username/password
+                {% endif %}
+                <fieldset>
+                    <div class="control-group">
+                        <label class="control-label">Username</label>
+                        <div class="controls">
+                            <input type="text" class="input-xlarge" name="username" value="{{ form.username.data|default:'' }}">
+                        </div>
+                    </div>
+                    <div class="control-group">
+                        <label class="control-label">Password</label>
+                        <div class="controls">
+                            <input type="password" name="password">
+                        </div>
+                    </div>
+                    <div class="form-actions">
+                        <input type="submit" class="btn btn-primary" value="login">
+                    </div>
+                    {% csrf_token %}
+                </fieldset>
+            </form>
+        </div>
+    </div>
+</div>
+{% endblock %}

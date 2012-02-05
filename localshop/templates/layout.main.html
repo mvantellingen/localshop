@@ -1,61 +1,39 @@
-<html>
-    <head>
+{% extends "layout.base.html" %}
 
-        <!--[if lt IE 9]>
-        <script src="http://html5shim.googlecode.com/svn/trunk/html5.js"></script>
-        <![endif]-->
-        <link href="{{ STATIC_URL }}bootstrap/css/bootstrap.css" rel="stylesheet">
-        <link href="{{ STATIC_URL }}bootstrap/css/bootstrap-responsive.css" rel="stylesheet">
-        <style type="text/css">
-        body {
-            padding-top: 60px;
-            padding-bottom: 40px;
-        }
-        .sidebar-nav {
-            padding: 9px 0;
-        }
-        </style>
-        <script type="text/javascript" src="{{ STATIC_URL }}jquery-1.7.1.min.js"></script>
-        <script type="text/javascript" src="{{ STATIC_URL }}bootstrap/js/bootstrap.js"></script>
-    </head>
-
-    <body>
-        <div class="navbar navbar-fixed-top">
-            <div class="navbar-inner">
-                <div class="container-fluid">
-                    <a class="brand" href="{% url frontpage %}">localshop</a>
-                    <div class="nav-collapse">
-                        <ul class="nav">
-                            <li><a href="{% url packages:index %}">Packages</a></li>
-                        </ul>
-                        <p class="navbar-text pull-right">Logged in as <a href="#">username</a></p>
-                    </div>
-                </div>
-            </div>
-        </div>
-
-
+{% block body %}
+<div class="navbar navbar-fixed-top">
+    <div class="navbar-inner">
         <div class="container-fluid">
-            <div class="row-fluid">
-                <div class="span3">
-                    <div class="well sidebar-nav">
-                        <ul class="nav nav-list">
-                            <li class="nav-header">Local packages</li>
-                            {% for pkg in sidebar.local %}
-                            <li><a href="{{ pkg.get_absolute_url }}">{{ pkg }}</a></li>
-                            {% endfor %}
-
-                        </ul>
-                    </div>
-                </div>
-                <div class="span9">
-                    {% block content %}
-                    {% endblock %}
-                </div>
+            <a class="brand" href="{% url frontpage %}">localshop</a>
+            <div class="nav-collapse">
+                <ul class="nav">
+                    <li><a href="{% url packages:index %}">Packages</a></li>
+                </ul>
+                <p class="navbar-text pull-right">Logged in as {{ user }} | <a href="{% url accounts:logout %}">logout</a></p>
             </div>
         </div>
-        {% block javascript %}
-        {% endblock %}
-    </body>
-</html>
+    </div>
+</div>
+
+
+<div class="container-fluid">
+    <div class="row-fluid">
+        <div class="span3">
+            <div class="well sidebar-nav">
+                <ul class="nav nav-list">
+                    <li class="nav-header">Local packages</li>
+                    {% for pkg in sidebar.local %}
+                    <li><a href="{{ pkg.get_absolute_url }}">{{ pkg }}</a></li>
+                    {% endfor %}
+
+                </ul>
+            </div>
+        </div>
+        <div class="span9">
+            {% block content %}
+            {% endblock %}
+        </div>
+    </div>
+</div>
+{% endblock %}
 

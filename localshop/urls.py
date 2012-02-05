@@ -15,6 +15,8 @@ urlpatterns = patterns('',
     url(r'^simple/', include('localshop.packages.urls_simple',
         namespace='packages-simple')),
 
+    url(r'^accounts/',
+        include('localshop.accounts.urls', namespace='accounts')),
 
     url(r'^admin/', include(admin.site.urls)),
 )

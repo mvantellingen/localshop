@@ -1,13 +1,17 @@
+import base64
 import logging
 
+from django.contrib.auth import authenticate
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404, HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponseForbidden
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
+from localshop.utils import permission_required
 from localshop.packages import forms
 from localshop.packages import models
 from localshop.packages import tasks
@@ -35,6 +39,16 @@ class SimpleIndex(ListView):
     def post(self, request):
         data, files = parse_distutils_request(request)
 
+        # XXX: Auth is currently a bit of a hack
+        auth = request.META.get('HTTP_AUTHORIZATION')
+        if not auth:
+            return HttpResponseForbidden()
+        method, identity = auth.split()
+        username, password = base64.decodestring(identity).split(':')
+        user = authenticate(username=username, password=password)
+        if not user:
+            return HttpResponseForbidden('Invalid username/password')
+
         actions = {
             'submit': handle_register_or_upload,
             'file_upload': handle_register_or_upload,
@@ -43,7 +57,7 @@ class SimpleIndex(ListView):
         handler = actions.get(data.get(':action'))
         if not handler:
             raise Http404('Unknown action')
-        return handler(data, files)
+        return handler(data, files, user)
 
 
 class SimpleDetail(DetailView):
@@ -67,11 +81,13 @@ class SimpleDetail(DetailView):
         return self.render_to_response(context)
 
 
+@permission_required('packages.view_package')
 class Index(ListView):
     model = models.Package
     context_object_name = 'packages'
 
 
+@permission_required('packages.view_package')
 class Detail(DetailView):
     model = models.Package
     context_object_name = 'package'
@@ -89,6 +105,7 @@ class Detail(DetailView):
         return context
 
 
+@permission_required('packages.change_package')
 def refresh(request, name):
     try:
         package = models.Package.objects.get(name__iexact=name)
@@ -99,6 +116,10 @@ def refresh(request, name):
 
 
 def download_file(request, name, pk, filename):
+    """Redirect the client to the pypi hosted file if the file is not
+    mirror'ed yet (and isn't a local package).  Otherwise serve the file.
+
+    """
     release_file = models.ReleaseFile.objects.get(pk=pk)
     if not release_file.distribution:
         logger.info("Queueing %s for mirroring", release_file.url)
@@ -113,13 +134,17 @@ def download_file(request, name, pk, filename):
     return response
 
 
-def handle_register_or_upload(post_data, files):
+def handle_register_or_upload(post_data, files, user):
+    """Process a `register` or `upload` comment issued via distutils.
+
+    This method is called with the authenticated user.
+
+    """
     name = post_data.get('name')
-    if not name:
-        return HttpResponseBadRequest('No name given')
     version = post_data.get('version')
-    if not version:
-        return HttpResponseBadRequest('No version given')
+    if not name or not version:
+        logger.info("Missing name or version for package")
+        return HttpResponseBadRequest('No name or version given')
 
     try:
         package = models.Package.objects.get(name=name)
@@ -129,6 +154,14 @@ def handle_register_or_upload(post_data, files):
         if not package.is_local:
             return HttpResponseBadRequest(
                 '%s is a pypi package!' % package.name)
+
+        # Ensure that the user is one of the owners
+        if not package.owners.filter(pk=user.pk).exists():
+            if not user.is_superuser:
+                return HttpResponseForbidden('No permission for this package')
+
+            # User is a superuser, add him to the owners
+            package.owners.add(user)
 
         try:
             release = package.releases.get(version=version)
@@ -144,25 +177,30 @@ def handle_register_or_upload(post_data, files):
         return HttpResponseBadRequest('ERRORS %s' % form.errors)
 
     if not package:
-        package = models.Package(name=name, is_local=True)
+        package = models.Package.objects.create(name=name, is_local=True)
+        package.owners.add(user)
         package.save()
 
     release = form.save(commit=False)
     release.package = package
+    release.user = user
     release.save()
 
+    # If this is an upload action then process the uploaded file
     if files:
         filename = files['distribution']._name
         try:
             release_file = release.files.get(filename=filename)
         except ObjectDoesNotExist:
             release_file = models.ReleaseFile(
-                release=release, filename=filename)
+                release=release, filename=filename, user=user)
 
         form_file = forms.ReleaseFileForm(
             post_data, files, instance=release_file)
         if not form_file.is_valid():
             return HttpResponseBadRequest('ERRORS %s' % form_file.errors)
-        form_file.save()
+        release_file = form_file.save(commit=False)
+        release_file.user = user
+        release_file.save()
 
     return HttpResponse()
