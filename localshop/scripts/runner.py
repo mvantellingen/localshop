@@ -47,8 +47,11 @@ DATABASES = {
     }
 }
 
+# Where the packages are stored
+MEDIA_ROOT = os.path.join(ROOT, 'files')
+
 LOCALSHOP_WEB_HOST = '0.0.0.0'
-LOCALSHOP_WEB_PORT = 9000
+LOCALSHOP_WEB_PORT = 8900
 """
 
 
