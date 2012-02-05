@@ -1,0 +1,6 @@
+0.1.1:
+* Add setting to list ip addresses which have access to download packages,
+LOCALSHOP_ALLOWED_REMOTE_IPS
+
+0.1:
+* Initial release

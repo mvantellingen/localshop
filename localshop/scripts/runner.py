@@ -53,6 +53,11 @@ MEDIA_ROOT = os.path.join(ROOT, 'files')
 
 LOCALSHOP_WEB_HOST = '0.0.0.0'
 LOCALSHOP_WEB_PORT = 8900
+
+# A list of ip addresses or cidr's which are allowed to download
+# files from your shop
+LOCALSHOP_ALLOWED_REMOTE_IPS = []
+
 """
 
 

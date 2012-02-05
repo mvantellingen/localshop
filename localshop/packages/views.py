@@ -1,6 +1,7 @@
 import base64
 import logging
 
+import netaddr
 from django.contrib.auth import authenticate
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404, HttpResponse, HttpResponseBadRequest
@@ -11,6 +12,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
+from localshop.conf import settings
 from localshop.utils import permission_required
 from localshop.packages import forms
 from localshop.packages import models
@@ -120,6 +122,12 @@ def download_file(request, name, pk, filename):
     mirror'ed yet (and isn't a local package).  Otherwise serve the file.
 
     """
+    # Only allow downloads from authenticted users or from remote ip's
+    # which are listed in `LOCALSHOP_ALLOWED_REMOTE_IPS`
+    if not request.user.is_authenticated() and not netaddr.all_matching_cidrs(
+        request.META['REMOTE_ADDR'],  settings.ALLOWED_REMOTE_IPS):
+        return HttpResponseForbidden('No permission')
+
     release_file = models.ReleaseFile.objects.get(pk=pk)
     if not release_file.distribution:
         logger.info("Queueing %s for mirroring", release_file.url)
