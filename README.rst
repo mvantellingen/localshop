@@ -19,6 +19,7 @@ This should best be done in a new virtualenv. Now initialize your localshop
 environment by issuing the following command:
 
     localshop init
+    localshop upgrade
 
 And then start it via:
 

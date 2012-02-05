@@ -47,13 +47,10 @@ def get_package_data(name, package=None):
             release.save()
 
         data = client.release_data(package.name, release.version)
-        print data
 
         release_form = forms.PypiReleaseDataForm(data, instance=release)
         if release_form.is_valid():
             release_form.save()
-        else:
-            print release_form.errors
 
         release_files = client.package_urls(package.name, release.version)
         for info in release_files:

@@ -1,5 +1,6 @@
-from django.test import TestCase
+from django.contrib.auth.models import User
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.test import TestCase
 from django.utils.datastructures import MultiValueDict
 
 from localshop.packages import models
@@ -34,7 +35,8 @@ class TestDistutilsViews(TestCase):
         })
         files = MultiValueDict()
 
-        response = views.handle_register_or_upload(post, files)
+        user = User.objects.create_user('john', 'john@example.org', 'secret')
+        response = views.handle_register_or_upload(post, files, user)
         self.assertEqual(response.status_code, 200, response.content)
 
         package = models.Package.objects.get(name='localshop')
@@ -76,7 +78,8 @@ class TestDistutilsViews(TestCase):
             ]
         })
 
-        response = views.handle_register_or_upload(post, files)
+        user = User.objects.create_user('john', 'john@example.org', 'secret')
+        response = views.handle_register_or_upload(post, files, user)
         self.assertEqual(response.status_code, 200, response.content)
 
         package = models.Package.objects.get(name='localshop')
