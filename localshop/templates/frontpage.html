@@ -4,11 +4,11 @@
 <div class="hero-unit">
     <h1>Localshop</h1>
     <p>Welcome to your localshop!</p>
-    <p><a class="btn btn-primary btn-large">See all packages &raquo;</a></p>
+    <p><a href="{% url packages:index %}" class="btn btn-primary btn-large">See all packages &raquo;</a></p>
 </div>
 
 
-<h2>Recent local packages releases</h2>
+<h2>Recent local package releases</h2>
 <table class="table table-striped">
     <tbody>
         {% for release in recent_local %}
@@ -33,7 +33,5 @@
         {% endfor %}
     </tbody>
 </table>
-
-
 
 {% endblock %}

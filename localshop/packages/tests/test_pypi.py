@@ -6,14 +6,14 @@ from localshop.packages import models
 
 
 class TestPypi(TestCase):
-    def test_get_package_urls_new(self):
-        from localshop.packages.pypi import get_package_urls
+    def test_get_package_data_new(self):
+        from localshop.packages.pypi import get_package_data
 
         with mock.patch('xmlrpclib.ServerProxy') as mock_obj:
             mock_obj.return_value = client = mock.Mock()
             client.package_releases.return_value = ['0.1', '0.2']
 
-            def side_effect(name, version):
+            def package_urls_side_effect(name, version):
                 return [{
                     'comment_text': '',
                     'downloads': 1,
@@ -27,9 +27,39 @@ class TestPypi(TestCase):
                     'url': 'http://pypi.python.org/packages/source/r/'
                         'localshop/localshop-%s.tar.gz' % version
                 }]
-            client.package_urls.side_effect = side_effect
+            client.package_urls.side_effect = package_urls_side_effect
 
-            package = get_package_urls('localshop')
+            def release_data_side_effect(name, version):
+                return  {
+                    'maintainer': None,
+                    'requires_python': None,
+                    'maintainer_email': None,
+                    'cheesecake_code_kwalitee_id': None,
+                    'keywords': None,
+                    'package_url': 'http://pypi.python.org/pypi/localshop',
+                    'author': 'Michael van Tellingen',
+                    'author_email': 'michaelvantellingen@gmail.com',
+                    'download_url': 'UNKNOWN',
+                    'platform': 'UNKNOWN',
+                    'version': version,
+                    'cheesecake_documentation_id': None,
+                    '_pypi_hidden': False,
+                    'description': "the-description",
+                    'release_url': 'http://pypi.python.org/pypi/localshop/%s'
+                        % version,
+                    '_pypi_ordering': 12,
+                    'classifiers': [],
+                    'name': 'localshop',
+                    'bugtrack_url': None,
+                    'license': 'BSD',
+                    'summary': 'Short summary',
+                    'home_page': 'http://github.com/mvantellingen/localshop',
+                    'stable_version': None,
+                    'cheesecake_installability_id': None
+                }
+            client.release_data.side_effect = release_data_side_effect
+
+            package = get_package_data('localshop')
 
         package = models.Package.objects.get(pk=package.pk)
 
@@ -49,8 +79,8 @@ class TestPypi(TestCase):
         self.assertEqual(info.url, 'http://pypi.python.org/packages/source/r/'
             'localshop/localshop-0.1.tar.gz')
 
-    def test_get_package_urls_wrong_case(self):
-        from localshop.packages.pypi import get_package_urls
+    def test_get_package_data_wrong_case(self):
+        from localshop.packages.pypi import get_package_data
 
         with mock.patch('xmlrpclib.ServerProxy') as mock_obj:
             mock_obj.return_value = client = mock.Mock()
@@ -66,6 +96,33 @@ class TestPypi(TestCase):
                 {'name': 'localshop'}
             ]
 
+            client.release_data.return_value = {
+                'maintainer': None,
+                'requires_python': None,
+                'maintainer_email': None,
+                'cheesecake_code_kwalitee_id': None,
+                'keywords': None,
+                'package_url': 'http://pypi.python.org/pypi/localshop',
+                'author': 'Michael van Tellingen',
+                'author_email': 'michaelvantellingen@gmail.com',
+                'download_url': 'UNKNOWN',
+                'platform': 'UNKNOWN',
+                'version': '0.1',
+                'cheesecake_documentation_id': None,
+                '_pypi_hidden': False,
+                'description': "the-description",
+                'release_url': 'http://pypi.python.org/pypi/localshop/0.1',
+                '_pypi_ordering': 12,
+                'classifiers': [],
+                'name': 'django-cofingo',
+                'bugtrack_url': None,
+                'license': 'BSD',
+                'summary': 'Short summary',
+                'home_page': 'http://github.com/mvantellingen/localshop',
+                'stable_version': None,
+                'cheesecake_installability_id': None
+            }
+
             client.package_urls.return_value = [{
                     'comment_text': '',
                     'downloads': 1,
@@ -80,7 +137,7 @@ class TestPypi(TestCase):
                         'localshop/localshop-0.1.tar.gz'
                 }]
 
-            package = get_package_urls('Localshop')
+            package = get_package_data('Localshop')
 
             client.search.called_with({'name': 'Localshop'})
 

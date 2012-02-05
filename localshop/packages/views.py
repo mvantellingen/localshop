@@ -11,7 +11,7 @@ from django.views.generic.list import ListView
 from localshop.packages import forms
 from localshop.packages import models
 from localshop.packages import tasks
-from localshop.packages.pypi import get_package_urls
+from localshop.packages.pypi import get_package_data
 from localshop.packages.utils import parse_distutils_request
 
 logger = logging.getLogger(__name__)
@@ -60,7 +60,7 @@ class SimpleDetail(DetailView):
         try:
             package = models.Package.objects.get(name__iexact=slug)
         except ObjectDoesNotExist:
-            package = get_package_urls(slug)
+            package = get_package_data(slug)
 
         self.object = package
         context = self.get_context_data(object=self.object)
@@ -87,6 +87,15 @@ class Detail(DetailView):
         context = super(Detail, self).get_context_data(*args, **kwargs)
         context['release'] = self.object.last_release
         return context
+
+
+def refresh(request, name):
+    try:
+        package = models.Package.objects.get(name__iexact=name)
+    except ObjectDoesNotExist:
+        package = None
+    package = get_package_data(name, package)
+    return redirect(package)
 
 
 def download_file(request, name, pk, filename):

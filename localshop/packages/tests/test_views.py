@@ -34,7 +34,7 @@ class TestDistutilsViews(TestCase):
         })
         files = MultiValueDict()
 
-        response = views.handle_submit(post, files)
+        response = views.handle_register_or_upload(post, files)
         self.assertEqual(response.status_code, 200, response.content)
 
         package = models.Package.objects.get(name='localshop')
@@ -76,7 +76,7 @@ class TestDistutilsViews(TestCase):
             ]
         })
 
-        response = views.handle_submit(post, files)
+        response = views.handle_register_or_upload(post, files)
         self.assertEqual(response.status_code, 200, response.content)
 
         package = models.Package.objects.get(name='localshop')

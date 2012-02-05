@@ -3,6 +3,12 @@ from django import forms
 from localshop.packages import models
 
 
+class PypiReleaseDataForm(forms.ModelForm):
+    class Meta:
+        model = models.Release
+        exclude = ['classifiers', 'package', 'metadata_version']
+
+
 class ReleaseForm(forms.ModelForm):
     class Meta:
         model = models.Release

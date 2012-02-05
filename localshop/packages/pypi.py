@@ -2,13 +2,14 @@ import datetime
 import logging
 import xmlrpclib
 
+from localshop.packages import forms
 from localshop.packages import models
 
 
 logger = logging.getLogger(__name__)
 
 
-def get_package_urls(name, package=None):
+def get_package_data(name, package=None):
     """Retrieve metadata information for the given package name"""
     if not package:
         package = models.Package(name=name)
@@ -17,6 +18,7 @@ def get_package_urls(name, package=None):
         releases = package.get_all_releases()
 
     client = xmlrpclib.ServerProxy('http://pypi.python.org/pypi')
+
     versions = client.package_releases(package.name, True)
 
     # package_releases() method is case-sensitive, if nothing found
@@ -43,6 +45,15 @@ def get_package_urls(name, package=None):
         if not release:
             release = models.Release(package=package, version=version)
             release.save()
+
+        data = client.release_data(package.name, release.version)
+        print data
+
+        release_form = forms.PypiReleaseDataForm(data, instance=release)
+        if release_form.is_valid():
+            release_form.save()
+        else:
+            print release_form.errors
 
         release_files = client.package_urls(package.name, release.version)
         for info in release_files:

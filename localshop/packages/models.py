@@ -1,5 +1,6 @@
 import os
 
+import docutils.core
 from django.db import models
 from django.core.urlresolvers import reverse
 from model_utils import Choices
@@ -74,6 +75,11 @@ class Release(models.Model):
     summary = models.TextField(blank=True)
 
     version = models.CharField(max_length=512)
+
+    @property
+    def description_html(self):
+        parts = docutils.core.publish_parts(self.description, writer_name='html4css1')
+        return parts['fragment']
 
 
 def release_file_upload_to(instance, filename):
