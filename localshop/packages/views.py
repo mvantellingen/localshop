@@ -105,7 +105,12 @@ def download_file(request, name, pk, filename):
         tasks.download_file.delay(pk=release_file.pk)
         return redirect(release_file.url)
 
-    return redirect(release_file.distribution.url)
+    # TODO: Use sendfile if enabled
+    response = HttpResponse(release_file.distribution.file,
+        content_type='application/force-download')
+    response['Content-Disposition'] = 'attachment; filename=%s' % (
+        release_file.filename)
+    return response
 
 
 def handle_register_or_upload(post_data, files):
