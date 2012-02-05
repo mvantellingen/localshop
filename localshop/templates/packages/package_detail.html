@@ -1,0 +1,26 @@
+{% extends "layout.main.html" %}
+
+{% block content %}
+<h1>{{ package.name }}</h1>
+
+<table>
+    <tbody>
+        {% for release in package.releases.all %}
+            {% for file in release.files.all %}
+        <tr>
+            <td><a href="{{ file.get_absolute_url }}">{{ file.filename }}</a></td>
+            <td>{{ file.get_filetype_display }}</td>
+            <td>{{ file.python_version }}</td>
+            <td>
+                {% if file.distribution %}
+                local copy
+                {% endif %}
+            </td>
+        </tr>
+            {% endfor %}
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+

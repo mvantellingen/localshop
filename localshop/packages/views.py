@@ -57,14 +57,30 @@ class SimpleDetail(DetailView):
         return self.render_to_response(context)
 
 
-def download_file(request, pk, filename):
+class Detail(DetailView):
+    model = models.Package
+    slug_url_kwarg = 'name'
+    slug_field = 'name'
+
+    def get_object(self, queryset=None):
+        # Could be dropped when we use django 1.4
+        self.kwargs['slug'] = self.kwargs.get(self.slug_url_kwarg, None)
+        return super(Detail, self).get_object(queryset)
+
+
+class Index(ListView):
+    model = models.Package
+    context_object_name = 'packages'
+
+
+def download_file(request, name, pk, filename):
     release_file = models.ReleaseFile.objects.get(pk=pk)
-    if not release_file.file:
+    if not release_file.distribution:
         logger.info("Queueing %s for mirroring", release_file.url)
         tasks.download_file.delay(pk=release_file.pk)
         return redirect(release_file.url)
 
-    return redirect(release_file.file.url)
+    return redirect(release_file.distribution.url)
 
 
 def handle_register_or_upload(post_data, files):

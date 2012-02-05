@@ -1,0 +1,25 @@
+{% extends "layout.main.html" %}
+
+{% block content %}
+<h1>{{ package.name }}</h1>
+
+<table>
+    <tbody>
+        {% for package in packages %}
+        <tr>
+            <td><a href="{{ package.get_absolute_url }}">{{ package.name }}</a></td>
+            <td>
+                {% if package.is_local %}
+                local package
+                {% else %}
+                pypi package
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+
+

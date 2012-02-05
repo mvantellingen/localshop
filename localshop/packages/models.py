@@ -28,6 +28,11 @@ class Package(models.Model):
     #: Timestamp when we last retrieved the metadata
     update_timestamp = models.DateTimeField(null=True)
 
+    @models.permalink
+    def get_absolute_url(self):
+        return ('packages:detail', None, {'name': self.name})
+
+
     def get_all_releases(self):
         result = {}
         for release in self.releases.all():
@@ -113,6 +118,7 @@ class ReleaseFile(models.Model):
 
     def get_absolute_url(self):
         url = reverse('packages:download', kwargs={
+            'name': self.release.package.name,
             'pk': self.pk, 'filename': self.filename
         })
         return '%s#md5=%s' % (url, self.md5_digest)
