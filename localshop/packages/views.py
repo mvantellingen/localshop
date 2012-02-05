@@ -18,7 +18,8 @@ logger = logging.getLogger(__name__)
 
 
 class SimpleIndex(ListView):
-    model = models.Package
+    queryset = models.Package.objects.values('name')
+    context_object_name = 'packages'
     http_method_names = ['get', 'post']
 
     @method_decorator(csrf_exempt)
@@ -41,6 +42,7 @@ class SimpleIndex(ListView):
 
 class SimpleDetail(DetailView):
     model = models.Package
+    context_object_name = 'package'
 
     def get(self, request, slug):
         try:

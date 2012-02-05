@@ -2,7 +2,7 @@
     <head>
         <meta charset="utf-8" />
 
-        <title>Links for pip</title>
+        <title>Links for {{ package.name }}</title>
 
         <style>
             a { display: block; }
@@ -10,9 +10,9 @@
     </head>
     <body>
 
-    <h1>Links for pip</h1>
+    <h1>Links for {{ package.name }}</h1>
 
-{% for release in object.releases.all %}
+{% for release in package.releases.all %}
     {% for file in release.files.all %}
 <a href="{{ file.get_absolute_url }}">{{ file.filename }}</a>
     {% endfor %}
