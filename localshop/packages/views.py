@@ -1,7 +1,6 @@
 import base64
 import logging
 
-import netaddr
 from django.contrib.auth import authenticate
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404, HttpResponse, HttpResponseBadRequest
@@ -12,17 +11,17 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
-from localshop.conf import settings
 from localshop.utils import permission_required
 from localshop.packages import forms
 from localshop.packages import models
 from localshop.packages import tasks
 from localshop.packages.pypi import get_package_data
-from localshop.packages.utils import parse_distutils_request
+from localshop.packages.utils import parse_distutils_request, validate_client
 
 logger = logging.getLogger(__name__)
 
 
+@validate_client
 class SimpleIndex(ListView):
     """Index view with all available packages used by /simple url
 
@@ -62,6 +61,7 @@ class SimpleIndex(ListView):
         return handler(data, files, user)
 
 
+@validate_client
 class SimpleDetail(DetailView):
     """List all available files for a specific package.
 
@@ -117,17 +117,12 @@ def refresh(request, name):
     return redirect(package)
 
 
+@validate_client
 def download_file(request, name, pk, filename):
     """Redirect the client to the pypi hosted file if the file is not
     mirror'ed yet (and isn't a local package).  Otherwise serve the file.
 
     """
-    # Only allow downloads from authenticted users or from remote ip's
-    # which are listed in `LOCALSHOP_ALLOWED_REMOTE_IPS`
-    if not request.user.is_authenticated() and not netaddr.all_matching_cidrs(
-        request.META['REMOTE_ADDR'],  settings.ALLOWED_REMOTE_IPS):
-        return HttpResponseForbidden('No permission')
-
     release_file = models.ReleaseFile.objects.get(pk=pk)
     if not release_file.distribution:
         logger.info("Queueing %s for mirroring", release_file.url)

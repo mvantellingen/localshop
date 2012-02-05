@@ -1,9 +1,14 @@
-import os
+import inspect
 
+import netaddr
 from django.core.files.storage import FileSystemStorage
 from django.core.files.uploadedfile import SimpleUploadedFile
-from django.conf import settings
+from django.http import HttpResponseForbidden
 from django.utils.datastructures import MultiValueDict
+from django.utils.decorators import method_decorator
+from django.views.generic.base import View
+
+from localshop.conf import settings
 
 
 class OverwriteStorage(FileSystemStorage):
@@ -22,6 +27,33 @@ class OverwriteStorage(FileSystemStorage):
         if self.exists(name):
             self.delete(name)
         return name
+
+
+def validate_client(func):
+    """Only allow downloads from authenticted users or from remote ip's
+    which are listed in `LOCALSHOP_ALLOWED_REMOTE_IPS`
+
+    """
+    if inspect.isclass(func) and issubclass(func, View):
+        original_dispatch = func.dispatch
+
+        @method_decorator(validate_client)
+        def dispatch(cls, request, *args, **kwargs):
+            return original_dispatch(cls, request, *args, **kwargs)
+        func.dispatch = dispatch
+        return func
+
+    def _wrapper(request, *args, **kwargs):
+        if request.user.is_authenticated():
+            return func(request, *args, **kwargs)
+
+        allowed_ips = netaddr.all_matching_cidrs(
+            request.META['REMOTE_ADDR'],  settings.ALLOWED_REMOTE_IPS)
+        if allowed_ips:
+            return func(request, *args, **kwargs)
+
+        return HttpResponseForbidden('No permission')
+    return _wrapper
 
 
 def parse_distutils_request(request):
