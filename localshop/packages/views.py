@@ -74,6 +74,7 @@ class Index(ListView):
 
 class Detail(DetailView):
     model = models.Package
+    context_object_name = 'package'
     slug_url_kwarg = 'name'
     slug_field = 'name'
 
@@ -81,6 +82,11 @@ class Detail(DetailView):
         # Could be dropped when we use django 1.4
         self.kwargs['slug'] = self.kwargs.get(self.slug_url_kwarg, None)
         return super(Detail, self).get_object(queryset)
+
+    def get_context_data(self, *args, **kwargs):
+        context = super(Detail, self).get_context_data(*args, **kwargs)
+        context['release'] = self.object.last_release
+        return context
 
 
 def download_file(request, name, pk, filename):

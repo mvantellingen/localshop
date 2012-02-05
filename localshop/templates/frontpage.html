@@ -1,11 +1,15 @@
 {% extends "layout.main.html" %}
 
 {% block content %}
-<h1>Localshop</h1>
+<div class="hero-unit">
+    <h1>Localshop</h1>
+    <p>Welcome to your localshop!</p>
+    <p><a class="btn btn-primary btn-large">See all packages &raquo;</a></p>
+</div>
 
 
 <h2>Recent local packages releases</h2>
-<table>
+<table class="table table-striped">
     <tbody>
         {% for release in recent_local %}
         <tr>
@@ -18,14 +22,13 @@
 
 
 <h2>Recently mirrored release files</h2>
-<table>
+<table class="table table-striped">
     <tbody>
         {% for release_file in recent_mirror %}
         <tr>
             <td><a href="{{ release_file.release.package.get_absolute_url }}">{{ release_file.release.package.name }}</a></td>
-            <td>{{ release_file.release.version }}</td>
             <td>{{ release_file.filename }}</td>
-            <td>{{ release_file.distribution }}</td>
+            <td>{{ release_file.release.version }}</td>
         </tr>
         {% endfor %}
     </tbody>

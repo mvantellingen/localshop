@@ -28,6 +28,9 @@ class Package(models.Model):
     #: Timestamp when we last retrieved the metadata
     update_timestamp = models.DateTimeField(null=True)
 
+    def __unicode__(self):
+        return self.name
+
     @models.permalink
     def get_absolute_url(self):
         return ('packages:detail', None, {'name': self.name})
@@ -38,6 +41,10 @@ class Package(models.Model):
             files = dict((r.filename, r) for r in release.files.all())
             result[release.version] = (release, files)
         return result
+
+    @property
+    def last_release(self):
+        return self.releases.order_by('-created')[0]
 
 
 class Release(models.Model):

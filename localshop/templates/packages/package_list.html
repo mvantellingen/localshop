@@ -1,9 +1,15 @@
 {% extends "layout.main.html" %}
 
 {% block content %}
-<h1>{{ package.name }}</h1>
+<h1>Package index</h1>
 
-<table>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+        </tr>
+    </thead>
     <tbody>
         {% for package in packages %}
         <tr>
