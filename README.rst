@@ -33,6 +33,9 @@ Create an initial user via the following command::
 
     localshop manage createsuperuser 
 
+You can now visit http://localhost:8900/ and view all the packages in your
+localshop!
+
 
 How does it work
 ================
