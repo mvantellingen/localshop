@@ -1,7 +1,9 @@
-from localshop.commands.utils import options, opt, consume_args
-from localshop.services import http, worker, daemon
 import os
 import os.path
+
+from localshop.commands.utils import options, opt, consume_args
+from localshop.services import http, worker, daemon
+
 
 services = {
     'http': http.LocalShopHTTPServer,
