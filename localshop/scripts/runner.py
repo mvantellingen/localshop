@@ -16,6 +16,7 @@ ALL_COMMANDS = (
     'init',
     'start',
     'stop',
+    'upgrade',
 
     # These should probably be hidden by default
     'manage',

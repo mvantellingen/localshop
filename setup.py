@@ -5,6 +5,7 @@ tests_require = [
 ]
 
 install_requires = [
+    'South',
     'Django>=1.3.1',
     'django-kombu==0.9.4',
     'eventlet>=0.9.15',

@@ -127,7 +127,7 @@ TEMPLATE_DIRS = (
 BROKER_URL = "django://"
 
 
-INSTALLED_APPS = (
+INSTALLED_APPS = [
     'django.contrib.auth',
     'django.contrib.contenttypes',
     'django.contrib.sessions',
@@ -138,11 +138,11 @@ INSTALLED_APPS = (
 
     'djkombu',
     'djcelery',
+    'south',
 
     'localshop.packages',
     'localshop.accounts',
-    'django_extensions',
-)
+]
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
