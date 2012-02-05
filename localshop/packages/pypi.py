@@ -52,10 +52,10 @@ def get_package_urls(name, package=None):
                     release=release, filename=info['filename'])
 
             release_file.python_version = info['python_version']
-            release_file.type = info['packagetype']
+            release_file.filetype = info['packagetype']
             release_file.url = info['url']
             release_file.size = info['size']
-            release_file.digest = info['md5_digest']
+            release_file.md5_digest = info['md5_digest']
             release_file.save()
 
     package.update_timestamp = datetime.datetime.utcnow()

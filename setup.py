@@ -2,8 +2,6 @@ from setuptools import setup, find_packages
 
 
 tests_require = [
-    'nose==1.1.2',
-    'django-nose==0.1.3',
 ]
 
 install_requires = [
@@ -26,7 +24,7 @@ setup(
     url='http://github.com/mvantellingen/localshop',
     description='A private pypi server including auto-mirroring of pypi.',
     long_description=__doc__,
-    packages=find_packages(exclude=['tests']),
+    packages=find_packages(),
     zip_safe=False,
     install_requires=install_requires,
     tests_require=tests_require,
@@ -39,6 +37,7 @@ setup(
     localshop = localshop.scripts.runner:main
     """,
     classifiers=[
+        'Development Status :: 2 - Pre-Alpha',
         'Framework :: Django',
         'Intended Audience :: Developers',
         'Intended Audience :: System Administrators',

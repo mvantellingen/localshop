@@ -42,9 +42,9 @@ class TestPypi(TestCase):
 
         info = package.releases.get(version='0.1').files.all()[0]
         self.assertEqual(info.filename, 'localshop-0.1.tar.gz')
-        self.assertEqual(info.type, 'sdist')
+        self.assertEqual(info.filetype, 'sdist')
         self.assertEqual(info.python_version, 'source')
-        self.assertEqual(info.digest, '7ddf32e17a6ac5ce04a8ecbf782ca509')
+        self.assertEqual(info.md5_digest, '7ddf32e17a6ac5ce04a8ecbf782ca509')
         self.assertEqual(info.size, 23232)
         self.assertEqual(info.url, 'http://pypi.python.org/packages/source/r/'
             'localshop/localshop-0.1.tar.gz')

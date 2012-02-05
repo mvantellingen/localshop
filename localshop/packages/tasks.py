@@ -22,6 +22,6 @@ def download_file(pk):
 
     # Write the file to the django file field
     filename = os.path.basename(release_file.url)
-    release_file.file.save(filename, File(tmp_file))
+    release_file.distribution.save(filename, File(tmp_file))
     release_file.save()
     logging.info("Complete")

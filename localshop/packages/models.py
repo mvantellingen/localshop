@@ -2,10 +2,17 @@ import os
 
 from django.db import models
 from django.core.urlresolvers import reverse
-
 from model_utils import Choices
 from model_utils.fields import AutoCreatedField, AutoLastModifiedField
-from model_utils.models import TimeStampedModel
+
+from localshop.packages.utils import OverwriteStorage
+
+
+class Classifier(models.Model):
+    name = models.CharField(max_length=255, unique=True)
+
+    def __unicode__(self):
+        return self.name
 
 
 class Package(models.Model):
@@ -15,7 +22,11 @@ class Package(models.Model):
 
     name = models.SlugField(max_length=200, unique=True)
 
-    uptime_timestamp = models.DateTimeField(null=True)
+    #: Indicate if this package is local (a private package)
+    is_local = models.BooleanField(default=False)
+
+    #: Timestamp when we last retrieved the metadata
+    update_timestamp = models.DateTimeField(null=True)
 
     def get_all_releases(self):
         result = {}
@@ -28,9 +39,29 @@ class Package(models.Model):
 class Release(models.Model):
 
     created = AutoCreatedField()
+
     modified = AutoLastModifiedField()
 
+    author = models.CharField(max_length=128, blank=True)
+
+    author_email = models.CharField(max_length=255, blank=True)
+
+    classifiers = models.ManyToManyField(Classifier)
+
+    description = models.TextField(blank=True)
+
+    download_url = models.CharField(max_length=200, blank=True, null=True)
+
+    home_page = models.URLField(verify_exists=False, blank=True, null=True)
+
+    license = models.TextField(blank=True)
+
+    metadata_version = models.CharField(max_length=64, default=1.0)
+
     package = models.ForeignKey(Package, related_name="releases")
+
+    summary = models.TextField(blank=True)
+
     version = models.CharField(max_length=512)
 
 
@@ -64,20 +95,21 @@ class ReleaseFile(models.Model):
 
     size = models.IntegerField(null=True)
 
-    type = models.CharField(max_length=25, choices=TYPES)
+    filetype = models.CharField(max_length=25, choices=TYPES)
 
-    file = models.FileField(upload_to=release_file_upload_to, max_length=512)
+    distribution = models.FileField(upload_to=release_file_upload_to,
+        storage=OverwriteStorage(), max_length=512)
 
     filename = models.CharField(max_length=200, blank=True, null=True)
 
-    digest = models.CharField(max_length=512)
+    md5_digest = models.CharField(max_length=512)
 
     python_version = models.CharField(max_length=25)
 
     url = models.URLField(max_length=1024, blank=True)
 
     class Meta:
-        unique_together = ("release", "type", "python_version", "filename")
+        unique_together = ('release', 'filetype', 'python_version', 'filename')
 
     def get_absolute_url(self):
         url = reverse('packages:download', kwargs={

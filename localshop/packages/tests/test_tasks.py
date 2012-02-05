@@ -32,7 +32,7 @@ class TestTasks(TestCase):
             tasks.download_file(release_file.pk)
 
         release_file = models.ReleaseFile.objects.get(pk=release_file.pk)
-        self.assertEqual(release_file.file.read(), 'test')
+        self.assertEqual(release_file.distribution.read(), 'test')
 
-        self.assertEqual(release_file.file.name,
+        self.assertEqual(release_file.distribution.name,
             'source/l/localshop/localshop-0.1.tar.gz')
