@@ -7,6 +7,7 @@ from django.http import HttpResponseForbidden
 from django.utils.datastructures import MultiValueDict
 from django.utils.decorators import method_decorator
 from django.views.generic.base import View
+from django.views.decorators.csrf import csrf_exempt
 
 from localshop.conf import settings
 
@@ -37,6 +38,8 @@ def validate_client(func):
     if inspect.isclass(func) and issubclass(func, View):
         original_dispatch = func.dispatch
 
+        # XXX: The csrf_exempt here is a hack, should only be on SimpleIndex
+        @method_decorator(csrf_exempt)
         @method_decorator(validate_client)
         def dispatch(cls, request, *args, **kwargs):
             return original_dispatch(cls, request, *args, **kwargs)
@@ -51,7 +54,6 @@ def validate_client(func):
             request.META['REMOTE_ADDR'],  settings.ALLOWED_REMOTE_IPS)
         if allowed_ips:
             return func(request, *args, **kwargs)
-
         return HttpResponseForbidden('No permission')
     return _wrapper
 

@@ -43,12 +43,16 @@ class SimpleIndex(ListView):
         # XXX: Auth is currently a bit of a hack
         auth = request.META.get('HTTP_AUTHORIZATION')
         if not auth:
-            return HttpResponseForbidden()
+            response = HttpResponse('Missing auth header')
+            response.status_code = 401
+            return response
         method, identity = auth.split()
         username, password = base64.decodestring(identity).split(':')
         user = authenticate(username=username, password=password)
         if not user:
-            return HttpResponseForbidden('Invalid username/password')
+            response = HttpResponse('Invalid username/password')
+            response.status_code = 401
+            return response
 
         actions = {
             'submit': handle_register_or_upload,
