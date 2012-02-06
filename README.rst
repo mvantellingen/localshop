@@ -1,7 +1,7 @@
 localshop
 =========
 
-An pypi server which automatically proxies and mirrors pypi packages based 
+A pypi server which automatically proxies and mirrors pypi packages based 
 upon packages requested. It also supports the uploading of local (private) 
 packages.
 
@@ -51,8 +51,8 @@ Restarting the http server is done as follow::
 
 
 
-How does it work
-================
+How it works
+============
 Packages which are requested and are unknown are looked up on pypi via the 
 xmlrpc interface.  At the moment the client downloads one of the files which
 is not yet mirror'ed a 302 redirect is issued to the correct file (on pypi).  
