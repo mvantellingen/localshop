@@ -11,8 +11,3 @@ RUN_DIR = os.path.join(ROOT, 'run')
 # Web Service
 WEB_HOST = 'localhost'
 WEB_PORT = 8900
-
-# A list of ip addresses or cidr's which are allowed to download
-# files from your shop
-# XXX: This will be moved to the database in the future
-ALLOWED_REMOTE_IPS = []

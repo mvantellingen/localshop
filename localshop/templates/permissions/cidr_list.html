@@ -1,0 +1,44 @@
+{% extends "layout.main.html" %}
+
+{% block content %}
+<div class="row">
+    <div class="span6">
+
+        <h1>CIDR access overview</h1>
+        <p>Overview of IP addresses which have acccess to download packages from your localshop. Hosts which are not listed here will receive a 403 error.
+        </p>
+        <p><a href="{% url permissions:cidr_create %}" class="btn btn-primary">
+            <span class="icon-plus icon-white"></span> Create</a>
+
+        <table class="table table-striped table-bordered">
+            <thead>
+                <tr>
+                    <th>CIDR</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cidr in cidr_list %}
+                <tr>
+                    <td><a href="{{ cidr.cidr }}">{{ cidr.cidr }}</a></td>
+                    <td>
+                        <a href="{% url permissions:cidr_edit pk=cidr.pk %}"><span class="icon-edit"></span> edit</a> |
+                        <a href="{% url permissions:cidr_delete pk=cidr.pk %}"><span class="icon-trash"></span> delete</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    <div class="span3">
+        <h2>About CIDR</h2>
+        <p>CIDR notation is a syntax of specifying IP addresses and their associated routing prefix. It appends to the address a slash character and the decimal number of leading bits of the routing prefix, e.g., 192.0.2.0/24 for IPv4, and 2001:db8::/32 for IPv6.</p>
+        <p><a href="http://en.wikipedia.org/wiki/CIDR">See wikipedia</a></p>
+        </div>
+
+</div>
+{% endblock %}
+
+
+
+

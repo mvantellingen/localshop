@@ -1,6 +1,5 @@
 import inspect
 
-import netaddr
 from django.core.files.storage import FileSystemStorage
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import HttpResponseForbidden
@@ -10,6 +9,7 @@ from django.views.generic.base import View
 from django.views.decorators.csrf import csrf_exempt
 
 from localshop.conf import settings
+from localshop.permissions.models import CIDR
 
 
 class OverwriteStorage(FileSystemStorage):
@@ -50,9 +50,7 @@ def validate_client(func):
         if request.user.is_authenticated():
             return func(request, *args, **kwargs)
 
-        allowed_ips = netaddr.all_matching_cidrs(
-            request.META['REMOTE_ADDR'],  settings.ALLOWED_REMOTE_IPS)
-        if allowed_ips:
+        if CIDR.objects.has_access(request.META['REMOTE_ADDR']):
             return func(request, *args, **kwargs)
         return HttpResponseForbidden('No permission')
     return _wrapper

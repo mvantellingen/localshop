@@ -141,7 +141,7 @@ INSTALLED_APPS = [
     'south',
 
     'localshop.packages',
-    'localshop.accounts',
+    'localshop.permissions',
 ]
 
 # A sample logging configuration. The only tangible logging

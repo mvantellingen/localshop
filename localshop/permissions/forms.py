@@ -4,7 +4,7 @@ from django.forms.forms import NON_FIELD_ERRORS
 from django.forms.util import ErrorList
 from django.utils.translation import ugettext_lazy as _
 
-from localshop.accounts import models
+from localshop.permissions import models
 
 
 class LoginForm(forms.Form):
