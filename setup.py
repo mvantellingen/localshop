@@ -61,7 +61,7 @@ class RunTests(Command):
 
 setup(
     name='localshop',
-    version='0.1.3',
+    version='0.2',
     author='Michael van Tellingen',
     author_email='michaelvantellingen@gmail.com',
     url='http://github.com/mvantellingen/localshop',
@@ -80,7 +80,7 @@ setup(
     localshop = localshop.scripts.runner:main
     """,
     classifiers=[
-        'Development Status :: 2 - Pre-Alpha',
+        'Development Status :: 3 - Alpha',
         'Framework :: Django',
         'Intended Audience :: Developers',
         'Intended Audience :: System Administrators',
