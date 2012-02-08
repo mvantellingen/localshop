@@ -36,19 +36,9 @@ Create an initial user via the following command::
 You can now visit http://localhost:8900/ and view all the packages in your
 localshop!
 
-Now to allow servers to download packages from your localshop you have to
-add the ip addresses to the localshop config file. This file is located
-at ~/.localshop/localshop.conf.py  At the end of the file a list is 
-defined with ip addresses which are allowed to download files.
-
-Changing this setting requires a restart of the http server. This should be
-manageable via the webinterace in future releases.
-
-Restarting the http server is done as follow::
-
-    localshop stop http
-    localshop start http --daemon
-
+The next step is to give access to various hosts to use the shop. This
+is done via the webinterface (menu -> permissions -> cidr). Each ip
+address listed there will be able to download and upload packages.
 
 
 How it works
