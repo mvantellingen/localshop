@@ -1,3 +1,6 @@
+0.2.2:
+* Don't display the download_url or home_page url if they are unknown
+
 0.2.1:
 * Use the correct LOGIN_URL setting.
 * Add download_url and home_page url to the simple detail page. note that this

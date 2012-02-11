@@ -61,7 +61,7 @@ class RunTests(Command):
 
 setup(
     name='localshop',
-    version='0.2.1',
+    version='0.2.2',
     author='Michael van Tellingen',
     author_email='michaelvantellingen@gmail.com',
     url='http://github.com/mvantellingen/localshop',

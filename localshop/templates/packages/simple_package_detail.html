@@ -19,6 +19,10 @@
 {% endfor %}
 
 {% for release in package.releases.all %}
+    {% if release.home_page and release.home_page != 'UNKNOWN' %}
 <a href="{{ release.home_page }}">{{ release.version }} home_page</a>
+    {% endif %}
+    {% if release.download_url and release.download_url != 'UNKNOWN'  %}
 <a href="{{ release.download_url }}">{{ release.version }} download_url</a>
+    {% endif %}
 {% endfor %}
