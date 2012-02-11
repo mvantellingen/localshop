@@ -1,5 +1,10 @@
+0.2.1:
+* Use the correct LOGIN_URL setting.
+* Add download_url and home_page url to the simple detail page. note that this
+  is currently not mirrored yet.
+
 0.2:
-* Implement confiurable access control / ip check
+* Implement configurable access control / ip check
 
 0.1.3:
 * Fix distutils interface
