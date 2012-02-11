@@ -14,15 +14,15 @@
 
 {% for release in package.releases.all %}
     {% for file in release.files.all %}
-<a href="{{ file.get_absolute_url }}">{{ file.filename }}</a>
+<a href="{{ file.get_absolute_url }}" rel="package">{{ file.filename }}</a>
     {% endfor %}
 {% endfor %}
 
 {% for release in package.releases.all %}
     {% if release.home_page and release.home_page != 'UNKNOWN' %}
-<a href="{{ release.home_page }}">{{ release.version }} home_page</a>
+<a href="{{ release.home_page }}" rel="homepage">{{ release.version }} home_page</a>
     {% endif %}
     {% if release.download_url and release.download_url != 'UNKNOWN'  %}
-<a href="{{ release.download_url }}">{{ release.version }} download_url</a>
+<a href="{{ release.download_url }}" rel="download">{{ release.version }} download_url</a>
     {% endif %}
 {% endfor %}

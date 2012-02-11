@@ -1,5 +1,6 @@
 0.2.2:
 * Don't display the download_url or home_page url if they are unknown
+* Add correct rel-tag to the urls
 
 0.2.1:
 * Use the correct LOGIN_URL setting.
