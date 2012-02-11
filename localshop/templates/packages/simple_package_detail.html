@@ -17,3 +17,8 @@
 <a href="{{ file.get_absolute_url }}">{{ file.filename }}</a>
     {% endfor %}
 {% endfor %}
+
+{% for release in package.releases.all %}
+<a href="{{ release.home_page }}">{{ release.version }} home_page</a>
+<a href="{{ release.download_url }}">{{ release.version }} download_url</a>
+{% endfor %}
