@@ -13,13 +13,13 @@ def frontpage(request):
 
     recent_local = (Release.objects
         .filter(package__is_local=True)
-        .order_by('created')
+        .order_by('-created')
         .all())
 
     recent_mirror = (ReleaseFile.objects
         .filter(release__package__is_local=False)
         .exclude(distribution='')
-        .order_by('modified')
+        .order_by('-modified')
         .all())
 
     return TemplateResponse(request, 'frontpage.html', {
