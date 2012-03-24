@@ -12,6 +12,7 @@ install_requires = [
     'django-kombu==0.9.4',
     'eventlet>=0.9.15',
     'kombu>=1.5.1',
+    'logan>=0.2.1',
     'gunicorn>=0.13.4',
     'python-daemon>=1.6',
     'django-celery',
@@ -75,10 +76,11 @@ setup(
     cmdclass={"test": RunTests},
     license='BSD',
     include_package_data=True,
-    entry_points="""
-    [console_scripts]
-    localshop = localshop.scripts.runner:main
-    """,
+    entry_points={
+        'console_scripts': [
+            'localshop = localshop.runner:main'
+        ]
+    },
     classifiers=[
         'Development Status :: 3 - Alpha',
         'Framework :: Django',
