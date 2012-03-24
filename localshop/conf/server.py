@@ -139,6 +139,7 @@ INSTALLED_APPS = [
     'djcelery',
     'south',
 
+    'localshop',
     'localshop.apps.packages',
     'localshop.apps.permissions',
 ]
