@@ -3,8 +3,8 @@ from django.core.files.uploadedfile import SimpleUploadedFile
 from django.test import TestCase
 from django.utils.datastructures import MultiValueDict
 
-from localshop.packages import models
-from localshop.packages import views
+from localshop.apps.packages import models
+from localshop.apps.packages import views
 
 
 class TestDistutilsViews(TestCase):

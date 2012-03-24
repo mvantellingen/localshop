@@ -7,7 +7,7 @@ from django.core.urlresolvers import reverse
 from model_utils import Choices
 from model_utils.fields import AutoCreatedField, AutoLastModifiedField
 
-from localshop.packages.utils import OverwriteStorage
+from localshop.apps.packages.utils import OverwriteStorage
 
 
 class Classifier(models.Model):

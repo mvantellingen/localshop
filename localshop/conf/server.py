@@ -4,7 +4,6 @@ import djcelery
 djcelery.setup_loader()
 
 
-
 # Django settings for localshop project.
 PROJECT_ROOT = os.path.join(os.path.dirname(__file__), os.pardir)
 
@@ -104,7 +103,7 @@ TEMPLATE_CONTEXT_PROCESSORS = [
     'django.core.context_processors.static',
     'django.contrib.messages.context_processors.messages',
 
-    'localshop.packages.context_processors.sidebar',
+    'localshop.apps.packages.context_processors.sidebar',
 ]
 
 MIDDLEWARE_CLASSES = (
@@ -140,8 +139,8 @@ INSTALLED_APPS = [
     'djcelery',
     'south',
 
-    'localshop.packages',
-    'localshop.permissions',
+    'localshop.apps.packages',
+    'localshop.apps.permissions',
 ]
 
 # A sample logging configuration. The only tangible logging

@@ -9,7 +9,7 @@ from django.views.generic.base import View
 from django.views.decorators.csrf import csrf_exempt
 
 from localshop.conf import settings
-from localshop.permissions.models import CIDR
+from localshop.apps.permissions.models import CIDR
 
 
 class OverwriteStorage(FileSystemStorage):

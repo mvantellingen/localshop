@@ -1,6 +1,6 @@
 from django import forms
 
-from localshop.packages import models
+from localshop.apps.packages import models
 
 
 class PypiReleaseDataForm(forms.ModelForm):

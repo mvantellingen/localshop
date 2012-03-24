@@ -1,6 +1,6 @@
 from django.contrib import admin
 
-from localshop.permissions import models
+from localshop.apps.permissions import models
 
 
 class CidrAdmin(admin.ModelAdmin):

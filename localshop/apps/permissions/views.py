@@ -10,8 +10,8 @@ from django.views.generic import UpdateView, DetailView, DeleteView
 
 from localshop.utils import clean_redirect_url
 from localshop.utils import permission_required
-from localshop.permissions import models
-from localshop.permissions.forms import LoginForm, UserForm
+from localshop.apps.permissions import models
+from localshop.apps.permissions.forms import LoginForm, UserForm
 
 
 def login(request):

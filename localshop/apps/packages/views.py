@@ -12,11 +12,11 @@ from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
 from localshop.utils import permission_required
-from localshop.packages import forms
-from localshop.packages import models
-from localshop.packages import tasks
-from localshop.packages.pypi import get_package_data
-from localshop.packages.utils import parse_distutils_request, validate_client
+from localshop.apps.packages import forms
+from localshop.apps.packages import models
+from localshop.apps.packages import tasks
+from localshop.apps.packages.pypi import get_package_data
+from localshop.apps.packages.utils import parse_distutils_request, validate_client
 
 logger = logging.getLogger(__name__)
 

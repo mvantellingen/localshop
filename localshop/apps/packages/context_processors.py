@@ -1,4 +1,4 @@
-from localshop.packages.models import Package, Release, ReleaseFile
+from localshop.apps.packages.models import Package, Release, ReleaseFile
 
 
 def sidebar(request):

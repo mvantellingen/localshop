@@ -3,7 +3,7 @@ from mock import Mock
 from django.test import TestCase
 from django.utils.datastructures import MultiValueDict
 
-from localshop.packages.utils import parse_distutils_request
+from localshop.apps.packages.utils import parse_distutils_request
 
 
 class TestParseDistutilsRequest(TestCase):

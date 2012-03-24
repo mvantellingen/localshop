@@ -2,12 +2,12 @@ import datetime
 import mock
 from django.test import TestCase
 
-from localshop.packages import models
+from localshop.apps.packages import models
 
 
 class TestPypi(TestCase):
     def test_get_package_data_new(self):
-        from localshop.packages.pypi import get_package_data
+        from localshop.apps.packages.pypi import get_package_data
 
         with mock.patch('xmlrpclib.ServerProxy') as mock_obj:
             mock_obj.return_value = client = mock.Mock()
@@ -80,7 +80,7 @@ class TestPypi(TestCase):
             'localshop/localshop-0.1.tar.gz')
 
     def test_get_package_data_wrong_case(self):
-        from localshop.packages.pypi import get_package_data
+        from localshop.apps.packages.pypi import get_package_data
 
         with mock.patch('xmlrpclib.ServerProxy') as mock_obj:
             mock_obj.return_value = client = mock.Mock()

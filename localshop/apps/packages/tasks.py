@@ -7,7 +7,7 @@ import requests
 from django.core.files import File
 from celery.task import task
 
-from localshop.packages import models
+from localshop.apps.packages import models
 
 
 @task

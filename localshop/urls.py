@@ -10,13 +10,13 @@ urlpatterns = patterns('',
     url(r'^$', 'localshop.views.frontpage', name='frontpage'),
 
     url(r'^packages/',
-        include('localshop.packages.urls', namespace='packages')),
+        include('localshop.apps.packages.urls', namespace='packages')),
 
-    url(r'^simple/', include('localshop.packages.urls_simple',
+    url(r'^simple/', include('localshop.apps.packages.urls_simple',
         namespace='packages-simple')),
 
     url(r'^permissions/',
-        include('localshop.permissions.urls', namespace='permissions')),
+        include('localshop.apps.permissions.urls', namespace='permissions')),
 
     url(r'^admin/', include(admin.site.urls)),
 

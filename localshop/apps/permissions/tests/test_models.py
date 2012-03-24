@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from localshop.permissions import models
+from localshop.apps.permissions import models
 
 
 class CidrTest(TestCase):

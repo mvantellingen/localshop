@@ -5,7 +5,7 @@ from django.http import HttpResponseRedirect, Http404, HttpResponseNotModified, 
 from django.template.response import TemplateResponse
 
 
-from localshop.packages.models import Release, ReleaseFile
+from localshop.apps.packages.models import Release, ReleaseFile
 
 
 @login_required

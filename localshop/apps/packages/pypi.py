@@ -2,8 +2,8 @@ import datetime
 import logging
 import xmlrpclib
 
-from localshop.packages import forms
-from localshop.packages import models
+from localshop.apps.packages import forms
+from localshop.apps.packages import models
 
 
 logger = logging.getLogger(__name__)

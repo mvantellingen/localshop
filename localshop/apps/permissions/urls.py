@@ -1,6 +1,6 @@
 from django.conf.urls.defaults import patterns
 from django.conf.urls.defaults import url
-from localshop.permissions import views
+from localshop.apps.permissions import views
 
 
 urlpatterns = patterns('',

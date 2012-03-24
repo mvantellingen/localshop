@@ -3,9 +3,9 @@ from cStringIO import StringIO
 from django.test import TestCase
 from requests.packages.urllib3.response import HTTPResponse
 
-from localshop.packages import utils
-from localshop.packages import tasks
-from localshop.packages import models
+from localshop.apps.packages import utils
+from localshop.apps.packages import tasks
+from localshop.apps.packages import models
 
 
 class TestTasks(TestCase):
