@@ -12,13 +12,13 @@
 
     <h1>Links for {{ package.name }}</h1>
 
-{% for release in package.releases.all %}
+{% for release in releases %}
     {% for file in release.files.all %}
 <a href="{{ file.get_absolute_url }}" rel="package">{{ file.filename }}</a>
     {% endfor %}
 {% endfor %}
 
-{% for release in package.releases.all %}
+{% for release in releases %}
     {% if release.home_page and release.home_page != 'UNKNOWN' %}
 <a href="{{ release.home_page }}" rel="homepage">{{ release.version }} home_page</a>
     {% endif %}

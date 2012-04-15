@@ -76,14 +76,24 @@ class SimpleDetail(DetailView):
     context_object_name = 'package'
     template_name = 'packages/simple_package_detail.html'
 
-    def get(self, request, slug):
+    def get(self, request, slug, version=None):
         try:
             package = models.Package.objects.get(name__iexact=slug)
         except ObjectDoesNotExist:
             package = get_package_data(slug)
 
+        releases = package.releases
+        if version:
+            releases = releases.filter(version=version)
+
+            # Perhaps this version is new, refresh data
+            if releases.count() == 0:
+                get_package_data(slug, package)
+
         self.object = package
-        context = self.get_context_data(object=self.object)
+        context = self.get_context_data(
+            object=self.object,
+            releases=list(releases.all()))
         return self.render_to_response(context)
 
 
