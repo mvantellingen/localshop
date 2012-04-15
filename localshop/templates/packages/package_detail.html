@@ -1,22 +1,14 @@
 {% extends "layout.main.html" %}
 
-{% block javascript %}
-    <script type="text/javascript">
-        $(function() {
-            $('#package-tabs').tab('show')
-        });
-    </script>
-{% endblock %}
-
 {% block content %}
-
+<div class="tabbable">
     <h1>{{ package.name }}</h1>
     <p>{{ release.summary }}</p>
     <ul class="nav nav-tabs" id="package-tabs">
         <li class="active">
-            <a href="#information" data-toggle="tab">METADATA</a>
+            <a href="#information" data-toggle="tab">Metadata</a>
         </li>
-        <li><a href="#description" data-toggle="tab">README</a></li>
+        <li><a href="#description" data-toggle="tab">Readme</a></li>
     </ul>
     <div class="tab-content">
         <div class="tab-pane" id="description">
@@ -113,6 +105,7 @@
             </div>
         </div>
     </div>
+</div>
 {% endblock %}
 
 
