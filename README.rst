@@ -23,10 +23,10 @@ environment by issuing the following command::
 
 And then start it via::
 
-    localshop start http --daemon
-    localshop start worker --daemon
+    localshop run_gunicorn
+    localshop celeryd -B -E
 
-The worker is required to do the mirroring of the pypi packages once they 
+Celeryd is required to do the mirroring of the pypi packages once they 
 are needed.
 
 Create an initial user via the following command::
