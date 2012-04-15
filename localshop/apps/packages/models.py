@@ -34,6 +34,9 @@ class Package(models.Model):
 
     owners = models.ManyToManyField(User)
 
+    class Meta:
+        ordering = ['name']
+
     def __unicode__(self):
         return self.name
 
@@ -82,6 +85,9 @@ class Release(models.Model):
     user = models.ForeignKey(User, null=True)
 
     version = models.CharField(max_length=512)
+
+    class Meta:
+        ordering = ['-version']
 
     @property
     def description_html(self):
