@@ -140,6 +140,7 @@ INSTALLED_APPS = [
     'djkombu',
     'djcelery',
     'south',
+    'gunicorn',
 
     'localshop',
     'localshop.apps.packages',
