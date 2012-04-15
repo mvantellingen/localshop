@@ -16,6 +16,7 @@
             <td><a href="{{ release.package.get_absolute_url }}">{{ release.package.name }}</a></td>
             <td>{{ release.version }}</td>
             <td>{{ release.user }}</td>
+            <td>{{ release.created }}</td>
         </tr>
         {% endfor %}
     </tbody>
