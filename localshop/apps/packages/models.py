@@ -4,11 +4,13 @@ import docutils.core
 from django.contrib.auth.models import User
 from django.db import models
 from django.core.urlresolvers import reverse
+from django.utils.html import escape
 from model_utils import Choices
 from model_utils.fields import AutoCreatedField, AutoLastModifiedField
 
 from localshop.apps.packages.utils import OverwriteStorage
 
+from docutils.utils import SystemMessage
 
 class Classifier(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -83,9 +85,13 @@ class Release(models.Model):
 
     @property
     def description_html(self):
-        parts = docutils.core.publish_parts(
-            self.description, writer_name='html4css1')
-        return parts['fragment']
+        try:
+            parts = docutils.core.publish_parts(
+                self.description, writer_name='html4css1')
+            return parts['fragment']
+        except SystemMessage:
+            desc = escape(self.description)
+            return '<pre>%s</pre>' % desc
 
 
 def release_file_upload_to(instance, filename):
