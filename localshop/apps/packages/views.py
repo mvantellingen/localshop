@@ -1,6 +1,7 @@
 import base64
 import logging
 
+from django.conf import settings
 from django.contrib.auth import authenticate
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404, HttpResponse, HttpResponseBadRequest
@@ -19,6 +20,8 @@ from localshop.apps.packages.pypi import get_package_data
 from localshop.apps.packages.utils import parse_distutils_request, validate_client
 
 logger = logging.getLogger(__name__)
+
+basic_realm = getattr(settings, 'BASIC_AUTH_REALM', 'pypi')
 
 
 @validate_client
@@ -45,6 +48,7 @@ class SimpleIndex(ListView):
         if not auth:
             response = HttpResponse('Missing auth header')
             response.status_code = 401
+            response['WWW-Authenticate'] = 'Basic realm="%s"' % basic_realm
             return response
         method, identity = auth.split()
         username, password = base64.decodestring(identity).split(':')
