@@ -88,6 +88,6 @@ setup(
         'Intended Audience :: Developers',
         'Intended Audience :: System Administrators',
         'Operating System :: OS Independent',
-        'Topic :: Software Development'
+        'Topic :: Software Development',
     ],
 )
