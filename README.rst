@@ -5,8 +5,6 @@ A pypi server which automatically proxies and mirrors pypi packages based
 upon packages requested. It also supports the uploading of local (private) 
 packages.
 
-Note that this is currently really, really alpha :-)
-
 
 Getting started
 ===============
