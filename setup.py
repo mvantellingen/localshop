@@ -62,7 +62,7 @@ class RunTests(Command):
 
 setup(
     name='localshop',
-    version='0.3-dev',
+    version='0.3',
     author='Michael van Tellingen',
     author_email='michaelvantellingen@gmail.com',
     url='http://github.com/mvantellingen/localshop',
@@ -82,7 +82,7 @@ setup(
         ]
     },
     classifiers=[
-        'Development Status :: 3 - Alpha',
+        'Development Status :: 4 - Beta',
         'Framework :: Django',
         'Intended Audience :: Developers',
         'Intended Audience :: System Administrators',
