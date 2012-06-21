@@ -11,7 +11,7 @@ install_requires = [
     'Django>=1.4',
     'django-kombu==0.9.4',
     'eventlet>=0.9.15',
-    'kombu>=1.5.1',
+    'kombu>=1.5.1,<2.2.0',
     'logan>=0.2.1',
     'gunicorn>=0.13.4',
     'python-daemon>=1.6',
