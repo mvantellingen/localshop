@@ -1,4 +1,4 @@
-#!/bin/sh
+#!/bin/bash
 
 INDEX_URL="{{ index_url }}"
 
@@ -12,7 +12,7 @@ export PIP_INDEX_URL=$INDEX_URL
 
 write_pipconf () {
     echo "Writing pip.conf file to ~/.pip/pip.conf"
-    mkdir ~/.pip
+    mkdir -p ~/.pip
     echo "[global]
 index-url = $INDEX_URL
 " > ~/.pip/pip.conf
@@ -27,7 +27,7 @@ index_url = $INDEX_URL
 
 write_buildoutconf () {
     echo "Writing buildout.cfg file to ~/.buildout/default.cfg"
-    mkdir ~/.buildout
+    mkdir -p ~/.buildout
     echo "[buildout]
 index = $INDEX_URL
 " > ~/.buildout/default.cfg
