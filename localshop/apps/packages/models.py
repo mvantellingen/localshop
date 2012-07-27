@@ -89,6 +89,9 @@ class Release(models.Model):
     class Meta:
         ordering = ['-version']
 
+    def __unicode__(self):
+        return self.version
+
     @property
     def description_html(self):
         try:
@@ -147,6 +150,9 @@ class ReleaseFile(models.Model):
 
     class Meta:
         unique_together = ('release', 'filetype', 'python_version', 'filename')
+
+    def __unicode__(self):
+        return self.filename
 
     def get_absolute_url(self):
         url = reverse('packages:download', kwargs={
