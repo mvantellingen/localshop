@@ -9,6 +9,7 @@
         <form method="post" action="" class="form-horizontal">
             <fieldset>
                 {% include "partial/_form_field.html" with field=form.cidr%}
+                {% include "partial/_form_field.html" with field=form.label%}
             </fieldset>
 
             <div class="form-actions">

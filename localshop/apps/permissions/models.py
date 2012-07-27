@@ -11,9 +11,10 @@ class Manager(models.Manager):
 class CIDR(models.Model):
     cidr = models.CharField('CIDR', max_length=128, unique=True,
         help_text='IP addresses and/or subnet')
+    label = models.CharField('label', max_length=128, blank=True, null=True,
+        help_text='Human-readable name (optional)')
 
     objects = Manager()
 
     def __unicode__(self):
         return self.cidr
-
