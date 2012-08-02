@@ -1,23 +1,18 @@
 {% extends "layout.main.html" %}
 
 {% block content %}
-<div class="row">
-    <div class="span12">
+<h1>CIDR overview</h1>
 
-        <h1>CIDR overview</h1>
+<form method="post" action="" class="form-horizontal">
+    <fieldset>
+        {% include "partial/_form_field.html" with field=form.cidr%}
+        {% include "partial/_form_field.html" with field=form.label%}
+    </fieldset>
 
-        <form method="post" action="" class="form-horizontal">
-            <fieldset>
-                {% include "partial/_form_field.html" with field=form.cidr%}
-                {% include "partial/_form_field.html" with field=form.label%}
-            </fieldset>
-
-            <div class="form-actions">
-                <button type="submit" class="btn btn-primary"><span class="icon-ok icon-white"></span> Save</button>
-                <a href="{% url permissions:cidr_index %}" class="btn">Cancel</a>
-            </div>
-            {% csrf_token %}
-        </form>
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary"><span class="icon-ok icon-white"></span> Save</button>
+        <a href="{% url permissions:cidr_index %}" class="btn">Cancel</a>
     </div>
-</div>
+    {% csrf_token %}
+</form>
 {% endblock %}

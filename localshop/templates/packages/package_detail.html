@@ -12,7 +12,7 @@
     </ul>
     <div class="tab-content">
         <div class="tab-pane" id="description">
-            <div class="row-fluid">
+            <div class="row">
                 <div class="span9">
                     {{ release.description_html|safe }}
                 </div>
@@ -20,7 +20,7 @@
         </div>
         <div class="tab-pane active" id="information">
 
-            <div class="row-fluid">
+            <div class="row">
                 <div class="span7">
                     {% if package.is_local %}
                     <h2>Owners</h2>
@@ -72,7 +72,7 @@
                     {% endif %}
                 </div>
             </div>
-            <div class="row-fluid">
+            <div class="row">
                 <div class="span9">
                     <h2>Files</h2>
                     <table class="table table-striped">
