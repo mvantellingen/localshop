@@ -1,8 +1,7 @@
-import base64
 import logging
 
-from django.conf import settings
 from django.contrib.auth import authenticate
+from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.http import HttpResponseForbidden
@@ -12,16 +11,16 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
-from localshop.utils import permission_required
+from localshop.http import HttpResponseUnauthorized
+from localshop.views import LoginRequiredMixin, PermissionRequiredMixin
 from localshop.apps.packages import forms
 from localshop.apps.packages import models
 from localshop.apps.packages import tasks
 from localshop.apps.packages.pypi import get_package_data
 from localshop.apps.packages.utils import parse_distutils_request, validate_client
+from localshop.apps.permissions.utils import split_auth, decode_credentials
 
 logger = logging.getLogger(__name__)
-
-basic_realm = getattr(settings, 'BASIC_AUTH_REALM', 'pypi')
 
 
 @validate_client
@@ -44,19 +43,14 @@ class SimpleIndex(ListView):
         data, files = parse_distutils_request(request)
 
         # XXX: Auth is currently a bit of a hack
-        auth = request.META.get('HTTP_AUTHORIZATION')
-        if not auth:
-            response = HttpResponse('Missing auth header')
-            response.status_code = 401
-            response['WWW-Authenticate'] = 'Basic realm="%s"' % basic_realm
-            return response
-        method, identity = auth.split()
-        username, password = base64.decodestring(identity).split(':')
+        method, identity = split_auth(request)
+        if not method:
+            return HttpResponseUnauthorized('Missing auth header')
+
+        username, password = decode_credentials(identity)
         user = authenticate(username=username, password=password)
         if not user:
-            response = HttpResponse('Invalid username/password')
-            response.status_code = 401
-            return response
+            return HttpResponse('Invalid username/password', status=401)
 
         actions = {
             'submit': handle_register_or_upload,
@@ -101,18 +95,18 @@ class SimpleDetail(DetailView):
         return self.render_to_response(context)
 
 
-@permission_required('packages.view_package')
-class Index(ListView):
+class Index(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = models.Package
     context_object_name = 'packages'
+    permission_required = 'packages.view_package'
 
 
-@permission_required('packages.view_package')
-class Detail(DetailView):
+class Detail(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     model = models.Package
     context_object_name = 'package'
     slug_url_kwarg = 'name'
     slug_field = 'name'
+    permission_required = 'packages.view_package'
 
     def get_object(self, queryset=None):
         # Could be dropped when we use django 1.4
@@ -126,6 +120,7 @@ class Detail(DetailView):
 
 
 @permission_required('packages.change_package')
+@login_required
 def refresh(request, name):
     try:
         package = models.Package.objects.get(name__iexact=name)
@@ -152,6 +147,8 @@ def download_file(request, name, pk, filename):
         content_type='application/force-download')
     response['Content-Disposition'] = 'attachment; filename=%s' % (
         release_file.filename)
+    if release_file.distribution.file.size:
+        response["Content-Length"] = release_file.distribution.file.size
     return response
 
 

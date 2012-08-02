@@ -4,6 +4,6 @@ from localshop.apps.permissions import models
 
 
 class CidrAdmin(admin.ModelAdmin):
-    pass
-admin.site.register(models.CIDR, CidrAdmin)
+    list_display = ['cidr', 'label']
 
+admin.site.register(models.CIDR, CidrAdmin)

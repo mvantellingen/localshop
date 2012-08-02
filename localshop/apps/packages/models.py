@@ -12,6 +12,7 @@ from localshop.apps.packages.utils import OverwriteStorage
 
 from docutils.utils import SystemMessage
 
+
 class Classifier(models.Model):
     name = models.CharField(max_length=255, unique=True)
 
@@ -36,6 +37,9 @@ class Package(models.Model):
 
     class Meta:
         ordering = ['name']
+        permissions = (
+            ("view_package", "Can view package"),
+        )
 
     def __unicode__(self):
         return self.name
@@ -88,6 +92,9 @@ class Release(models.Model):
 
     class Meta:
         ordering = ['-version']
+
+    def __unicode__(self):
+        return self.version
 
     @property
     def description_html(self):
@@ -147,6 +154,9 @@ class ReleaseFile(models.Model):
 
     class Meta:
         unique_together = ('release', 'filetype', 'python_version', 'filename')
+
+    def __unicode__(self):
+        return self.filename
 
     def get_absolute_url(self):
         url = reverse('packages:download', kwargs={
