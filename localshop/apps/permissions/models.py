@@ -1,6 +1,14 @@
 import netaddr
 from django.db import models
+from django.contrib.auth.models import User
 
+try:
+    from django.utils.timezone import now
+except ImportError:
+    from datetime import datetime
+    now = datetime.now
+
+from uuidfield import UUIDField
 
 
 class CIDRManager(models.Manager):
@@ -23,4 +31,29 @@ class CIDR(models.Model):
     class Meta:
         permissions = (
             ("view_cidr", "Can view CIDR"),
+        )
+
+
+class CredentialManager(models.Manager):
+
+    def active(self):
+        return self.filter(deactivated__isnull=True)
+
+
+class Credential(models.Model):
+    access_key = UUIDField(verbose_name='Access key', help_text='The access key', auto=True, db_index=True)
+    secret_key = UUIDField(verbose_name='Secret key', help_text='The secret key', auto=True, db_index=True)
+    creator = models.ForeignKey(User)
+    created = models.DateTimeField(default=now)
+    deactivated = models.DateTimeField(blank=True, null=True)
+
+    objects = CredentialManager()
+
+    def __unicode__(self):
+        return self.access_key.hex
+
+    class Meta:
+        ordering = ['-created']
+        permissions = (
+            ("view_credential", "Can view credential"),
         )

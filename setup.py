@@ -20,6 +20,7 @@ install_requires = [
     'requests>=0.10',
     'netaddr==0.7.6',
     'docutils==0.8.1',
+    'django-uuidfield==0.4.0',
 ]
 
 readme = []

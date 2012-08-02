@@ -12,6 +12,7 @@ from localshop.apps.packages.utils import OverwriteStorage
 
 from docutils.utils import SystemMessage
 
+
 class Classifier(models.Model):
     name = models.CharField(max_length=255, unique=True)
 

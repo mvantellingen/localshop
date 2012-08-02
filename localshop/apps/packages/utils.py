@@ -1,5 +1,6 @@
 import inspect
 
+from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.core.files.uploadedfile import SimpleUploadedFile
 from django.http import HttpResponseForbidden
@@ -8,8 +9,9 @@ from django.utils.decorators import method_decorator
 from django.views.generic.base import View
 from django.views.decorators.csrf import csrf_exempt
 
-from localshop.conf import settings
 from localshop.apps.permissions.models import CIDR
+from localshop.apps.permissions.utils import (credentials_required,
+                                              credential_check_needed)
 
 
 class OverwriteStorage(FileSystemStorage):
@@ -31,9 +33,9 @@ class OverwriteStorage(FileSystemStorage):
 
 
 def validate_client(func):
-    """Only allow downloads from authenticted users or from remote ip's
-    which are listed in `LOCALSHOP_ALLOWED_REMOTE_IPS`
-
+    """
+    Only allow downloads from authenticted users or from remote ip's
+    that match one of the ones in the CIDR database.
     """
     if inspect.isclass(func) and issubclass(func, View):
         original_dispatch = func.dispatch
@@ -53,6 +55,9 @@ def validate_client(func):
         if CIDR.objects.has_access(request.META['REMOTE_ADDR']):
             return func(request, *args, **kwargs)
         return HttpResponseForbidden('No permission')
+
+    if credential_check_needed:
+        _wrapper = credentials_required(_wrapper)
     return _wrapper
 
 

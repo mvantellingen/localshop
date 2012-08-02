@@ -78,10 +78,12 @@
                     <table class="table table-striped">
                         <thead>
                             <tr>
-                                <th>filename</th>
-                                <th>type</th>
-                                <th>python version</th>
-                                <th>labels</th>
+                                <th>Filename</th>
+                                <th>Type</th>
+                                <th>MD5 digest</th>
+                                <th>Released</th>
+                                <th>Python</th>
+                                <th>Labels</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -90,6 +92,8 @@
                             <tr>
                                 <td><a href="{{ file.get_absolute_url }}">{{ file.filename }}</a></td>
                                 <td>{{ file.get_filetype_display }}</td>
+                                <td>{{ file.md5_digest }}</td>
+                                <td>{{ file.created }}</td>
                                 <td>{{ file.python_version }}</td>
                                 <td>
                                     {% if file.distribution %}
