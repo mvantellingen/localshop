@@ -2,7 +2,8 @@ import netaddr
 from django.db import models
 
 
-class Manager(models.Manager):
+
+class CIDRManager(models.Manager):
     def has_access(self, ip_addr):
         cidrs = [x['cidr'] for x in self.get_query_set().values('cidr')]
         return bool(netaddr.all_matching_cidrs(ip_addr, cidrs))
@@ -14,7 +15,12 @@ class CIDR(models.Model):
     label = models.CharField('label', max_length=128, blank=True, null=True,
         help_text='Human-readable name (optional)')
 
-    objects = Manager()
+    objects = CIDRManager()
 
     def __unicode__(self):
         return self.cidr
+
+    class Meta:
+        permissions = (
+            ("view_cidr", "Can view CIDR"),
+        )

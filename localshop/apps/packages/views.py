@@ -3,6 +3,7 @@ import logging
 
 from django.conf import settings
 from django.contrib.auth import authenticate
+from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.http import HttpResponseForbidden
@@ -12,7 +13,7 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
-from localshop.utils import permission_required
+from localshop.views import LoginRequiredMixin, PermissionRequiredMixin
 from localshop.apps.packages import forms
 from localshop.apps.packages import models
 from localshop.apps.packages import tasks
@@ -101,18 +102,18 @@ class SimpleDetail(DetailView):
         return self.render_to_response(context)
 
 
-@permission_required('packages.view_package')
-class Index(ListView):
+class Index(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = models.Package
     context_object_name = 'packages'
+    permission_required = 'packages.view_package'
 
 
-@permission_required('packages.view_package')
-class Detail(DetailView):
+class Detail(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     model = models.Package
     context_object_name = 'package'
     slug_url_kwarg = 'name'
     slug_field = 'name'
+    permission_required = 'packages.view_package'
 
     def get_object(self, queryset=None):
         # Could be dropped when we use django 1.4
@@ -126,6 +127,7 @@ class Detail(DetailView):
 
 
 @permission_required('packages.change_package')
+@login_required
 def refresh(request, name):
     try:
         package = models.Package.objects.get(name__iexact=name)

@@ -36,6 +36,9 @@ class Package(models.Model):
 
     class Meta:
         ordering = ['name']
+        permissions = (
+            ("view_package", "Can view package"),
+        )
 
     def __unicode__(self):
         return self.name
