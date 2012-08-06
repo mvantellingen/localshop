@@ -8,6 +8,7 @@ from django.core.files import File
 from celery.task import task
 
 from localshop.apps.packages import models
+from localshop.apps.packages.pypi import get_package_data
 
 
 @task
@@ -25,3 +26,12 @@ def download_file(pk):
     release_file.distribution.save(filename, File(tmp_file))
     release_file.save()
     logging.info("Complete")
+
+
+@task
+def update_packages():
+    logging.info('Updated packages')
+    for package in models.Package.objects.filter(is_local=False):
+        logging.info('Updating package %s', package.name)
+        get_package_data(package.name, package)
+    logging.info('Complete')
