@@ -67,4 +67,5 @@ def get_package_data(name, package=None):
             release_file.save()
 
     package.update_timestamp = datetime.datetime.utcnow()
+    package.save()
     return package
