@@ -52,6 +52,12 @@ MEDIA_ROOT = os.path.join(ROOT, 'files')
 LOCALSHOP_WEB_HOST = '0.0.0.0'
 LOCALSHOP_WEB_PORT = {web_port:d}
 
+# Additional options to be passed to celeryd (only applicable when using supervisor)
+CELERYD_OPTS = '--loglevel=INFO'
+
+# Additional options to be passed to gunicorn (only applicable when using supervisor)
+GUNICORN_OPTS = '--workers=2'
+
 LOG_DIR = {log_dir}
 RUN_DIR = {run_dir}
 
