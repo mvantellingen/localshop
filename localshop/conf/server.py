@@ -1,5 +1,7 @@
 import os
 
+from celery.schedules import crontab
+
 import djcelery
 djcelery.setup_loader()
 
@@ -127,6 +129,15 @@ TEMPLATE_DIRS = (
 
 BROKER_URL = "django://"
 
+CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+
+CELERYBEAT_SCHEDULE = {
+    # Executes every day at 1:00 AM
+    'every-day-1am': {
+        'task': 'localshop.apps.packages.tasks.update_packages',
+        'schedule': crontab(hour=1, minute=0),
+    },
+}
 
 INSTALLED_APPS = [
     'django.contrib.auth',
@@ -141,6 +152,7 @@ INSTALLED_APPS = [
     'djcelery',
     'south',
     'gunicorn',
+    'djsupervisor',
 
     'localshop',
     'localshop.apps.packages',

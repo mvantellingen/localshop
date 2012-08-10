@@ -17,6 +17,7 @@ install_requires = [
     'python-daemon>=1.6',
     'django-celery',
     'django-model-utils>=1.0',
+    'django-supervisor>=0.2.7',
     'requests>=0.10',
     'netaddr==0.7.6',
     'docutils==0.8.1',

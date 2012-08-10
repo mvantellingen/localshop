@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.decorators import login_required
+from django.core.urlresolvers import reverse
 from django.http import HttpResponseRedirect, Http404, HttpResponseNotModified, \
      HttpResponse
 from django.template.response import TemplateResponse
@@ -75,3 +76,9 @@ def static_media(request, path, root=None):
     return response
 
 
+def setup_download(request):
+    index_url = request.build_absolute_uri(reverse('packages-simple:simple_index'))
+
+    return TemplateResponse(request, 'localshop.sh', {
+        'index_url': index_url,
+    }, content_type='application/x-sh')

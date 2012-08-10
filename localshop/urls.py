@@ -22,6 +22,9 @@ urlpatterns = patterns('',
 
     url(r'^_static/(?P<path>.*)$', 'localshop.views.static_media',
         name='static'),
+
+    url(r'^localshop\.sh$', 'localshop.views.setup_download',
+        name='setup_download'),
 )
 
 urlpatterns += staticfiles_urlpatterns()
