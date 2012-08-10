@@ -15,7 +15,7 @@ from localshop.apps.packages.pypi import get_package_data
 def download_file(pk):
     release_file = models.ReleaseFile.objects.get(pk=pk)
     logging.info("Downloading %s", release_file.url)
-    response = requests.get(release_file.url)
+    response = requests.get(release_file.url, prefetch=False)
 
     # Store the content in a temporary file
     tmp_file = NamedTemporaryFile()
