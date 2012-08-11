@@ -2,13 +2,9 @@ import netaddr
 from django.db import models
 from django.contrib.auth.models import User
 
-try:
-    from django.utils.timezone import now
-except ImportError:
-    from datetime import datetime
-    now = datetime.now
-
 from uuidfield import UUIDField
+
+from localshop.utils import now
 
 
 class CIDRManager(models.Manager):

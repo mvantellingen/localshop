@@ -12,7 +12,7 @@ from django.views.generic import ListView, CreateView
 from django.views.generic import UpdateView, DetailView, DeleteView
 
 from localshop.views import LoginRequiredMixin, PermissionRequiredMixin
-from localshop.utils import clean_redirect_url
+from localshop.utils import clean_redirect_url, now
 from localshop.apps.permissions import models
 from localshop.apps.permissions.forms import LoginForm, UserForm
 
@@ -181,6 +181,6 @@ def deactivate_credential(request, access_key):
     credential = get_object_or_404(models.Credential,
                                    creator=request.user,
                                    access_key=access_key)
-    credential.deactivated = models.now()
+    credential.deactivated = now()
     credential.save()
     return redirect('permissions:credential_index')
