@@ -1,8 +1,11 @@
 import inspect
+import logging
+import os
 
-from django.conf import settings
 from django.core.files.storage import FileSystemStorage
 from django.core.files.uploadedfile import SimpleUploadedFile
+from django.db.models import FieldDoesNotExist
+from django.db.models.fields.files import FileField
 from django.http import HttpResponseForbidden
 from django.utils.datastructures import MultiValueDict
 from django.utils.decorators import method_decorator
@@ -12,6 +15,8 @@ from django.views.decorators.csrf import csrf_exempt
 from localshop.apps.permissions.models import CIDR
 from localshop.apps.permissions.utils import (credentials_required,
                                               credential_check_needed)
+
+logger = logging.getLogger(__name__)
 
 
 class OverwriteStorage(FileSystemStorage):
@@ -104,3 +109,27 @@ def parse_distutils_request(request):
 
     return MultiValueDict(post_data), MultiValueDict(files)
 
+
+def delete_files(sender, **kwargs):
+    """
+    Signal callback for deleting old files when database item is deleted, too.
+    """
+    for fieldname in sender._meta.get_all_field_names():
+        try:
+            field = sender._meta.get_field(fieldname)
+        except FieldDoesNotExist:
+            continue
+
+        if isinstance(field, FileField):
+            instance = kwargs['instance']
+            fieldfile = getattr(instance, fieldname)
+            if (hasattr(fieldfile, 'path') and os.path.exists(fieldfile.path)
+                    and not instance.__class__._default_manager.filter(**{
+                        '%s__exact' % fieldname: getattr(instance, fieldname),
+                    }).exclude(pk=instance._get_pk_val())):
+                try:
+                    field.storage.delete(fieldfile.path)
+                except Exception:
+                    logger.exception('Error when trying to delete file %s of '
+                                     'package %s:' % (instance.pk,
+                                                      fieldfile.path))

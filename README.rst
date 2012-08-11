@@ -123,3 +123,17 @@ So for example::
 
 In case you ever think a credential has been compromised you can disable it
 or delete it on the credential page.
+
+Settings
+========
+
+There are a few settings to set in ``~/.localshop/localshop.conf.py`` that
+change the behaviour of the localshop.
+
+``LOCALSHOP_DELETE_FILES``
+--------------------------
+
+:default: ``False``
+
+If set to ``True`` files will be cleaned up after deleting a package or
+release from the localshop.
