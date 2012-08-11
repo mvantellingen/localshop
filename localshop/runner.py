@@ -1,4 +1,5 @@
 from logan.runner import run_app
+from django.utils.crypto import get_random_string
 
 
 def generate_settings():
@@ -42,8 +43,12 @@ STATIC_ROOT = os.path.join(ROOT, 'assets')
 #     'localshop.apps.permissions.backend.CredentialBackend',
 # ]
 
+SECRET_KEY = '%(secret_key)s'
+
     """
-    return CONFIG_TEMPLATE
+    chars = 'abcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*(-_=+)'
+    values = {'secret_key': get_random_string(50, chars)}
+    return CONFIG_TEMPLATE % values
 
 
 def main():
