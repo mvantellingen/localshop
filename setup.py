@@ -13,7 +13,7 @@ install_requires = [
     'kombu>=2.3.2',
     'gunicorn>=0.13.4',
     'celery=>3.0.5,<3.1',
-    'django-celery>=3.0.4,3.1',
+    'django-celery>=3.0.4,<3.1',
     'django-model-utils>=1.0',
     'requests>=0.10',
     'netaddr==0.7.6',
