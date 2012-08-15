@@ -80,6 +80,9 @@ class SimpleDetail(DetailView):
         except ObjectDoesNotExist:
             package = get_package_data(slug)
 
+        if package is None:
+            raise Http404
+
         releases = package.releases
         if version:
             releases = releases.filter(version=version)
