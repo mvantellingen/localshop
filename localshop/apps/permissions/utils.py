@@ -40,7 +40,7 @@ def credentials_required(view_func):
                 login(request, user)
                 return view_func(request, *args, **kwargs)
 
-        return HttpResponseUnauthorized('Authorization Required')
+        return HttpResponseUnauthorized(content='Authorization Required')
     return decorator
 
 

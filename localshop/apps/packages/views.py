@@ -45,7 +45,7 @@ class SimpleIndex(ListView):
         # XXX: Auth is currently a bit of a hack
         method, identity = split_auth(request)
         if not method:
-            return HttpResponseUnauthorized('Missing auth header')
+            return HttpResponseUnauthorized(content='Missing auth header')
 
         username, password = decode_credentials(identity)
         user = authenticate(username=username, password=password)
