@@ -40,7 +40,7 @@ class SimpleIndex(ListView):
         return super(SimpleIndex, self).dispatch(request, *args, **kwargs)
 
     def post(self, request):
-        data, files = parse_distutils_request(request)
+        parse_distutils_request(request)
 
         # XXX: Auth is currently a bit of a hack
         method, identity = split_auth(request)
@@ -57,10 +57,10 @@ class SimpleIndex(ListView):
             'file_upload': handle_register_or_upload,
         }
 
-        handler = actions.get(data.get(':action'))
+        handler = actions.get(request.POST.get(':action'))
         if not handler:
             raise Http404('Unknown action')
-        return handler(data, files, user)
+        return handler(request.POST, request.FILES, user)
 
 
 @validate_client

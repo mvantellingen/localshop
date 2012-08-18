@@ -3,10 +3,10 @@ import logging
 import os
 
 from django.core.files.storage import FileSystemStorage
-from django.core.files.uploadedfile import SimpleUploadedFile
+from django.core.files.uploadedfile import TemporaryUploadedFile
 from django.db.models import FieldDoesNotExist
 from django.db.models.fields.files import FileField
-from django.http import HttpResponseForbidden
+from django.http import QueryDict, HttpResponseForbidden
 from django.utils.datastructures import MultiValueDict
 from django.utils.decorators import method_decorator
 from django.views.generic.base import View
@@ -73,41 +73,62 @@ def parse_distutils_request(request):
     This method is taken from the chishop source.
 
     """
-    raw_post_data = request.raw_post_data
-    sep = raw_post_data.splitlines()[1]
-    items = raw_post_data.split(sep)
-    post_data = {}
-    files = {}
-    for part in filter(lambda e: not e.isspace(), items):
-        item = part.splitlines()
-        if len(item) < 2:
+
+    try:
+        sep = request.raw_post_data.splitlines()[1]
+    except:
+        raise ValueError('Invalid post data')
+
+    request.POST = QueryDict('', mutable=True)
+    try:
+        request._files = MultiValueDict()
+    except Exception:
+        pass
+    for part in filter(lambda e: e.strip(), request.raw_post_data.split(sep)):
+        try:
+            header, content = part.lstrip().split('\n', 1)
+        except Exception:
             continue
-        header = item[1].replace("Content-Disposition: form-data; ", "")
-        kvpairs = header.split(";")
-        headers = {}
-        for kvpair in kvpairs:
-            if not kvpair:
-                continue
-            key, value = kvpair.split("=")
-            headers[key] = value.strip('"')
+
+        if content.startswith('\n'):
+            content = content[1:]
+
+        if content.endswith('\n'):
+            content = content[:-1]
+
+        headers = parse_header(header)
+
         if "name" not in headers:
             continue
-        content = part[len("\n".join(item[0:2])) + 2:len(part) - 1]
-        if "filename" in headers:
-            file = SimpleUploadedFile(headers["filename"], content,
-                    content_type="application/gzip")
-            files["distribution"] = [file]
-        elif headers["name"] in post_data:
-            post_data[headers["name"]].append(content)
+
+        if "filename" in headers and headers['name'] == 'content':
+            dist = TemporaryUploadedFile(name=headers["filename"],
+                                         size=len(content),
+                                         content_type="application/gzip",
+                                         charset='utf-8')
+            dist.write(content)
+            dist.seek(0)
+            request.FILES.appendlist('distribution', dist)
         else:
             # Distutils sends UNKNOWN for empty fields (e.g platform)
             # [russell.sim@gmail.com]
             if content == 'UNKNOWN':
-                post_data[headers["name"]] = [None]
-            else:
-                post_data[headers["name"]] = [content]
+                content = None
+            request.POST.appendlist(headers["name"], content)
 
-    return MultiValueDict(post_data), MultiValueDict(files)
+
+def parse_header(header):
+    headers = {}
+    for kvpair in filter(lambda p: p,
+                         map(lambda p: p.strip(),
+                             header.split(';'))):
+        try:
+            key, value = kvpair.split("=", 1)
+        except ValueError:
+            continue
+        headers[key.strip()] = value.strip('"')
+
+    return headers
 
 
 def delete_files(sender, **kwargs):
