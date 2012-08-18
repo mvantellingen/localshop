@@ -11,3 +11,5 @@ RUN_DIR = os.path.join(ROOT, 'run')
 # Web Service
 WEB_HOST = 'localhost'
 WEB_PORT = 8900
+
+DELETE_FILES = False

@@ -1,16 +1,19 @@
 import os
-
 import docutils.core
+from docutils.utils import SystemMessage
+
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models.signals import post_delete
 from django.core.urlresolvers import reverse
 from django.utils.html import escape
+
 from model_utils import Choices
 from model_utils.fields import AutoCreatedField, AutoLastModifiedField
 
-from localshop.apps.packages.utils import OverwriteStorage
+from localshop.apps.packages.utils import OverwriteStorage, delete_files
+from localshop.conf import settings
 
-from docutils.utils import SystemMessage
 
 class Classifier(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -36,6 +39,9 @@ class Package(models.Model):
 
     class Meta:
         ordering = ['name']
+        permissions = (
+            ("view_package", "Can view package"),
+        )
 
     def __unicode__(self):
         return self.name
@@ -88,6 +94,9 @@ class Release(models.Model):
 
     class Meta:
         ordering = ['-version']
+
+    def __unicode__(self):
+        return self.version
 
     @property
     def description_html(self):
@@ -148,9 +157,17 @@ class ReleaseFile(models.Model):
     class Meta:
         unique_together = ('release', 'filetype', 'python_version', 'filename')
 
+    def __unicode__(self):
+        return self.filename
+
     def get_absolute_url(self):
         url = reverse('packages:download', kwargs={
             'name': self.release.package.name,
             'pk': self.pk, 'filename': self.filename
         })
         return '%s#md5=%s' % (url, self.md5_digest)
+
+
+if settings.DELETE_FILES:
+    post_delete.connect(delete_files, sender=ReleaseFile,
+                        dispatch_uid="localshop.apps.packages.utils.delete_files")

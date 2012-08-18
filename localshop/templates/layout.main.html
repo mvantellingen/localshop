@@ -11,11 +11,18 @@
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Permissions <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="{% url permissions:cidr_index %}">CIDR Access</a></li>
+                            <li><a href="{% url permissions:cidr_index %}">CIDRs</a></li>
+                            <li><a href="{% url permissions:credential_index %}">Credentials</a></li>
                         </ul>
                     </li>
                 </ul>
-                <p class="navbar-text pull-right">Logged in as {{ user }} | <a href="{% url permissions:logout %}">logout</a></p>
+                <p class="navbar-text pull-right">
+                {% if user.is_authenticated %}
+                    Logged in as {{ user }} | <a href="{% url permissions:logout %}">logout</a>
+                {% else %}
+                    <a href="{% url permissions:login %}">Login</a>
+                {% endif %}
+                </p>
             </div>
         </div>
     </div>
@@ -23,16 +30,17 @@
 
 
 <div class="container-fluid">
-    <div class="row-fluid">
+    <div class="row">
         <div class="span3">
             <div class="well sidebar-nav">
+                {% if sidebar %}
                 <ul class="nav nav-list">
-                    <li class="nav-header">Local packages</li>
-                    {% for pkg in sidebar.local %}
-                    <li><a href="{{ pkg.get_absolute_url }}">{{ pkg }}</a></li>
-                    {% endfor %}
-
+                        <li class="nav-header">Local packages</li>
+                        {% for pkg in sidebar.local %}
+                        <li><a href="{{ pkg.get_absolute_url }}">{{ pkg }}</a></li>
+                        {% endfor %}
                 </ul>
+                {% endif %}
             </div>
         </div>
         <div class="span9">
