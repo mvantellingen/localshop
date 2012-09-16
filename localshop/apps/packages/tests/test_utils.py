@@ -66,7 +66,8 @@ class TestParseDistutilsRequest(TestCase):
         )
         request = Mock()
         request.raw_post_data = data
-        post, files = parse_distutils_request(request)
+        request.FILES = MultiValueDict()
+        parse_distutils_request(request)
 
         expected_post = MultiValueDict({
             'name': ['localshop'],
@@ -93,5 +94,5 @@ class TestParseDistutilsRequest(TestCase):
         })
         expected_files = MultiValueDict()
 
-        self.assertEqual(post, expected_post)
-        self.assertEqual(files, expected_files)
+        self.assertEqual(request.POST, expected_post)
+        self.assertEqual(request.FILES, expected_files)

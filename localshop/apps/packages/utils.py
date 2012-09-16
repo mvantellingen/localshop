@@ -67,10 +67,8 @@ def validate_client(func):
 
 
 def parse_distutils_request(request):
-    """Parse the `request.raw_post_data` and return a `MultiValueDict`
-    for the POST data and the FILES data.
-
-    This method is taken from the chishop source.
+    """Parse the `request.raw_post_data` and update the request POST and FILES
+    attributes .
 
     """
 
@@ -84,6 +82,7 @@ def parse_distutils_request(request):
         request._files = MultiValueDict()
     except Exception:
         pass
+
     for part in filter(lambda e: e.strip(), request.raw_post_data.split(sep)):
         try:
             header, content = part.lstrip().split('\n', 1)
