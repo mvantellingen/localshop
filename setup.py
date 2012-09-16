@@ -73,7 +73,7 @@ setup(
     zip_safe=False,
     install_requires=install_requires,
     tests_requires=tests_requires,
-    extras_requiresA={'test': tests_requires},
+    extras_requires={'test': tests_requires},
     cmdclass={"test": RunTests},
     license='BSD',
     include_package_data=True,
