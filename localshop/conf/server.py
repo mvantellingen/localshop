@@ -122,7 +122,7 @@ TEMPLATE_DIRS = (
 
 # Test settings
 TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
-NOSE_ARGS = ['--logging-clear-handlers', '--cover-package=cabana']
+NOSE_ARGS = ['--logging-clear-handlers', '--cover-package=localshop']
 
 INSTALLED_APPS = [
     'django.contrib.auth',
