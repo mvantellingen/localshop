@@ -89,8 +89,7 @@ localshop can create for you.
 Just add (or comment out) the following section in your
 ``localshop.conf.py``::
 
-    AUTHENTICATION_BACKENDS = [
-        'django.contrib.auth.backends.ModelBackend',
+    AUTHENTICATION_BACKENDS += [
         'localshop.apps.permissions.backend.CredentialBackend',
     ]
 
