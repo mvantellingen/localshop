@@ -1,0 +1,30 @@
+{% extends 'layout.main.html' %}
+
+{% load i18n %}
+{% load url from future %}
+
+
+{% block title %}{% trans "Change password" %}{% endblock %}
+
+
+{% block content %}
+<h1>Update profile of {{ user }}</h1>
+<form action="" method="post" class="form form-horizontal">
+
+    <fieldset>
+        <legend>{% trans "Profile information" %}</legend>
+        {% include "partial/_form_field.html" with field=form.first_name %}
+        {% include "partial/_form_field.html" with field=form.last_name %}
+        {% include "partial/_form_field.html" with field=form.mugshot %}
+        {% include "partial/_form_field.html" with field=form.privacy %}
+        {% csrf_token %}
+    </fieldset>
+
+    <div class="form-actions">
+    <input type="submit" class="btn btn-primary" value="{% trans "Save changes" %}">
+    </div>
+</form>
+{% endblock %}
+
+
+

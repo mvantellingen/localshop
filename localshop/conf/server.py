@@ -8,7 +8,7 @@ djcelery.setup_loader()
 # Django settings for localshop project.
 PROJECT_ROOT = os.path.join(os.path.dirname(__file__), os.pardir)
 
-DEBUG = False
+DEBUG = True
 TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
@@ -41,7 +41,6 @@ TIME_ZONE = 'Europe/Amsterdam'
 # http://www.i18nguy.com/unicode/language-identifiers.html
 LANGUAGE_CODE = 'en-us'
 
-SITE_ID = 1
 
 # If you set this to False, Django will make some optimizations so as not
 # to load the internationalization machinery.
@@ -54,7 +53,8 @@ USE_L10N = True
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
 
-LOGIN_URL = '/permissions/login/'
+SITE_ID = 1
+
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
@@ -120,17 +120,6 @@ TEMPLATE_DIRS = (
     os.path.join(PROJECT_ROOT, 'templates'),
 )
 
-BROKER_URL = "django://"
-
-CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
-
-CELERYBEAT_SCHEDULE = {
-    # Executes every day at 1:00 AM
-    'every-day-1am': {
-        'task': 'localshop.apps.packages.tasks.update_packages',
-        'schedule': crontab(hour=1, minute=0),
-    },
-}
 
 INSTALLED_APPS = [
     'django.contrib.auth',
@@ -145,11 +134,28 @@ INSTALLED_APPS = [
     'djcelery',
     'south',
     'gunicorn',
+    'userena',
+    'guardian',
 
     'localshop',
     'localshop.apps.packages',
     'localshop.apps.permissions',
 ]
+
+# Auth settings
+AUTHENTICATION_BACKENDS = (
+    'userena.backends.UserenaAuthenticationBackend',
+    'guardian.backends.ObjectPermissionBackend',
+    'django.contrib.auth.backends.ModelBackend',
+)
+
+AUTH_PROFILE_MODULE = 'permissions.AuthProfile'
+LOGIN_URL = '/accounts/signin/'
+LOGIN_REDIRECT_URL = '/accounts/%(username)s/'
+LOGOUT_URL = '/accounts/signout'
+USERENA_MUGSHOT_GRAVATAR = True
+USERENA_MUGSHOT_SIZE = 20
+ANONYMOUS_USER_ID = -1
 
 
 # A sample logging configuration. The only tangible logging
@@ -177,3 +183,17 @@ LOGGING = {
         },
     },
 }
+
+# Celery settings
+BROKER_URL = "django://"
+
+CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
+
+CELERYBEAT_SCHEDULE = {
+    # Executes every day at 1:00 AM
+    'every-day-1am': {
+        'task': 'localshop.apps.packages.tasks.update_packages',
+        'schedule': crontab(hour=1, minute=0),
+    },
+}
+

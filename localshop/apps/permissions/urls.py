@@ -4,9 +4,6 @@ from localshop.apps.permissions import views
 
 
 urlpatterns = patterns('',
-    url(r'^login/$', views.login, name='login'),
-    url(r'^logout$', views.logout, name='logout'),
-
     url('^users$', views.UserListView.as_view(), name='user_index'),
 
     url(r'^users/(?P<pk>\d+)$',

@@ -7,7 +7,7 @@ tests_require = [
 ]
 
 install_requires = [
-    'South',
+    'South>=0.7.6',
     'Django>=1.4',
     'eventlet>=0.9.15',
     'kombu>=2.3.2',
@@ -19,6 +19,8 @@ install_requires = [
     'netaddr==0.7.6',
     'docutils==0.8.1',
     'django-uuidfield==0.4.0',
+    'django-userena==1.1.2',
+    'Pillow==1.7.7',
 ]
 
 readme = []
