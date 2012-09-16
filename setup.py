@@ -19,7 +19,7 @@ install_requires = [
     'Pillow==1.7.7',
 ]
 
-tests_requires = install_requires + [
+tests_requires = [
     'mock',
     'django-nose',
 ]
@@ -34,24 +34,30 @@ class RunTests(Command):
     description = "Run the django test suite from the tests dir."
     user_options = []
     extra_env = {}
-    extra_args = ['packages']
 
     def run(self):
+        if self.distribution.install_requires:
+            self.distribution.fetch_build_eggs(
+                self.distribution.install_requires)
+        if self.distribution.tests_require:
+            self.distribution.fetch_build_eggs(self.distribution.tests_require)
+
         for env_name, env_value in self.extra_env.items():
             os.environ[env_name] = str(env_value)
 
         this_dir = os.getcwd()
-        testproj_dir = os.path.join(this_dir, "localshop")
+        testproj_dir = os.path.join(this_dir, 'localshop')
         os.chdir(testproj_dir)
         sys.path.append(testproj_dir)
+
         from django.core.management import execute_manager
-        os.environ["DJANGO_SETTINGS_MODULE"] = os.environ.get(
-                        "DJANGO_SETTINGS_MODULE", "localshop.conf.server")
-        settings_file = os.environ["DJANGO_SETTINGS_MODULE"]
+        os.environ['DJANGO_SETTINGS_MODULE'] = os.environ.get(
+            'DJANGO_SETTINGS_MODULE', 'localshop.conf.server')
+        settings_file = os.environ['DJANGO_SETTINGS_MODULE']
         settings_mod = __import__(settings_file, {}, {}, [''])
         prev_argv = list(sys.argv)
         try:
-            sys.argv = [__file__, "test"] + self.extra_args
+            sys.argv = [__file__, 'test']
             execute_manager(settings_mod, argv=sys.argv)
         finally:
             sys.argv = prev_argv
