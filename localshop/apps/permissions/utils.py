@@ -44,4 +44,7 @@ def credentials_required(view_func):
     return decorator
 
 
-credential_check_needed = 'localshop.apps.permissions.backend.CredentialBackend' in settings.AUTHENTICATION_BACKENDS
+credential_check_needed = (
+    'localshop.apps.permissions.backend.CredentialBackend' in
+    settings.AUTHENTICATION_BACKENDS
+)

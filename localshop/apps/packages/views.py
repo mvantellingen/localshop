@@ -17,7 +17,8 @@ from localshop.apps.packages import forms
 from localshop.apps.packages import models
 from localshop.apps.packages import tasks
 from localshop.apps.packages.pypi import get_package_data
-from localshop.apps.packages.utils import parse_distutils_request, validate_client
+from localshop.apps.packages.utils import parse_distutils_request
+from localshop.apps.packages.utils import validate_client
 from localshop.apps.permissions.utils import split_auth, decode_credentials
 
 logger = logging.getLogger(__name__)

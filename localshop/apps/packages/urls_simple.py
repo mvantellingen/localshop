@@ -8,4 +8,3 @@ urlpatterns = patterns('',
     url('^(?P<slug>[^/]+)/(?P<version>.*?)$', views.SimpleDetail.as_view(),
         name='simple_detail')
 )
-
