@@ -4,16 +4,16 @@ from setuptools import setup, find_packages, Command
 
 
 tests_require = [
+    'mock',
 ]
 
 install_requires = [
     'South>=0.7.6',
     'Django>=1.4',
     'eventlet>=0.9.15',
-    'kombu>=2.3.2',
+    'django-kombu==0.9.4',
     'gunicorn>=0.13.4',
-    'celery<3.1',
-    'django-celery<3.1',
+    'django-celery==3.0.9',
     'django-model-utils>=1.0',
     'requests>=0.10',
     'netaddr==0.7.6',
