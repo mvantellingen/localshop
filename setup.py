@@ -3,10 +3,6 @@ import sys
 from setuptools import setup, find_packages, Command
 
 
-tests_require = [
-    'mock',
-]
-
 install_requires = [
     'South>=0.7.6',
     'Django>=1.4',
@@ -21,6 +17,10 @@ install_requires = [
     'django-uuidfield==0.4.0',
     'django-userena==1.1.2',
     'Pillow==1.7.7',
+]
+
+tests_requires = install_requires + [
+    'mock',
 ]
 
 readme = []
@@ -72,8 +72,8 @@ setup(
     packages=find_packages(),
     zip_safe=False,
     install_requires=install_requires,
-    tests_require=tests_require,
-    extras_require={'test': tests_require},
+    tests_requires=tests_requires,
+    extras_requiresA={'test': tests_requires},
     cmdclass={"test": RunTests},
     license='BSD',
     include_package_data=True,
