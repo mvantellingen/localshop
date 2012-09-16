@@ -22,6 +22,7 @@ install_requires = [
 tests_requires = [
     'mock==1.0b1',
     'django-nose==1.1',
+    'factory-boy==1.2.0',
 ]
 
 readme = []

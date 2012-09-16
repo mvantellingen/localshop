@@ -131,9 +131,7 @@ def parse_header(header):
 
 
 def delete_files(sender, **kwargs):
-    """
-    Signal callback for deleting old files when database item is deleted, too.
-    """
+    """Signal callback for deleting old files when database item is deleted"""
     for fieldname in sender._meta.get_all_field_names():
         try:
             field = sender._meta.get_field(fieldname)
@@ -143,13 +141,25 @@ def delete_files(sender, **kwargs):
         if isinstance(field, FileField):
             instance = kwargs['instance']
             fieldfile = getattr(instance, fieldname)
-            if (hasattr(fieldfile, 'path') and os.path.exists(fieldfile.path)
-                    and not instance.__class__._default_manager.filter(**{
-                        '%s__exact' % fieldname: getattr(instance, fieldname),
-                    }).exclude(pk=instance._get_pk_val())):
-                try:
-                    field.storage.delete(fieldfile.path)
-                except Exception:
-                    logger.exception('Error when trying to delete file %s of '
-                                     'package %s:' % (instance.pk,
-                                                      fieldfile.path))
+
+            if not hasattr(fieldfile, 'path'):
+                return
+
+            if not os.path.exists(fieldfile.path):
+                return
+
+            # Check if there are other instances which reference this fle
+            is_referenced = (
+                instance.__class__._default_manager
+                .filter(**{'%s__exact' % fieldname: fieldfile})
+                .exclude(pk=instance._get_pk_val())
+                .exists())
+            if is_referenced:
+                return
+
+            try:
+                field.storage.delete(fieldfile.path)
+            except Exception:
+                logger.exception(
+                    'Error when trying to delete file %s of package %s:' % (
+                        instance.pk, fieldfile.path))

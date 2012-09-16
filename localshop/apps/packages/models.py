@@ -1,10 +1,13 @@
 import os
 import docutils.core
 from docutils.utils import SystemMessage
+from shutil import copyfileobj
+from tempfile import NamedTemporaryFile
 
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import post_delete
+from django.core.files import File
 from django.core.urlresolvers import reverse
 from django.utils.html import escape
 
@@ -167,7 +170,13 @@ class ReleaseFile(models.Model):
         })
         return '%s#md5=%s' % (url, self.md5_digest)
 
+    def save_filecontent(self, filename, fh):
+        tmp_file = NamedTemporaryFile()
+        copyfileobj(fh, tmp_file)
+        self.distribution.save(filename, File(tmp_file))
+
 
 if settings.DELETE_FILES:
-    post_delete.connect(delete_files, sender=ReleaseFile,
-                        dispatch_uid="localshop.apps.packages.utils.delete_files")
+    post_delete.connect(
+        delete_files, sender=ReleaseFile,
+        dispatch_uid="localshop.apps.packages.utils.delete_files")
