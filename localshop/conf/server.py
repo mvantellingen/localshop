@@ -120,6 +120,9 @@ TEMPLATE_DIRS = (
     os.path.join(PROJECT_ROOT, 'templates'),
 )
 
+# Test settings
+TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+NOSE_ARGS = ['--logging-clear-handlers', '--cover-package=cabana']
 
 INSTALLED_APPS = [
     'django.contrib.auth',
@@ -136,6 +139,7 @@ INSTALLED_APPS = [
     'gunicorn',
     'userena',
     'guardian',
+    'django_nose',
 
     'localshop',
     'localshop.apps.packages',

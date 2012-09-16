@@ -21,6 +21,7 @@ install_requires = [
 
 tests_requires = install_requires + [
     'mock',
+    'django-nose',
 ]
 
 readme = []
