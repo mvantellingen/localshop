@@ -139,12 +139,18 @@ INSTALLED_APPS = [
     'gunicorn',
     'userena',
     'guardian',
-    'django_nose',
 
     'localshop',
     'localshop.apps.packages',
     'localshop.apps.permissions',
 ]
+
+import pkg_resources
+try:
+    pkg_resources.get_distribution('django_nose')
+    INSTALLED_APPS.append('django_nose')
+except pkg_resources.DistributionNotFound:
+    pass
 
 # Auth settings
 AUTHENTICATION_BACKENDS = (
