@@ -11,8 +11,6 @@ def generate_settings():
     CONFIG_TEMPLATE = """
 import os.path
 
-from localshop.conf.server import *
-
 ROOT = os.path.dirname(__file__)
 
 DATABASES = {
@@ -22,10 +20,6 @@ DATABASES = {
         # ``django.db.backends.postgresql_psycopg2``
         'ENGINE': 'django.db.backends.sqlite3',
         'NAME': os.path.join(ROOT, 'localshop.db'),
-        'USER': 'postgres',
-        'PASSWORD': '',
-        'HOST': '',
-        'PORT': '',
     }
 }
 
@@ -38,8 +32,7 @@ STATIC_URL = '/assets/'
 STATIC_ROOT = os.path.join(ROOT, 'assets')
 
 # Comment out the following lines to enable the optional credential system
-# AUTHENTICATION_BACKENDS = [
-#     'django.contrib.auth.backends.ModelBackend',
+#EXTRA_AUTHENTICATION_BACKENDS = [
 #     'localshop.apps.permissions.backend.CredentialBackend',
 # ]
 
@@ -55,7 +48,7 @@ def main():
     run_app(
         project='localshop',
         default_config_path='~/.localshop/localshop.conf.py',
-        default_settings='localshop.conf.defaults',
+        default_settings='localshop.conf.server',
         settings_initializer=generate_settings,
         settings_envvar='LOCALSHOP_CONF',
     )
