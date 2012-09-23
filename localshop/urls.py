@@ -9,7 +9,7 @@ static_prefix = re.escape(settings.STATIC_URL.lstrip('/'))
 
 
 urlpatterns = patterns('',
-    url(r'^$', 'localshop.views.frontpage', name='frontpage'),
+    url(r'^$', 'localshop.views.index', name='index'),
 
     url(r'^packages',
         include('localshop.apps.packages.urls', namespace='packages')),

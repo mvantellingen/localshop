@@ -1,15 +1,24 @@
+
 from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import ImproperlyConfigured
 from django.template.response import TemplateResponse
 from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 
 from localshop.apps.packages.models import Release, ReleaseFile
+from localshop.apps.packages import xmlrpc
+
+
+@csrf_exempt
+def index(request):
+    if request.method == 'POST':
+        return xmlrpc.handle_request(request)
+    return frontpage(request)
 
 
 @login_required
 def frontpage(request):
-
     recent_local = (Release.objects
         .filter(package__is_local=True)
         .order_by('-created')
