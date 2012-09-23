@@ -55,6 +55,7 @@ USE_TZ = True
 
 SITE_ID = 1
 
+APPEND_SLASH = False
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
@@ -166,7 +167,6 @@ LOGOUT_URL = '/accounts/signout'
 USERENA_MUGSHOT_GRAVATAR = True
 USERENA_MUGSHOT_SIZE = 20
 ANONYMOUS_USER_ID = -1
-
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to
