@@ -23,7 +23,7 @@ environment by issuing the following command::
 
 And then start it via::
 
-    localshop run_gunicorn
+    localshop run_gunicorn -b 0.0.0.0:8900
     localshop celeryd -B -E
 
 Celeryd is required to do the mirroring of the pypi packages once they 
@@ -31,7 +31,7 @@ are needed.
 
 Create an initial user via the following command::
 
-    localshop manage createsuperuser 
+    localshop createsuperuser 
 
 You can now visit http://localhost:8900/ and view all the packages in your
 localshop!
