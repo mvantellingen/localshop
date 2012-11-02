@@ -20,7 +20,7 @@ urlpatterns = patterns('',
     url(r'^permissions',
         include('localshop.apps.permissions.urls', namespace='permissions')),
 
-    url(r'^accounts', include('userena.urls')),
+    url(r'^accounts/', include('userena.urls')),
 
     url(r'^admin', include(admin.site.urls)),
 
