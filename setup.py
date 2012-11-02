@@ -4,19 +4,20 @@ from setuptools import setup, find_packages, Command
 
 
 install_requires = [
-    'South==0.7.6',
     'Django==1.4.1',
-    'eventlet==0.9.16',
+    'South==0.7.6',
+    'Pillow==1.7.7',
     'django-kombu==0.9.4',
-    'gunicorn==0.14.6',
     'django-celery==3.0.9',
     'django-model-utils==1.1.0',
-    'requests==0.14.0',
-    'netaddr==0.7.6',
-    'docutils==0.8.1',
-    'django-uuidfield==0.4.0',
     'django-userena==1.1.2',
-    'Pillow==1.7.7',
+    'django-uuidfield==0.4.0',
+    'docutils==0.8.1',
+    'eventlet==0.9.16',
+    'gunicorn==0.14.6',
+    'logan==0.5.0',
+    'netaddr==0.7.6',
+    'requests==0.14.0',
 ]
 
 tests_requires = [

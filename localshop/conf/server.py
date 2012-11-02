@@ -55,6 +55,7 @@ USE_TZ = True
 
 SITE_ID = 1
 
+APPEND_SLASH = False
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
@@ -139,12 +140,18 @@ INSTALLED_APPS = [
     'gunicorn',
     'userena',
     'guardian',
-    'django_nose',
 
     'localshop',
     'localshop.apps.packages',
     'localshop.apps.permissions',
 ]
+
+import pkg_resources
+try:
+    pkg_resources.get_distribution('django_nose')
+    INSTALLED_APPS.append('django_nose')
+except pkg_resources.DistributionNotFound:
+    pass
 
 # Auth settings
 AUTHENTICATION_BACKENDS = (
@@ -160,7 +167,6 @@ LOGOUT_URL = '/accounts/signout'
 USERENA_MUGSHOT_GRAVATAR = True
 USERENA_MUGSHOT_SIZE = 20
 ANONYMOUS_USER_ID = -1
-
 
 # A sample logging configuration. The only tangible logging
 # performed by this configuration is to send an email to

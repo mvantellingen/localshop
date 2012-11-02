@@ -9,21 +9,20 @@ static_prefix = re.escape(settings.STATIC_URL.lstrip('/'))
 
 
 urlpatterns = patterns('',
-    url(r'^$', 'localshop.views.frontpage', name='frontpage'),
+    url(r'^$', 'localshop.views.index', name='index'),
 
-    url(r'^packages/',
+    url(r'^packages',
         include('localshop.apps.packages.urls', namespace='packages')),
 
-    url(r'^simple/', include('localshop.apps.packages.urls_simple',
+    url(r'^simple', include('localshop.apps.packages.urls_simple',
         namespace='packages-simple')),
 
-    url(r'^permissions/',
+    url(r'^permissions',
         include('localshop.apps.permissions.urls', namespace='permissions')),
 
-    url(r'^accounts/', include('userena.urls')),
+    url(r'^accounts', include('userena.urls')),
 
-    url(r'^admin/', include(admin.site.urls)),
-
+    url(r'^admin', include(admin.site.urls)),
 
     url(r'^%s(?P<path>.*)$' % static_prefix,
         'django.contrib.staticfiles.views.serve', {'insecure': True}),
