@@ -14,7 +14,7 @@ urlpatterns = patterns('',
     url(r'^packages',
         include('localshop.apps.packages.urls', namespace='packages')),
 
-    url(r'^simple', include('localshop.apps.packages.urls_simple',
+    url(r'^simple/', include('localshop.apps.packages.urls_simple',
         namespace='packages-simple')),
 
     url(r'^permissions',
