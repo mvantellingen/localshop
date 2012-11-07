@@ -55,7 +55,8 @@ USE_TZ = True
 
 SITE_ID = 1
 
-APPEND_SLASH = False
+# This is actually the default - apparently causes issues with pip search
+APPEND_SLASH = True
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
 # Example: "/home/media/media.lawrence.com/media/"
