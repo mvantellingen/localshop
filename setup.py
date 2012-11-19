@@ -22,7 +22,7 @@ install_requires = [
 ]
 
 tests_requires = [
-    'mock==1.0.1',
+    'mock',
     'django-nose==1.1',
     'factory-boy==1.2.0',
 ]
