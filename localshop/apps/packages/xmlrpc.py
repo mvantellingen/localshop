@@ -2,6 +2,7 @@ from SimpleXMLRPCServer import SimpleXMLRPCDispatcher
 
 from django.db.models import Q
 from django.http import HttpResponse
+from django.views.decorators.csrf import csrf_exempt
 
 from localshop.apps.packages import models
 from localshop.apps.packages.utils import validate_client
@@ -9,6 +10,7 @@ from localshop.apps.packages.utils import validate_client
 dispatcher = SimpleXMLRPCDispatcher(allow_none=False, encoding=None)
 
 
+@csrf_exempt
 @validate_client
 def handle_request(request):
     response = HttpResponse(mimetype='application/xml')

@@ -3,6 +3,8 @@ from django.conf import settings
 from django.conf.urls.defaults import patterns, include, url
 from django.contrib import admin
 
+from localshop.apps.packages.xmlrpc import handle_request
+
 admin.autodiscover()
 
 static_prefix = re.escape(settings.STATIC_URL.lstrip('/'))
@@ -11,13 +13,20 @@ static_prefix = re.escape(settings.STATIC_URL.lstrip('/'))
 urlpatterns = patterns('',
     url(r'^$', 'localshop.views.index', name='index'),
 
-    url(r'^packages',
+    # Default path for xmlrpc calls
+    url(r'^RPC2$', handle_request),
+
+    url(r'^packages/',
         include('localshop.apps.packages.urls', namespace='packages')),
 
-    url(r'^simple', include('localshop.apps.packages.urls_simple',
+    url(r'^simple/', include('localshop.apps.packages.urls_simple',
         namespace='packages-simple')),
 
-    url(r'^permissions',
+    # We add a separate route for simple without the trailing slash so that
+    # POST requests to /simple/ and /simple both work
+    url(r'^simple$', include('localshop.apps.packages.urls_simple')),
+
+    url(r'^permissions/',
         include('localshop.apps.permissions.urls', namespace='permissions')),
 
     url(r'^accounts/', include('userena.urls')),
