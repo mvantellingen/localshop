@@ -14,6 +14,7 @@ from django.utils.html import escape
 from model_utils import Choices
 from model_utils.fields import AutoCreatedField, AutoLastModifiedField
 
+from localshop.apps.packages.signals import release_file_notfound
 from localshop.apps.packages.utils import OverwriteStorage, delete_files
 from localshop.conf import settings
 
@@ -180,3 +181,11 @@ if settings.DELETE_FILES:
     post_delete.connect(
         delete_files, sender=ReleaseFile,
         dispatch_uid="localshop.apps.packages.utils.delete_files")
+
+
+def download_missing_release_file(sender, release_file, **kwargs):
+    from .tasks import download_file
+    download_file.delay(pk=release_file.pk)
+
+release_file_notfound.connect(download_missing_release_file,
+    dispatch_uid='localshop_download_release_file')

@@ -14,8 +14,8 @@ from localshop.http import HttpResponseUnauthorized
 from localshop.views import LoginRequiredMixin, PermissionRequiredMixin
 from localshop.apps.packages import forms
 from localshop.apps.packages import models
-from localshop.apps.packages import tasks
 from localshop.apps.packages.pypi import get_package_data
+from localshop.apps.packages.signals import release_file_notfound
 from localshop.apps.packages.utils import parse_distutils_request
 from localshop.apps.packages.utils import validate_client
 from localshop.apps.permissions.utils import split_auth, authenticate_user
@@ -141,7 +141,8 @@ def download_file(request, name, pk, filename):
     release_file = models.ReleaseFile.objects.get(pk=pk)
     if not release_file.distribution:
         logger.info("Queueing %s for mirroring", release_file.url)
-        tasks.download_file.delay(pk=release_file.pk)
+        release_file_notfound.send(sender=release_file.__class__,
+                                   release_file=release_file)
         return redirect(release_file.url)
 
     # TODO: Use sendfile if enabled
