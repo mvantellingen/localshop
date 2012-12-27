@@ -1,15 +1,14 @@
 import os.path
 from cStringIO import StringIO
 
-from mock import Mock
 from django.test import TestCase
-from django.utils.datastructures import MultiValueDict
+
+from storages.backends.overwrite import OverwriteStorage
 
 from localshop.apps.packages import models
 from localshop.apps.packages import utils
 from localshop.apps.packages.tests import factories
 from localshop.utils import TemporaryMediaRootMixin
-from localshop.apps.packages.utils import OverwriteStorage
 
 
 class TestReleaseFile(TemporaryMediaRootMixin, TestCase):

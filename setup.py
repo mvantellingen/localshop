@@ -13,6 +13,7 @@ install_requires = [
     'django-model-utils==1.1.0',
     'django-userena==1.1.2',
     'django-uuidfield==0.4.0',
+    'django-storages==1.1.5',
     'docutils==0.8.1',
     'eventlet==0.9.16',
     'gunicorn==0.14.6',
