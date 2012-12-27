@@ -1,6 +1,5 @@
 import logging
 
-from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404, HttpResponse, HttpResponseBadRequest
@@ -19,7 +18,7 @@ from localshop.apps.packages import tasks
 from localshop.apps.packages.pypi import get_package_data
 from localshop.apps.packages.utils import parse_distutils_request
 from localshop.apps.packages.utils import validate_client
-from localshop.apps.permissions.utils import split_auth, decode_credentials
+from localshop.apps.permissions.utils import split_auth, authenticate_user
 
 logger = logging.getLogger(__name__)
 
@@ -48,8 +47,7 @@ class SimpleIndex(ListView):
         if not method:
             return HttpResponseUnauthorized(content='Missing auth header')
 
-        username, password = decode_credentials(identity)
-        user = authenticate(username=username, password=password)
+        user = authenticate_user(request)
         if not user:
             return HttpResponse('Invalid username/password', status=401)
 

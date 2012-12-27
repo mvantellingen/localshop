@@ -54,16 +54,11 @@ def validate_client(func):
         return func
 
     def _wrapper(request, *args, **kwargs):
-        if request.user.is_authenticated():
-            return func(request, *args, **kwargs)
-
         if CIDR.objects.has_access(request.META['REMOTE_ADDR']):
             return func(request, *args, **kwargs)
         return HttpResponseForbidden('No permission')
 
-    if credential_check_needed:
-        _wrapper = credentials_required(_wrapper)
-    return _wrapper
+    return credentials_required(_wrapper)
 
 
 def parse_distutils_request(request):
