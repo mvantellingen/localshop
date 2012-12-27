@@ -79,8 +79,6 @@ class Base(Settings):
     # If you set this to False, Django will not use timezone-aware datetimes.
     USE_TZ = True
 
-    LOGIN_URL = '/permissions/login/'
-
     # Absolute filesystem path to the directory that will hold user-uploaded files.
     # Example: "/home/media/media.lawrence.com/media/"
     # MEDIA_ROOT = 'files'
@@ -145,6 +143,9 @@ class Base(Settings):
         os.path.join(PROJECT_ROOT, 'templates'),
     )
 
+    TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
+    NOSE_ARGS = ['--logging-clear-handlers', '--cover-package=localshop']
+
     BROKER_URL = "django://"
 
     CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
@@ -170,11 +171,35 @@ class Base(Settings):
         'djcelery',
         'south',
         'gunicorn',
+        'userena',
+        'guardian',
 
         'localshop',
         'localshop.apps.packages',
         'localshop.apps.permissions',
     ]
+
+    import pkg_resources
+    try:
+        pkg_resources.get_distribution('django_nose')
+        INSTALLED_APPS.append('django_nose')
+    except pkg_resources.DistributionNotFound:
+        pass
+
+    # Auth settings
+    AUTHENTICATION_BACKENDS = (
+        'userena.backends.UserenaAuthenticationBackend',
+        'guardian.backends.ObjectPermissionBackend',
+        'django.contrib.auth.backends.ModelBackend',
+    )
+
+    AUTH_PROFILE_MODULE = 'permissions.AuthProfile'
+    LOGIN_URL = '/accounts/signin/'
+    LOGIN_REDIRECT_URL = '/accounts/%(username)s/'
+    LOGOUT_URL = '/accounts/signout'
+    USERENA_MUGSHOT_GRAVATAR = True
+    USERENA_MUGSHOT_SIZE = 20
+    ANONYMOUS_USER_ID = -1
 
     # A sample logging configuration. The only tangible logging
     # performed by this configuration is to send an email to
