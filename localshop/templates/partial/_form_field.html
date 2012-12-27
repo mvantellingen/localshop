@@ -1,5 +1,5 @@
 <fieldset class="control-group{% if field.errors %} error{% endif %}">
-    {{ field.label_tag }}
+    <label class="control-label" for="{{ field.id_for_label }}">{{ field.label }}</label>
     <div class="controls">
         {{ field }}
         {% if field.help_text %}
