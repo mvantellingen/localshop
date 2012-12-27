@@ -1,7 +1,6 @@
-from django.conf.urls.defaults import patterns, include, url
+from django.conf.urls.defaults import patterns, url
 
 from localshop.apps.packages import views
-from localshop.apps.packages.xmlrpc import handle_request
 
 
 urlpatterns = patterns('',

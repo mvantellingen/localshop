@@ -31,7 +31,7 @@ urlpatterns = patterns('',
 
     url(r'^accounts/', include('userena.urls')),
 
-    url(r'^admin', include(admin.site.urls)),
+    url(r'^admin/', include(admin.site.urls)),
 
     url(r'^%s(?P<path>.*)$' % static_prefix,
         'django.contrib.staticfiles.views.serve', {'insecure': True}),
