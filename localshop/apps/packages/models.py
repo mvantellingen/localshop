@@ -82,7 +82,7 @@ class Release(models.Model):
 
     download_url = models.CharField(max_length=200, blank=True, null=True)
 
-    home_page = models.URLField(verify_exists=False, blank=True, null=True)
+    home_page = models.CharField(max_length=200, blank=True, null=True)
 
     license = models.TextField(blank=True)
 
@@ -154,7 +154,7 @@ class ReleaseFile(models.Model):
 
     python_version = models.CharField(max_length=25)
 
-    url = models.URLField(max_length=1024, blank=True)
+    url = models.CharField(max_length=1024, blank=True)
 
     user = models.ForeignKey(User, null=True)
 
