@@ -5,6 +5,6 @@ from localshop.apps.packages import views
 
 urlpatterns = patterns('',
     url(r'^$', views.SimpleIndex.as_view(), name='simple_index'),
-    url(r'^(?P<slug>[^/]+)/(?P<version>.*?)$', views.SimpleDetail.as_view(),
+    url(r'^(?P<slug>[-_\w]+)/?(?P<version>.*?)/?$', views.SimpleDetail.as_view(),
         name='simple_detail')
 )

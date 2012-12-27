@@ -19,12 +19,10 @@ urlpatterns = patterns('',
     url(r'^packages/',
         include('localshop.apps.packages.urls', namespace='packages')),
 
-    url(r'^simple/', include('localshop.apps.packages.urls_simple',
+    # Using an optional trailing slash here so that POST
+    # requests to /simple/ and /simple both work
+    url(r'^simple/?', include('localshop.apps.packages.urls_simple',
         namespace='packages-simple')),
-
-    # We add a separate route for simple without the trailing slash so that
-    # POST requests to /simple/ and /simple both work
-    url(r'^simple$', include('localshop.apps.packages.urls_simple')),
 
     url(r'^permissions/',
         include('localshop.apps.permissions.urls', namespace='permissions')),
