@@ -3,23 +3,29 @@ import sys
 from setuptools import setup, find_packages, Command
 
 
-tests_require = [
+install_requires = [
+    'Django==1.4.1',
+    'South==0.7.6',
+    'Pillow==1.7.7',
+    'celery==3.0.12',
+    'django-kombu==0.9.4',
+    'django-celery==3.0.11',
+    'django-model-utils==1.1.0',
+    'django-userena==1.1.2',
+    'django-uuidfield==0.4.0',
+    'django-configurations==0.1',
+    'docutils==0.8.1',
+    'eventlet==0.9.16',
+    'gunicorn==0.14.6',
+    'logan==0.5.1',
+    'netaddr==0.7.6',
+    'requests==0.14.0',
 ]
 
-install_requires = [
-    'South',
-    'Django>=1.4',
-    'eventlet>=0.9.15',
-    'kombu>=2.3.2',
-    'gunicorn>=0.13.4',
-    'celery<3.1',
-    'django-celery<3.1',
-    'django-model-utils>=1.0',
-    'requests>=0.10',
-    'netaddr==0.7.6',
-    'docutils==0.8.1',
-    'django-uuidfield==0.4.0',
-    'django-configurations>=0.1',
+tests_requires = [
+    'mock',
+    'django-nose==1.1',
+    'factory-boy==1.2.0',
 ]
 
 readme = []
@@ -32,24 +38,30 @@ class RunTests(Command):
     description = "Run the django test suite from the tests dir."
     user_options = []
     extra_env = {}
-    extra_args = ['packages']
 
     def run(self):
+        if self.distribution.install_requires:
+            self.distribution.fetch_build_eggs(
+                self.distribution.install_requires)
+        if self.distribution.tests_require:
+            self.distribution.fetch_build_eggs(self.distribution.tests_require)
+
         for env_name, env_value in self.extra_env.items():
             os.environ[env_name] = str(env_value)
 
         this_dir = os.getcwd()
-        testproj_dir = os.path.join(this_dir, "localshop")
+        testproj_dir = os.path.join(this_dir, 'localshop')
         os.chdir(testproj_dir)
         sys.path.append(testproj_dir)
+
         from django.core.management import execute_manager
-        os.environ["DJANGO_SETTINGS_MODULE"] = os.environ.get(
-                        "DJANGO_SETTINGS_MODULE", "localshop.conf.server")
-        settings_file = os.environ["DJANGO_SETTINGS_MODULE"]
+        os.environ['DJANGO_SETTINGS_MODULE'] = os.environ.get(
+            'DJANGO_SETTINGS_MODULE', 'localshop.conf.server')
+        settings_file = os.environ['DJANGO_SETTINGS_MODULE']
         settings_mod = __import__(settings_file, {}, {}, [''])
         prev_argv = list(sys.argv)
         try:
-            sys.argv = [__file__, "test"] + self.extra_args
+            sys.argv = [__file__, 'test']
             execute_manager(settings_mod, argv=sys.argv)
         finally:
             sys.argv = prev_argv
@@ -71,8 +83,8 @@ setup(
     packages=find_packages(),
     zip_safe=False,
     install_requires=install_requires,
-    tests_require=tests_require,
-    extras_require={'test': tests_require},
+    tests_require=tests_requires,
+    extras_require={'test': tests_requires},
     cmdclass={"test": RunTests},
     license='BSD',
     include_package_data=True,

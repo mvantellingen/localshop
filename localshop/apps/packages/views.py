@@ -1,6 +1,5 @@
 import logging
 
-from django.contrib.auth import authenticate
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404, HttpResponse, HttpResponseBadRequest
@@ -15,10 +14,11 @@ from localshop.http import HttpResponseUnauthorized
 from localshop.views import LoginRequiredMixin, PermissionRequiredMixin
 from localshop.apps.packages import forms
 from localshop.apps.packages import models
-from localshop.apps.packages import tasks
 from localshop.apps.packages.pypi import get_package_data
-from localshop.apps.packages.utils import parse_distutils_request, validate_client
-from localshop.apps.permissions.utils import split_auth, decode_credentials
+from localshop.apps.packages.signals import release_file_notfound
+from localshop.apps.packages.utils import parse_distutils_request
+from localshop.apps.packages.utils import validate_client
+from localshop.apps.permissions.utils import split_auth, authenticate_user
 
 logger = logging.getLogger(__name__)
 
@@ -40,15 +40,14 @@ class SimpleIndex(ListView):
         return super(SimpleIndex, self).dispatch(request, *args, **kwargs)
 
     def post(self, request):
-        data, files = parse_distutils_request(request)
+        parse_distutils_request(request)
 
         # XXX: Auth is currently a bit of a hack
         method, identity = split_auth(request)
         if not method:
-            return HttpResponseUnauthorized('Missing auth header')
+            return HttpResponseUnauthorized(content='Missing auth header')
 
-        username, password = decode_credentials(identity)
-        user = authenticate(username=username, password=password)
+        user = authenticate_user(request)
         if not user:
             return HttpResponse('Invalid username/password', status=401)
 
@@ -57,10 +56,10 @@ class SimpleIndex(ListView):
             'file_upload': handle_register_or_upload,
         }
 
-        handler = actions.get(data.get(':action'))
+        handler = actions.get(request.POST.get(':action'))
         if not handler:
             raise Http404('Unknown action')
-        return handler(data, files, user)
+        return handler(request.POST, request.FILES, user)
 
 
 @validate_client
@@ -142,7 +141,8 @@ def download_file(request, name, pk, filename):
     release_file = models.ReleaseFile.objects.get(pk=pk)
     if not release_file.distribution:
         logger.info("Queueing %s for mirroring", release_file.url)
-        tasks.download_file.delay(pk=release_file.pk)
+        release_file_notfound.send(sender=release_file.__class__,
+                                   release_file=release_file)
         return redirect(release_file.url)
 
     # TODO: Use sendfile if enabled

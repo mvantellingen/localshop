@@ -27,7 +27,7 @@ class ReleaseFileForm(forms.ModelForm):
 
     def save(self, commit=True):
         obj = super(ReleaseFileForm, self).save(False)
-        obj.python_version = self.cleaned_data['pyversion'] or 'n/a'
+        obj.python_version = self.cleaned_data['pyversion'] or 'source'
         if commit:
             obj.save()
         return obj

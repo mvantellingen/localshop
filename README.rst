@@ -1,6 +1,8 @@
 localshop
 =========
 
+.. image:: https://secure.travis-ci.org/mvantellingen/localshop.png?branch=develop
+
 A pypi server which automatically proxies and mirrors pypi packages based 
 upon packages requested. It also supports the uploading of local (private) 
 packages.
@@ -89,8 +91,7 @@ localshop can create for you.
 Just add (or comment out) the following section in your
 ``localshop.conf.py``::
 
-    AUTHENTICATION_BACKENDS = [
-        'django.contrib.auth.backends.ModelBackend',
+    AUTHENTICATION_BACKENDS += [
         'localshop.apps.permissions.backend.CredentialBackend',
     ]
 

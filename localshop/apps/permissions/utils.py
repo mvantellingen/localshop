@@ -6,6 +6,11 @@ from django.utils.decorators import available_attrs
 
 from localshop.http import HttpResponseUnauthorized
 
+credential_check_needed = (
+    'localshop.apps.permissions.backend.CredentialBackend' in
+    settings.AUTHENTICATION_BACKENDS
+)
+
 
 def decode_credentials(auth):
     auth = auth.strip().decode('base64')
@@ -21,6 +26,16 @@ def split_auth(request):
     return method, identity
 
 
+def authenticate_user(request):
+    method, identity = split_auth(request)
+    if method is not None and method.lower() == 'basic':
+        key, secret = decode_credentials(identity)
+        if credential_check_needed:
+            return authenticate(access_key=key, secret_key=secret)
+        else:
+            return authenticate(username=key, password=secret)
+
+
 def credentials_required(view_func):
     """
     This decorator should be used with views that need simple authentication
@@ -32,16 +47,10 @@ def credentials_required(view_func):
         if request.user.is_authenticated():
             return view_func(request, *args, **kwargs)
 
-        method, identity = split_auth(request)
-        if method is not None and method.lower() == 'basic':
-            username, password = decode_credentials(identity)
-            user = authenticate(username=username, password=password)
-            if user is not None:
-                login(request, user)
-                return view_func(request, *args, **kwargs)
+        user = authenticate_user(request)
+        if user is not None:
+            login(request, user)
+            return view_func(request, *args, **kwargs)
 
-        return HttpResponseUnauthorized('Authorization Required')
+        return HttpResponseUnauthorized(content='Authorization Required')
     return decorator
-
-
-credential_check_needed = 'localshop.apps.permissions.backend.CredentialBackend' in settings.AUTHENTICATION_BACKENDS

@@ -3,9 +3,10 @@ import os
 from shutil import copyfileobj
 from tempfile import NamedTemporaryFile
 
-import requests
 from django.core.files import File
+
 from celery.task import task
+import requests
 
 from localshop.apps.packages import models
 from localshop.apps.packages.pypi import get_package_data

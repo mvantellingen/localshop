@@ -1,17 +1,21 @@
 import os
 import docutils.core
 from docutils.utils import SystemMessage
+from shutil import copyfileobj
+from tempfile import NamedTemporaryFile
 
 from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import post_delete
+from django.core.files import File
 from django.core.urlresolvers import reverse
 from django.utils.html import escape
 
 from model_utils import Choices
 from model_utils.fields import AutoCreatedField, AutoLastModifiedField
 
+from localshop.apps.packages.signals import release_file_notfound
 from localshop.apps.packages.utils import OverwriteStorage, delete_files
 
 
@@ -78,7 +82,7 @@ class Release(models.Model):
 
     download_url = models.CharField(max_length=200, blank=True, null=True)
 
-    home_page = models.URLField(verify_exists=False, blank=True, null=True)
+    home_page = models.CharField(max_length=200, blank=True, null=True)
 
     license = models.TextField(blank=True)
 
@@ -150,7 +154,7 @@ class ReleaseFile(models.Model):
 
     python_version = models.CharField(max_length=25)
 
-    url = models.URLField(max_length=1024, blank=True)
+    url = models.CharField(max_length=1024, blank=True)
 
     user = models.ForeignKey(User, null=True)
 
@@ -167,7 +171,21 @@ class ReleaseFile(models.Model):
         })
         return '%s#md5=%s' % (url, self.md5_digest)
 
+    def save_filecontent(self, filename, fh):
+        tmp_file = NamedTemporaryFile()
+        copyfileobj(fh, tmp_file)
+        self.distribution.save(filename, File(tmp_file))
+
 
 if settings.LOCALSHOP_DELETE_FILES:
-    post_delete.connect(delete_files, sender=ReleaseFile,
-                        dispatch_uid="localshop.apps.packages.utils.delete_files")
+    post_delete.connect(
+        delete_files, sender=ReleaseFile,
+        dispatch_uid="localshop.apps.packages.utils.delete_files")
+
+
+def download_missing_release_file(sender, release_file, **kwargs):
+    from .tasks import download_file
+    download_file.delay(pk=release_file.pk)
+
+release_file_notfound.connect(download_missing_release_file,
+    dispatch_uid='localshop_download_release_file')

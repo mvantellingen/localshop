@@ -1,15 +1,22 @@
 import netaddr
-from django.db import models
-from django.contrib.auth.models import User
 
+from django.contrib.auth.models import User
+from django.db import models
+from django.utils.translation import ugettext as _
+from userena.models import UserenaBaseProfile
 from uuidfield import UUIDField
 
 from localshop.utils import now
 
 
+class AuthProfile(UserenaBaseProfile):
+    user = models.OneToOneField(
+        User, unique=True, verbose_name=_('user'), related_name='auth_profile')
+
+
 class CIDRManager(models.Manager):
     def has_access(self, ip_addr):
-        cidrs = [x['cidr'] for x in self.get_query_set().values('cidr')]
+        cidrs = self.values_list('cidr', flat=True)
         return bool(netaddr.all_matching_cidrs(ip_addr, cidrs))
 
 
