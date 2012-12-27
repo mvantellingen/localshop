@@ -61,6 +61,8 @@ class SimpleIndex(ListView):
             raise Http404('Unknown action')
         return handler(request.POST, request.FILES, user)
 
+simple_index = SimpleIndex.as_view()
+
 
 @validate_client
 class SimpleDetail(DetailView):
@@ -95,6 +97,8 @@ class SimpleDetail(DetailView):
             object=self.object,
             releases=list(releases.all()))
         return self.render_to_response(context)
+
+simple_detail = SimpleDetail.as_view()
 
 
 class Index(LoginRequiredMixin, PermissionRequiredMixin, ListView):
