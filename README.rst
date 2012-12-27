@@ -138,3 +138,11 @@ change the behaviour of the localshop.
 
 If set to ``True`` files will be cleaned up after deleting a package or
 release from the localshop.
+
+``LOCALSHOP_DISTRIBUTION_STORAGE``
+----------------------------------
+
+:default: ``'storages.backends.overwrite.OverwriteStorage'``
+
+The dotted import path of a Django storage class to be used when uploading
+a release file or retrieving it from PyPI.

@@ -13,3 +13,5 @@ WEB_HOST = 'localhost'
 WEB_PORT = 8900
 
 DELETE_FILES = False
+
+DISTRIBUTION_STORAGE = 'storages.backends.overwrite.OverwriteStorage'

@@ -2,7 +2,6 @@ import inspect
 import logging
 import os
 
-from django.core.files.storage import FileSystemStorage
 from django.core.files.uploadedfile import TemporaryUploadedFile
 from django.db.models import FieldDoesNotExist
 from django.db.models.fields.files import FileField
@@ -13,28 +12,9 @@ from django.views.generic.base import View
 from django.views.decorators.csrf import csrf_exempt
 
 from localshop.apps.permissions.models import CIDR
-from localshop.apps.permissions.utils import (credentials_required,
-                                              credential_check_needed)
+from localshop.apps.permissions.utils import credentials_required
 
 logger = logging.getLogger(__name__)
-
-
-class OverwriteStorage(FileSystemStorage):
-    """
-    Comes from http://www.djangosnippets.org/snippets/976/
-    (even if it already exists in S3Storage for ages)
-
-    See also Django #4339, which might add this functionality to core.
-    """
-
-    def get_available_name(self, name):
-        """
-        Returns a filename that's free on the target storage system, and
-        available for new content to be written to.
-        """
-        if self.exists(name):
-            self.delete(name)
-        return name
 
 
 def validate_client(func):
@@ -54,16 +34,11 @@ def validate_client(func):
         return func
 
     def _wrapper(request, *args, **kwargs):
-        if request.user.is_authenticated():
-            return func(request, *args, **kwargs)
-
         if CIDR.objects.has_access(request.META['REMOTE_ADDR']):
             return func(request, *args, **kwargs)
         return HttpResponseForbidden('No permission')
 
-    if credential_check_needed:
-        _wrapper = credentials_required(_wrapper)
-    return _wrapper
+    return credentials_required(_wrapper)
 
 
 def parse_distutils_request(request):
