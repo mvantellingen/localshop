@@ -4,10 +4,10 @@ from .models import Credential
 
 
 class CredentialBackend(ModelBackend):
-    def authenticate(self, username=None, password=None):
+    def authenticate(self, access_key=None, secret_key=None):
         try:
-            credential = Credential.objects.active().get(access_key=username,
-                                                         secret_key=password)
+            credential = Credential.objects.active().get(access_key=access_key,
+                                                         secret_key=secret_key)
         except (Credential.DoesNotExist,
                 Credential.MultipleObjectsReturned):
             pass

@@ -16,7 +16,7 @@ class AuthProfile(UserenaBaseProfile):
 
 class CIDRManager(models.Manager):
     def has_access(self, ip_addr):
-        cidrs = [x['cidr'] for x in self.get_query_set().values('cidr')]
+        cidrs = self.values_list('cidr', flat=True)
         return bool(netaddr.all_matching_cidrs(ip_addr, cidrs))
 
 

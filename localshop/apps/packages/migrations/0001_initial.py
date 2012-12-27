@@ -43,7 +43,7 @@ class Migration(SchemaMigration):
             ('author_email', self.gf('django.db.models.fields.CharField')(max_length=255, blank=True)),
             ('description', self.gf('django.db.models.fields.TextField')(blank=True)),
             ('download_url', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
-            ('home_page', self.gf('django.db.models.fields.URLField')(max_length=200, null=True, blank=True)),
+            ('home_page', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
             ('license', self.gf('django.db.models.fields.TextField')(blank=True)),
             ('metadata_version', self.gf('django.db.models.fields.CharField')(default=1.0, max_length=64)),
             ('package', self.gf('django.db.models.fields.related.ForeignKey')(related_name='releases', to=orm['packages.Package'])),
@@ -73,7 +73,7 @@ class Migration(SchemaMigration):
             ('filename', self.gf('django.db.models.fields.CharField')(max_length=200, null=True, blank=True)),
             ('md5_digest', self.gf('django.db.models.fields.CharField')(max_length=512)),
             ('python_version', self.gf('django.db.models.fields.CharField')(max_length=25)),
-            ('url', self.gf('django.db.models.fields.URLField')(max_length=1024, blank=True)),
+            ('url', self.gf('django.db.models.fields.CharField')(max_length=1024, blank=True)),
             ('user', self.gf('django.db.models.fields.related.ForeignKey')(to=orm['auth.User'], null=True)),
         ))
         db.send_create_signal('packages', ['ReleaseFile'])
@@ -166,7 +166,7 @@ class Migration(SchemaMigration):
             'created': ('model_utils.fields.AutoCreatedField', [], {'default': 'datetime.datetime.now'}),
             'description': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'download_url': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
-            'home_page': ('django.db.models.fields.URLField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
+            'home_page': ('django.db.models.fields.CharField', [], {'max_length': '200', 'null': 'True', 'blank': 'True'}),
             'id': ('django.db.models.fields.AutoField', [], {'primary_key': 'True'}),
             'license': ('django.db.models.fields.TextField', [], {'blank': 'True'}),
             'metadata_version': ('django.db.models.fields.CharField', [], {'default': '1.0', 'max_length': '64'}),
@@ -188,7 +188,7 @@ class Migration(SchemaMigration):
             'python_version': ('django.db.models.fields.CharField', [], {'max_length': '25'}),
             'release': ('django.db.models.fields.related.ForeignKey', [], {'related_name': "'files'", 'to': "orm['packages.Release']"}),
             'size': ('django.db.models.fields.IntegerField', [], {'null': 'True'}),
-            'url': ('django.db.models.fields.URLField', [], {'max_length': '1024', 'blank': 'True'}),
+            'url': ('django.db.models.fields.CharField', [], {'max_length': '1024', 'blank': 'True'}),
             'user': ('django.db.models.fields.related.ForeignKey', [], {'to': "orm['auth.User']", 'null': 'True'})
         }
     }

@@ -13,10 +13,10 @@ install_requires = [
     'django-model-utils==1.1.0',
     'django-userena==1.1.2',
     'django-uuidfield==0.4.0',
+    'django-configurations==0.1',
     'docutils==0.8.1',
     'eventlet==0.9.16',
     'gunicorn==0.14.6',
-    'logan==0.5.1',
     'netaddr==0.7.6',
     'requests==0.14.0',
 ]
@@ -55,7 +55,9 @@ class RunTests(Command):
 
         from django.core.management import execute_manager
         os.environ['DJANGO_SETTINGS_MODULE'] = os.environ.get(
-            'DJANGO_SETTINGS_MODULE', 'localshop.conf.server')
+            'DJANGO_SETTINGS_MODULE', 'localshop.settings')
+        os.environ['DJANGO_SETTINGS_MODULE'] = os.environ.get(
+            'DJANGO_DJANGO_CONFIGURATION', 'Localshop')
         settings_file = os.environ['DJANGO_SETTINGS_MODULE']
         settings_mod = __import__(settings_file, {}, {}, [''])
         prev_argv = list(sys.argv)
