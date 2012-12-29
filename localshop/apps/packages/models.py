@@ -4,6 +4,7 @@ from docutils.utils import SystemMessage
 from shutil import copyfileobj
 from tempfile import NamedTemporaryFile
 
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import post_delete
@@ -18,7 +19,6 @@ from model_utils.fields import AutoCreatedField, AutoLastModifiedField
 
 from localshop.apps.packages.signals import release_file_notfound
 from localshop.apps.packages.utils import delete_files
-from localshop.conf import settings
 
 
 class Classifier(models.Model):
@@ -185,7 +185,7 @@ class ReleaseFile(models.Model):
         self.distribution.save(filename, File(tmp_file))
 
 
-if settings.DELETE_FILES:
+if settings.LOCALSHOP_DELETE_FILES:
     post_delete.connect(
         delete_files, sender=ReleaseFile,
         dispatch_uid="localshop.apps.packages.utils.delete_files")

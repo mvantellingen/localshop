@@ -15,18 +15,9 @@ framework.
 """
 import os
 
-os.environ.setdefault("DJANGO_SETTINGS_MODULE", "localshop.settings")
+os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'localshop.settings')
+os.environ.setdefault('DJANGO_CONFIGURATION', 'Localshop')
 
-# This application object is used by any WSGI server configured to use this
-# file. This includes Django's development server, if the WSGI_APPLICATION
-# setting points here.
-try:
-    from django.core.wsgi import get_wsgi_application
-    application = get_wsgi_application()
-except ImportError:
-    import django.core.handlers.wsgi
-    application = django.core.handlers.wsgi.WSGIHandler()
+from configurations.wsgi import get_wsgi_application
 
-# Apply WSGI middleware here.
-# from helloworld.wsgi import HelloWorldApplication
-# application = HelloWorldApplication(application)
+application = get_wsgi_application()
