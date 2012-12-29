@@ -14,14 +14,15 @@ def FileSettings(path):
     mod = imp.new_module('localshop.local')
     mod.__file__ = path
 
+    class Holder(object):
+        pass
+
     try:
         execfile(path, mod.__dict__)
     except IOError, e:
-        e.strerror = 'Unable to load configuration file (%s)' % e.strerror
-        raise
-
-    class Holder(object):
-        pass
+        print("Notice: Unable to load configuration file %s (%s), "
+              "using default settings\n\n" % (path, e.strerror))
+        return Holder
 
     for name, value in uppercase_attributes(mod).items():
         setattr(Holder, name, value)
@@ -232,5 +233,5 @@ class Base(Settings):
     DISTRIBUTION_STORAGE = 'storages.backends.overwrite.OverwriteStorage'
 
 
-class Localshop(FileSettings('~/.localshop/localshop.conf.py'), Base):
+class Localshop(FileSettings('~/.localshop.py'), Base):
     pass
