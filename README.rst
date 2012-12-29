@@ -79,21 +79,14 @@ To install packages with pip from your localshop add `-i` flag, e.g.::
     
     pip install -i http://localhost:8900/simple/ localshop
 
-Credentials for authentication (optional)
------------------------------------------
+Credentials for authentication
+------------------------------
 
 If you don't want to use your Django username/password to authenticate
 uploads and downloads you can easily create one of the random credentials
 localshop can create for you.
 
-Just add (or comment out) the following section in your
-``localshop.conf.py``::
-
-    AUTHENTICATION_BACKENDS += [
-        'localshop.apps.permissions.backend.CredentialBackend',
-    ]
-
-Then go to the Credentials section and click on create. Use the access key
+Go to the Credentials section and click on create. Use the access key
 as the username and the secret key as the password when uloading packages.
 A ``.pypirc`` could look like this::
 

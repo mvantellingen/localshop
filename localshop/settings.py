@@ -191,6 +191,7 @@ class Base(Settings):
     AUTHENTICATION_BACKENDS = (
         'userena.backends.UserenaAuthenticationBackend',
         'guardian.backends.ObjectPermissionBackend',
+        'localshop.apps.permissions.backend.CredentialBackend',
         'django.contrib.auth.backends.ModelBackend',
     )
 
