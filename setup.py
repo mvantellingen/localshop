@@ -4,7 +4,7 @@ from setuptools import setup, find_packages, Command
 
 
 install_requires = [
-    'Django==1.4.1',
+    'Django==1.4.2',
     'South==0.7.6',
     'Pillow==1.7.7',
     'celery==3.0.12',
