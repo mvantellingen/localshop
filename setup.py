@@ -54,19 +54,13 @@ class RunTests(Command):
         os.chdir(testproj_dir)
         sys.path.append(testproj_dir)
 
-        from django.core.management import execute_manager
         os.environ['DJANGO_SETTINGS_MODULE'] = os.environ.get(
             'DJANGO_SETTINGS_MODULE', 'localshop.settings')
-        os.environ['DJANGO_SETTINGS_MODULE'] = os.environ.get(
-            'DJANGO_DJANGO_CONFIGURATION', 'Localshop')
-        settings_file = os.environ['DJANGO_SETTINGS_MODULE']
-        settings_mod = __import__(settings_file, {}, {}, [''])
-        prev_argv = list(sys.argv)
-        try:
-            sys.argv = [__file__, 'test']
-            execute_manager(settings_mod, argv=sys.argv)
-        finally:
-            sys.argv = prev_argv
+        os.environ['DJANGO_CONFIGURATION'] = os.environ.get(
+            'DJANGO_CONFIGURATION', 'Localshop')
+
+        from configurations.management import execute_from_command_line
+        execute_from_command_line([__file__, 'test'])
 
     def initialize_options(self):
         pass
