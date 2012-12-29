@@ -229,6 +229,8 @@ class Base(Settings):
 
     LOCALSHOP_DELETE_FILES = False
 
+    DISTRIBUTION_STORAGE = 'storages.backends.overwrite.OverwriteStorage'
+
 
 class Localshop(FileSettings('~/.localshop/localshop.conf.py'), Base):
     pass
