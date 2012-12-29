@@ -1,5 +1,7 @@
 0.4dev:
 * Use django-userena for authentication
+* Use django-configurations and now uses the optional custom settings at
+  ~/.localshop.py. Logan is now also not used anymore.
 * Implement support for 'pip search'
 
 0.3:
