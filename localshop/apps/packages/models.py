@@ -13,7 +13,6 @@ from django.core.files.storage import get_storage_class
 from django.core.urlresolvers import reverse
 from django.utils.functional import LazyObject
 from django.utils.html import escape
-
 from model_utils import Choices
 from model_utils.fields import AutoCreatedField, AutoLastModifiedField
 
@@ -128,7 +127,7 @@ def release_file_upload_to(instance, filename):
 class DistributionStorage(LazyObject):
     def _setup(self):
         self._wrapped = get_storage_class(
-            settings.DISTRIBUTION_STORAGE)()
+            settings.LOCALSHOP_DISTRIBUTION_STORAGE)()
 
 
 class ReleaseFile(models.Model):

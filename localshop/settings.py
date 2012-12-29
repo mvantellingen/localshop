@@ -230,7 +230,7 @@ class Base(Settings):
 
     LOCALSHOP_DELETE_FILES = False
 
-    DISTRIBUTION_STORAGE = 'storages.backends.overwrite.OverwriteStorage'
+    LOCALSHOP_DISTRIBUTION_STORAGE = 'storages.backends.overwrite.OverwriteStorage'
 
 
 class Localshop(FileSettings('~/.localshop.py'), Base):
