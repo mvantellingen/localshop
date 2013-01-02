@@ -8,7 +8,7 @@ install_requires = [
     'South==0.7.6',
     'Pillow==1.7.7',
     'celery==3.0.12',
-    'django-kombu==0.9.4',
+    'kombu==2.5.4',
     'django-celery==3.0.11',
     'django-model-utils==1.1.0',
     'django-userena==1.1.2',
