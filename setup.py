@@ -19,7 +19,7 @@ install_requires = [
     'eventlet==0.9.16',
     'gunicorn==0.14.6',
     'netaddr==0.7.6',
-    'requests==0.14.0',
+    'requests==1.0.4',
 ]
 
 tests_requires = [
