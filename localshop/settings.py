@@ -150,7 +150,7 @@ class Base(Settings):
     BROKER_URL = "django://"
 
     CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
-
+    CELERYD_FORCE_EXECV = False
     CELERYBEAT_SCHEDULE = {
         # Executes every day at 1:00 AM
         'every-day-1am': {
