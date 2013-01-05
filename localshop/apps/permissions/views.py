@@ -1,4 +1,5 @@
 from django.contrib.auth.decorators import login_required, permission_required
+from django.contrib.sites.models import Site
 from django.core.exceptions import SuspiciousOperation
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, Http404
@@ -41,15 +42,22 @@ class CidrDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
         return reverse('permissions:cidr_index')
 
 
-class CredentialListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+class CredentialListView(LoginRequiredMixin, PermissionRequiredMixin,
+                         ListView):
     object_context_name = 'credentials'
     permission_required = 'permissions.view_credential'
 
     def get_queryset(self):
         return models.Credential.objects.filter(creator=self.request.user)
 
+    def get_context_data(self, **kwargs):
+        context = super(CredentialListView, self).get_context_data(**kwargs)
+        context['current_url'] = Site.objects.get_current()
+        return context
 
-class CredentialDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+
+class CredentialDeleteView(LoginRequiredMixin, PermissionRequiredMixin,
+                           DeleteView):
     model = models.Credential
     slug_field = 'access_key'
     slug_url_kwarg = 'access_key'
