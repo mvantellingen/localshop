@@ -4,7 +4,7 @@ from setuptools import setup, find_packages, Command
 
 
 install_requires = [
-    'Django==1.4.2',
+    'Django==1.4.3',
     'South==0.7.6',
     'Pillow==1.7.7',
     'celery==3.0.12',
@@ -15,10 +15,10 @@ install_requires = [
     'django-uuidfield==0.4.0',
     'django-storages==1.1.5',
     'django-configurations==0.1',
-    'docutils==0.8.1',
-    'eventlet==0.9.16',
-    'gunicorn==0.14.6',
-    'netaddr==0.7.6',
+    'docutils==0.10',
+    'eventlet==0.10.0',
+    'gunicorn==0.17.1',
+    'netaddr==0.7.10',
     'requests==1.0.4',
 ]
 
