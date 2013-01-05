@@ -46,7 +46,7 @@ class Base(Settings):
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': 'localshop.db',
+            'NAME': os.path.expanduser('~/.localshop/localshop.db'),
             'USER': '',
             'PASSWORD': '',
             'HOST': '',
@@ -234,5 +234,5 @@ class Base(Settings):
     LOCALSHOP_DISTRIBUTION_STORAGE = 'storages.backends.overwrite.OverwriteStorage'
 
 
-class Localshop(FileSettings('~/.localshop.py'), Base):
+class Localshop(FileSettings('~/.localshop/localshop.conf.py'), Base):
     pass

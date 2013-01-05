@@ -17,6 +17,10 @@ Download and install localshop via the following command::
 This should best be done in a new virtualenv. Now initialize your localshop 
 environment by issuing the following command::
 
+    localshop init
+
+If you are upgrading from an earlier version simply run::
+
     localshop upgrade
 
 And then start it via::
@@ -27,9 +31,10 @@ And then start it via::
 Celeryd is required to do the mirroring of the pypi packages once they 
 are needed.
 
-Create an initial user via the following command::
+You can also start it via honcho using the Procfile::
 
-    localshop createsuperuser 
+    pip install -r honcho
+    honcho start
 
 You can now visit http://localhost:8000/ and view all the packages in your
 localshop!
