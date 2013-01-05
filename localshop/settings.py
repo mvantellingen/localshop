@@ -141,7 +141,7 @@ class Base(Settings):
     WSGI_APPLICATION = 'localshop.wsgi.application'
 
     TEMPLATE_DIRS = (
-        os.path.join(PROJECT_ROOT, 'templates'),
+        os.path.join(PROJECT_ROOT, 'localshop', 'templates'),
     )
 
     TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
