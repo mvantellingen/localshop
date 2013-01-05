@@ -33,6 +33,14 @@
 
     <body>
         {% block body %}
+        <div class="container-fluid">
+            <div class="row">
+                <div class="offset2 span8">
+                    {% block content %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
         {% endblock %}
 
         {% block javascript %}
