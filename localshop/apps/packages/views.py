@@ -17,13 +17,12 @@ from localshop.apps.packages import models
 from localshop.apps.packages.pypi import get_package_data
 from localshop.apps.packages.signals import release_file_notfound
 from localshop.apps.packages.utils import parse_distutils_request
-from localshop.apps.packages.utils import validate_client
+from localshop.apps.permissions.utils import credentials_required
 from localshop.apps.permissions.utils import split_auth, authenticate_user
 
 logger = logging.getLogger(__name__)
 
 
-@validate_client
 class SimpleIndex(ListView):
     """Index view with all available packages used by /simple url
 
@@ -36,6 +35,7 @@ class SimpleIndex(ListView):
     template_name = 'packages/simple_package_list.html'
 
     @method_decorator(csrf_exempt)
+    @method_decorator(credentials_required)
     def dispatch(self, request, *args, **kwargs):
         return super(SimpleIndex, self).dispatch(request, *args, **kwargs)
 
@@ -64,7 +64,6 @@ class SimpleIndex(ListView):
 simple_index = SimpleIndex.as_view()
 
 
-@validate_client
 class SimpleDetail(DetailView):
     """List all available files for a specific package.
 
@@ -74,6 +73,10 @@ class SimpleDetail(DetailView):
     model = models.Package
     context_object_name = 'package'
     template_name = 'packages/simple_package_detail.html'
+
+    @method_decorator(credentials_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(SimpleDetail, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, slug, version=None):
         try:
@@ -136,7 +139,7 @@ def refresh(request, name):
     return redirect(package)
 
 
-@validate_client
+@credentials_required
 def download_file(request, name, pk, filename):
     """Redirect the client to the pypi hosted file if the file is not
     mirror'ed yet (and isn't a local package).  Otherwise serve the file.

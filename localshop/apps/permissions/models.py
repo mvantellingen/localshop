@@ -15,8 +15,10 @@ class AuthProfile(UserenaBaseProfile):
 
 
 class CIDRManager(models.Manager):
-    def has_access(self, ip_addr):
-        cidrs = self.values_list('cidr', flat=True)
+    def has_access(self, ip_addr, with_credentials=True):
+        cidrs = self.filter(
+            require_credentials=with_credentials
+        ).values_list('cidr', flat=True)
         return bool(netaddr.all_matching_cidrs(ip_addr, cidrs))
 
 
@@ -25,6 +27,7 @@ class CIDR(models.Model):
         help_text='IP addresses and/or subnet')
     label = models.CharField('label', max_length=128, blank=True, null=True,
         help_text='Human-readable name (optional)')
+    require_credentials = models.BooleanField(default=True)
 
     objects = CIDRManager()
 

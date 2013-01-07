@@ -5,40 +5,10 @@ import os
 from django.core.files.uploadedfile import TemporaryUploadedFile
 from django.db.models import FieldDoesNotExist
 from django.db.models.fields.files import FileField
-from django.http import QueryDict, HttpResponseForbidden
+from django.http import QueryDict
 from django.utils.datastructures import MultiValueDict
-from django.utils.decorators import method_decorator
-from django.views.generic.base import View
-from django.views.decorators.csrf import csrf_exempt
-
-from localshop.apps.permissions.models import CIDR
-from localshop.apps.permissions.utils import credentials_required
 
 logger = logging.getLogger(__name__)
-
-
-def validate_client(func):
-    """
-    Only allow downloads from authenticted users or from remote ip's
-    that match one of the ones in the CIDR database.
-    """
-    if inspect.isclass(func) and issubclass(func, View):
-        original_dispatch = func.dispatch
-
-        # XXX: The csrf_exempt here is a hack, should only be on SimpleIndex
-        @method_decorator(csrf_exempt)
-        @method_decorator(validate_client)
-        def dispatch(cls, request, *args, **kwargs):
-            return original_dispatch(cls, request, *args, **kwargs)
-        func.dispatch = dispatch
-        return func
-
-    def _wrapper(request, *args, **kwargs):
-        if CIDR.objects.has_access(request.META['REMOTE_ADDR']):
-            return func(request, *args, **kwargs)
-        return HttpResponseForbidden('No permission')
-
-    return credentials_required(_wrapper)
 
 
 def parse_distutils_request(request):

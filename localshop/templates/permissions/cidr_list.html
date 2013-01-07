@@ -14,6 +14,7 @@
                 <tr>
                     <th>CIDR</th>
                     <th>Label</th>
+                    <th>Credentials</th>
                     <th>Actions</th>
                 </tr>
             </thead>
@@ -22,6 +23,7 @@
                 <tr>
                     <td><a href="{% url permissions:cidr_edit pk=cidr.pk %}">{{ cidr.cidr }}</a></td>
                     <td>{{ cidr.label|default:'n/a' }}</td>
+                    <td>{{ cidr.require_credentials|yesno }}</td>
                     <td>
                         <a href="{% url permissions:cidr_edit pk=cidr.pk %}"><span class="icon-edit"></span> edit</a> |
                         <a href="{% url permissions:cidr_delete pk=cidr.pk %}"><span class="icon-trash"></span> delete</a>

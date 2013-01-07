@@ -5,8 +5,9 @@
 
 <form method="post" action="" class="form-horizontal">
     <fieldset>
-        {% include "partial/_form_field.html" with field=form.cidr%}
-        {% include "partial/_form_field.html" with field=form.label%}
+        {% include "partial/_form_field.html" with field=form.cidr %}
+        {% include "partial/_form_field.html" with field=form.label %}
+        {% include "partial/_form_field.html" with field=form.require_credentials %}
     </fieldset>
 
     <div class="form-actions">

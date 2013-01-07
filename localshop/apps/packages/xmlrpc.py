@@ -5,13 +5,13 @@ from django.http import HttpResponse
 from django.views.decorators.csrf import csrf_exempt
 
 from localshop.apps.packages import models
-from localshop.apps.packages.utils import validate_client
+from localshop.apps.permissions.utils import credentials_required
 
 dispatcher = SimpleXMLRPCDispatcher(allow_none=False, encoding=None)
 
 
 @csrf_exempt
-@validate_client
+@credentials_required
 def handle_request(request):
     response = HttpResponse(mimetype='application/xml')
     response.write(dispatcher._marshaled_dispatch(request.raw_post_data))
