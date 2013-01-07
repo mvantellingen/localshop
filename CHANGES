@@ -1,8 +1,11 @@
-0.4dev:
+0.4.0 (2013-01-07):
 * Use django-userena for authentication
 * Use django-configurations and now uses the optional custom settings at
   ~/.localshop.py. Logan is now also not used anymore.
+* Add additional separate credentials for uploading and downloading from
+  the pypi instance (using access/secret keys).
 * Implement support for 'pip search'
+* Many other improvements! (thanks Jannis Leidel)
 
 0.3:
 * Use Django 1.4 and restructure the app layout
