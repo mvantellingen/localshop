@@ -19,10 +19,28 @@
         </style>
         <script type="text/javascript" src="{{ STATIC_URL }}jquery-1.7.1.min.js"></script>
         <script type="text/javascript" src="{{ STATIC_URL }}bootstrap/js/bootstrap.js"></script>
+        <script type="text/javascript" charset="utf-8">
+        $(document).ready(function() {
+          $('.toggle-secret-key').click(function(event) {
+            event.preventDefault();
+            var access_key = $(this).attr('access_key');
+            var secret_url = $(this).attr('href');
+            $('#secret_key_' + access_key).load(secret_url);
+          })
+        });
+        </script>
     </head>
 
     <body>
         {% block body %}
+        <div class="container-fluid">
+            <div class="row">
+                <div class="offset2 span8">
+                    {% block content %}
+                    {% endblock %}
+                </div>
+            </div>
+        </div>
         {% endblock %}
 
         {% block javascript %}

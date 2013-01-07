@@ -1,21 +1,40 @@
 {% extends "layout.base.html" %}
 
+{% load i18n %}
+{% load url from future %}
+
 {% block body %}
 <div class="navbar navbar-fixed-top">
     <div class="navbar-inner">
         <div class="container-fluid">
-            <a class="brand" href="{% url frontpage %}">localshop</a>
+            <a class="brand" href="{% url 'index' %}">localshop</a>
             <div class="nav-collapse">
                 <ul class="nav">
-                    <li><a href="{% url packages:index %}">Packages</a></li>
+                    <li><a href="{% url 'packages:index' %}">Packages</a></li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Permissions <span class="caret"></span></a>
                         <ul class="dropdown-menu">
-                            <li><a href="{% url permissions:cidr_index %}">CIDR Access</a></li>
+                            <li><a href="{% url 'permissions:cidr_index' %}">CIDRs</a></li>
+                            <li><a href="{% url 'permissions:credential_index' %}">Credentials</a></li>
                         </ul>
                     </li>
                 </ul>
-                <p class="navbar-text pull-right">Logged in as {{ user }} | <a href="{% url permissions:logout %}">logout</a></p>
+
+                <ul class="nav pull-right">
+                    <li class="dropdown">
+                        <a href="#" data-toggle="dropdown" class="dropdown-toggle">
+                            <img class="mugshot" src="{{ user.auth_profile.get_mugshot_url }}" alt="">
+                            {{ user }}
+                            <span class="caret"></span>
+                        </a>
+                        <ul class="dropdown-menu" role="menu">
+                            <li><a href="{% url 'userena_profile_edit' user.username %}">{% trans "Edit details" %}</a></li>
+                            <li><a href="{% url 'userena_password_change' user.username %}">{% trans "Change password" %}</a></li>
+                            <li class="divider"></li>
+                            <li><a href="{% url 'userena_signout' %}">{% trans "Logout" %}</a></li>
+                        </ul>
+                    </li>
+                </ul>
             </div>
         </div>
     </div>
@@ -23,16 +42,17 @@
 
 
 <div class="container-fluid">
-    <div class="row-fluid">
+    <div class="row">
         <div class="span3">
             <div class="well sidebar-nav">
+                {% if sidebar %}
                 <ul class="nav nav-list">
-                    <li class="nav-header">Local packages</li>
-                    {% for pkg in sidebar.local %}
-                    <li><a href="{{ pkg.get_absolute_url }}">{{ pkg }}</a></li>
-                    {% endfor %}
-
+                        <li class="nav-header">Local packages</li>
+                        {% for pkg in sidebar.local %}
+                        <li><a href="{{ pkg.get_absolute_url }}">{{ pkg }}</a></li>
+                        {% endfor %}
                 </ul>
+                {% endif %}
             </div>
         </div>
         <div class="span9">

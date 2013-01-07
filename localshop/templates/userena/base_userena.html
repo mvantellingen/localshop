@@ -1,0 +1,12 @@
+{% extends "layout.base.html" %}
+
+{% block body %}
+<div class="container">
+    <div class="row">
+        <h1>Localshop</h1>
+        <p>{% block content_title %}{% endblock %}</p>
+        {% block content %}{% endblock %}
+    </div>
+</div>
+{% endblock %}
+

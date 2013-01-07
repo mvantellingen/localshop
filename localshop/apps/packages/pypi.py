@@ -1,7 +1,7 @@
-import datetime
 import logging
 import xmlrpclib
 
+from localshop.utils import now
 from localshop.apps.packages import forms
 from localshop.apps.packages import models
 
@@ -66,5 +66,6 @@ def get_package_data(name, package=None):
             release_file.md5_digest = info['md5_digest']
             release_file.save()
 
-    package.update_timestamp = datetime.datetime.utcnow()
+    package.update_timestamp = now()
+    package.save()
     return package

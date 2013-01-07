@@ -1,0 +1,2 @@
+[run]
+omit = migrations, localshop/conf/server.py

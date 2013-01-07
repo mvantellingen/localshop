@@ -1,16 +1,24 @@
 import os
-
 import docutils.core
+from docutils.utils import SystemMessage
+from shutil import copyfileobj
+from tempfile import NamedTemporaryFile
+
+from django.conf import settings
 from django.contrib.auth.models import User
 from django.db import models
+from django.db.models.signals import post_delete
+from django.core.files import File
+from django.core.files.storage import get_storage_class
 from django.core.urlresolvers import reverse
+from django.utils.functional import LazyObject
 from django.utils.html import escape
 from model_utils import Choices
 from model_utils.fields import AutoCreatedField, AutoLastModifiedField
 
-from localshop.apps.packages.utils import OverwriteStorage
+from localshop.apps.packages.signals import release_file_notfound
+from localshop.apps.packages.utils import delete_files
 
-from docutils.utils import SystemMessage
 
 class Classifier(models.Model):
     name = models.CharField(max_length=255, unique=True)
@@ -36,6 +44,9 @@ class Package(models.Model):
 
     class Meta:
         ordering = ['name']
+        permissions = (
+            ("view_package", "Can view package"),
+        )
 
     def __unicode__(self):
         return self.name
@@ -72,7 +83,7 @@ class Release(models.Model):
 
     download_url = models.CharField(max_length=200, blank=True, null=True)
 
-    home_page = models.URLField(verify_exists=False, blank=True, null=True)
+    home_page = models.CharField(max_length=200, blank=True, null=True)
 
     license = models.TextField(blank=True)
 
@@ -88,6 +99,9 @@ class Release(models.Model):
 
     class Meta:
         ordering = ['-version']
+
+    def __unicode__(self):
+        return self.version
 
     @property
     def description_html(self):
@@ -108,6 +122,12 @@ def release_file_upload_to(instance, filename):
         package.name[0],
         package.name,
         filename)
+
+
+class DistributionStorage(LazyObject):
+    def _setup(self):
+        self._wrapped = get_storage_class(
+            settings.LOCALSHOP_DISTRIBUTION_STORAGE)()
 
 
 class ReleaseFile(models.Model):
@@ -133,7 +153,7 @@ class ReleaseFile(models.Model):
     filetype = models.CharField(max_length=25, choices=TYPES)
 
     distribution = models.FileField(upload_to=release_file_upload_to,
-        storage=OverwriteStorage(), max_length=512)
+        storage=DistributionStorage(), max_length=512)
 
     filename = models.CharField(max_length=200, blank=True, null=True)
 
@@ -141,12 +161,15 @@ class ReleaseFile(models.Model):
 
     python_version = models.CharField(max_length=25)
 
-    url = models.URLField(max_length=1024, blank=True)
+    url = models.CharField(max_length=1024, blank=True)
 
     user = models.ForeignKey(User, null=True)
 
     class Meta:
         unique_together = ('release', 'filetype', 'python_version', 'filename')
+
+    def __unicode__(self):
+        return self.filename
 
     def get_absolute_url(self):
         url = reverse('packages:download', kwargs={
@@ -154,3 +177,22 @@ class ReleaseFile(models.Model):
             'pk': self.pk, 'filename': self.filename
         })
         return '%s#md5=%s' % (url, self.md5_digest)
+
+    def save_filecontent(self, filename, fh):
+        tmp_file = NamedTemporaryFile()
+        copyfileobj(fh, tmp_file)
+        self.distribution.save(filename, File(tmp_file))
+
+
+if settings.LOCALSHOP_DELETE_FILES:
+    post_delete.connect(
+        delete_files, sender=ReleaseFile,
+        dispatch_uid="localshop.apps.packages.utils.delete_files")
+
+
+def download_missing_release_file(sender, release_file, **kwargs):
+    from .tasks import download_file
+    download_file.delay(pk=release_file.pk)
+
+release_file_notfound.connect(download_missing_release_file,
+    dispatch_uid='localshop_download_release_file')

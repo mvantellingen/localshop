@@ -1,8 +1,6 @@
-import base64
 import logging
 
-from django.conf import settings
-from django.contrib.auth import authenticate
+from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.http import HttpResponseForbidden
@@ -12,19 +10,19 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
-from localshop.utils import permission_required
+from localshop.http import HttpResponseUnauthorized
+from localshop.views import LoginRequiredMixin, PermissionRequiredMixin
 from localshop.apps.packages import forms
 from localshop.apps.packages import models
-from localshop.apps.packages import tasks
 from localshop.apps.packages.pypi import get_package_data
-from localshop.apps.packages.utils import parse_distutils_request, validate_client
+from localshop.apps.packages.signals import release_file_notfound
+from localshop.apps.packages.utils import parse_distutils_request
+from localshop.apps.permissions.utils import credentials_required
+from localshop.apps.permissions.utils import split_auth, authenticate_user
 
 logger = logging.getLogger(__name__)
 
-basic_realm = getattr(settings, 'BASIC_AUTH_REALM', 'pypi')
 
-
-@validate_client
 class SimpleIndex(ListView):
     """Index view with all available packages used by /simple url
 
@@ -37,39 +35,35 @@ class SimpleIndex(ListView):
     template_name = 'packages/simple_package_list.html'
 
     @method_decorator(csrf_exempt)
+    @method_decorator(credentials_required)
     def dispatch(self, request, *args, **kwargs):
         return super(SimpleIndex, self).dispatch(request, *args, **kwargs)
 
     def post(self, request):
-        data, files = parse_distutils_request(request)
+        parse_distutils_request(request)
 
         # XXX: Auth is currently a bit of a hack
-        auth = request.META.get('HTTP_AUTHORIZATION')
-        if not auth:
-            response = HttpResponse('Missing auth header')
-            response.status_code = 401
-            response['WWW-Authenticate'] = 'Basic realm="%s"' % basic_realm
-            return response
-        method, identity = auth.split()
-        username, password = base64.decodestring(identity).split(':')
-        user = authenticate(username=username, password=password)
+        method, identity = split_auth(request)
+        if not method:
+            return HttpResponseUnauthorized(content='Missing auth header')
+
+        user = authenticate_user(request)
         if not user:
-            response = HttpResponse('Invalid username/password')
-            response.status_code = 401
-            return response
+            return HttpResponse('Invalid username/password', status=401)
 
         actions = {
             'submit': handle_register_or_upload,
             'file_upload': handle_register_or_upload,
         }
 
-        handler = actions.get(data.get(':action'))
+        handler = actions.get(request.POST.get(':action'))
         if not handler:
             raise Http404('Unknown action')
-        return handler(data, files, user)
+        return handler(request.POST, request.FILES, user)
+
+simple_index = SimpleIndex.as_view()
 
 
-@validate_client
 class SimpleDetail(DetailView):
     """List all available files for a specific package.
 
@@ -80,11 +74,18 @@ class SimpleDetail(DetailView):
     context_object_name = 'package'
     template_name = 'packages/simple_package_detail.html'
 
+    @method_decorator(credentials_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(SimpleDetail, self).dispatch(request, *args, **kwargs)
+
     def get(self, request, slug, version=None):
         try:
             package = models.Package.objects.get(name__iexact=slug)
         except ObjectDoesNotExist:
             package = get_package_data(slug)
+
+        if package is None:
+            raise Http404
 
         releases = package.releases
         if version:
@@ -100,19 +101,21 @@ class SimpleDetail(DetailView):
             releases=list(releases.all()))
         return self.render_to_response(context)
 
+simple_detail = SimpleDetail.as_view()
 
-@permission_required('packages.view_package')
-class Index(ListView):
+
+class Index(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = models.Package
     context_object_name = 'packages'
+    permission_required = 'packages.view_package'
 
 
-@permission_required('packages.view_package')
-class Detail(DetailView):
+class Detail(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     model = models.Package
     context_object_name = 'package'
     slug_url_kwarg = 'name'
     slug_field = 'name'
+    permission_required = 'packages.view_package'
 
     def get_object(self, queryset=None):
         # Could be dropped when we use django 1.4
@@ -126,6 +129,7 @@ class Detail(DetailView):
 
 
 @permission_required('packages.change_package')
+@login_required
 def refresh(request, name):
     try:
         package = models.Package.objects.get(name__iexact=name)
@@ -135,7 +139,7 @@ def refresh(request, name):
     return redirect(package)
 
 
-@validate_client
+@credentials_required
 def download_file(request, name, pk, filename):
     """Redirect the client to the pypi hosted file if the file is not
     mirror'ed yet (and isn't a local package).  Otherwise serve the file.
@@ -144,7 +148,8 @@ def download_file(request, name, pk, filename):
     release_file = models.ReleaseFile.objects.get(pk=pk)
     if not release_file.distribution:
         logger.info("Queueing %s for mirroring", release_file.url)
-        tasks.download_file.delay(pk=release_file.pk)
+        release_file_notfound.send(sender=release_file.__class__,
+                                   release_file=release_file)
         return redirect(release_file.url)
 
     # TODO: Use sendfile if enabled
@@ -152,6 +157,8 @@ def download_file(request, name, pk, filename):
         content_type='application/force-download')
     response['Content-Disposition'] = 'attachment; filename=%s' % (
         release_file.filename)
+    if release_file.distribution.file.size:
+        response["Content-Length"] = release_file.distribution.file.size
     return response
 
 

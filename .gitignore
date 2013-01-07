@@ -1,1 +1,4 @@
 *.egg-info
+*.egg
+/dist/
+localshop.db

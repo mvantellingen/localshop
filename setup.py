@@ -3,23 +3,29 @@ import sys
 from setuptools import setup, find_packages, Command
 
 
-tests_require = [
+install_requires = [
+    'Django==1.4.3',
+    'South==0.7.6',
+    'Pillow==1.7.7',
+    'celery==3.0.12',
+    'kombu==2.5.4',
+    'django-celery==3.0.11',
+    'django-model-utils==1.1.0',
+    'django-userena==1.1.2',
+    'django-uuidfield==0.4.0',
+    'django-storages==1.1.5',
+    'django-configurations==0.1',
+    'docutils==0.10',
+    'eventlet==0.10.0',
+    'gunicorn==0.17.1',
+    'netaddr==0.7.10',
+    'requests==1.0.4',
 ]
 
-install_requires = [
-    'South',
-    'Django>=1.4',
-    'django-kombu==0.9.4',
-    'eventlet>=0.9.15',
-    'kombu>=1.5.1',
-    'logan>=0.2.1',
-    'gunicorn>=0.13.4',
-    'python-daemon>=1.6',
-    'django-celery',
-    'django-model-utils>=1.0',
-    'requests>=0.10',
-    'netaddr==0.7.6',
-    'docutils==0.8.1',
+tests_requires = [
+    'mock',
+    'django-nose==1.1',
+    'factory-boy==1.2.0',
 ]
 
 readme = []
@@ -32,27 +38,29 @@ class RunTests(Command):
     description = "Run the django test suite from the tests dir."
     user_options = []
     extra_env = {}
-    extra_args = ['packages']
 
     def run(self):
+        if self.distribution.install_requires:
+            self.distribution.fetch_build_eggs(
+                self.distribution.install_requires)
+        if self.distribution.tests_require:
+            self.distribution.fetch_build_eggs(self.distribution.tests_require)
+
         for env_name, env_value in self.extra_env.items():
             os.environ[env_name] = str(env_value)
 
         this_dir = os.getcwd()
-        testproj_dir = os.path.join(this_dir, "localshop")
+        testproj_dir = os.path.join(this_dir, 'localshop')
         os.chdir(testproj_dir)
         sys.path.append(testproj_dir)
-        from django.core.management import execute_manager
-        os.environ["DJANGO_SETTINGS_MODULE"] = os.environ.get(
-                        "DJANGO_SETTINGS_MODULE", "localshop.conf.server")
-        settings_file = os.environ["DJANGO_SETTINGS_MODULE"]
-        settings_mod = __import__(settings_file, {}, {}, [''])
-        prev_argv = list(sys.argv)
-        try:
-            sys.argv = [__file__, "test"] + self.extra_args
-            execute_manager(settings_mod, argv=sys.argv)
-        finally:
-            sys.argv = prev_argv
+
+        os.environ['DJANGO_SETTINGS_MODULE'] = os.environ.get(
+            'DJANGO_SETTINGS_MODULE', 'localshop.settings')
+        os.environ['DJANGO_CONFIGURATION'] = os.environ.get(
+            'DJANGO_CONFIGURATION', 'Localshop')
+
+        from configurations.management import execute_from_command_line
+        execute_from_command_line([__file__, 'test'])
 
     def initialize_options(self):
         pass
@@ -62,7 +70,7 @@ class RunTests(Command):
 
 setup(
     name='localshop',
-    version='0.3',
+    version='0.4.0',
     author='Michael van Tellingen',
     author_email='michaelvantellingen@gmail.com',
     url='http://github.com/mvantellingen/localshop',
@@ -71,8 +79,8 @@ setup(
     packages=find_packages(),
     zip_safe=False,
     install_requires=install_requires,
-    tests_require=tests_require,
-    extras_require={'test': tests_require},
+    tests_require=tests_requires,
+    extras_require={'test': tests_requires},
     cmdclass={"test": RunTests},
     license='BSD',
     include_package_data=True,
@@ -82,7 +90,7 @@ setup(
         ]
     },
     classifiers=[
-        'Development Status :: 4 - Beta',
+        'Development Status :: 5 - Production/Stable',
         'Framework :: Django',
         'Intended Audience :: Developers',
         'Intended Audience :: System Administrators',
