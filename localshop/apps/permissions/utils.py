@@ -1,15 +1,9 @@
 from functools import wraps
 
-from django.conf import settings
 from django.contrib.auth import login, authenticate
 from django.utils.decorators import available_attrs
 
 from localshop.http import HttpResponseUnauthorized
-
-credential_check_needed = (
-    'localshop.apps.permissions.backend.CredentialBackend' in
-    settings.AUTHENTICATION_BACKENDS
-)
 
 
 def decode_credentials(auth):
@@ -30,10 +24,10 @@ def authenticate_user(request):
     method, identity = split_auth(request)
     if method is not None and method.lower() == 'basic':
         key, secret = decode_credentials(identity)
-        if credential_check_needed:
-            return authenticate(access_key=key, secret_key=secret)
-        else:
-            return authenticate(username=key, password=secret)
+        user = authenticate(access_key=key, secret_key=secret)
+        if not user:
+            user = authenticate(username=key, password=secret)
+        return user
 
 
 def credentials_required(view_func):
