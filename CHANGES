@@ -1,3 +1,7 @@
+0.4.1 (2013-01-23):
+* Fix a bug which resulted in throwing 404's for packages which have a dot in
+  the name.
+
 0.4.0 (2013-01-07):
 * Use django-userena for authentication
 * Use django-configurations and now uses the optional custom settings at
