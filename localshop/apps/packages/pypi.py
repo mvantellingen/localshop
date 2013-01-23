@@ -1,4 +1,5 @@
 import logging
+import re
 import xmlrpclib
 
 from localshop.utils import now
@@ -7,6 +8,29 @@ from localshop.apps.packages import models
 
 
 logger = logging.getLogger(__name__)
+
+
+def get_search_names(name):
+    """Return a list of values to search on when we are looking for a package
+    with the given name.
+
+    This is required to search on both pyramid_debugtoolbar and
+    pyramid-debugtoolbar.
+
+    """
+    parts = re.split('[-_]', name)
+    if len(parts) == 1:
+        return parts
+
+    result = set()
+    for i in range(len(parts) - 1, 0, -1):
+        for s1 in '-_':
+            prefix = s1.join(parts[:i])
+            for s2 in '-_':
+                suffix = s2.join(parts[i:])
+                for s3 in '-_':
+                    result.add(s3.join([prefix, suffix]))
+    return list(result)
 
 
 def get_package_data(name, package=None):
@@ -24,9 +48,10 @@ def get_package_data(name, package=None):
     # package_releases() method is case-sensitive, if nothing found
     # then we search for it
     # XXX: Ask pypi to make it case-insensitive?
+    names = get_search_names(name)
     if not versions:
-        for item in client.search({'name': name}):
-            if name.lower() == item['name'].lower():
+        for item in client.search({'name': names}):
+            if item['name'].lower() in [n.lower() for n in names]:
                 package.name = name = item['name']
                 break
         else:
@@ -35,6 +60,14 @@ def get_package_data(name, package=None):
 
         # Retry retrieving the versions with the new/correct name
         versions = client.package_releases(package.name, True)
+
+    # If the matched package differs from the name we tried to retrieve then
+    # retry to fetch the package from the database.
+    if package.name != name:
+        try:
+            package = models.Package.objects.get(name=package.name)
+        except models.Package.objects.DoesNotExist:
+            pass
 
     # Save the package if it is new
     if not package.pk:

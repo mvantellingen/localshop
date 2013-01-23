@@ -2,6 +2,8 @@ import logging
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import ObjectDoesNotExist
+from django.core.urlresolvers import reverse
+from django.db.models import Q
 from django.http import Http404, HttpResponse, HttpResponseBadRequest
 from django.http import HttpResponseForbidden
 from django.shortcuts import redirect
@@ -15,6 +17,7 @@ from localshop.views import LoginRequiredMixin, PermissionRequiredMixin
 from localshop.apps.packages import forms
 from localshop.apps.packages import models
 from localshop.apps.packages.pypi import get_package_data
+from localshop.apps.packages.pypi import get_search_names
 from localshop.apps.packages.signals import release_file_notfound
 from localshop.apps.packages.utils import parse_distutils_request
 from localshop.apps.permissions.utils import credentials_required
@@ -79,13 +82,24 @@ class SimpleDetail(DetailView):
         return super(SimpleDetail, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, slug, version=None):
+        condition = Q()
+        for name in get_search_names(slug):
+            condition |= Q(name__iexact=name)
+
         try:
-            package = models.Package.objects.get(name__iexact=slug)
+            package = models.Package.objects.get(condition)
         except ObjectDoesNotExist:
             package = get_package_data(slug)
 
         if package is None:
             raise Http404
+
+        # Redirect if slug is not an exact match
+        if slug != package.name:
+            url = reverse('packages-simple:simple_detail', kwargs={
+                'slug': package.name, 'version': version
+            })
+            return redirect(url)
 
         releases = package.releases
         if version:
