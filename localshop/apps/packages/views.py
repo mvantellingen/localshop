@@ -1,4 +1,5 @@
 import logging
+from wsgiref.util import FileWrapper
 
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import ObjectDoesNotExist
@@ -167,7 +168,7 @@ def download_file(request, name, pk, filename):
         return redirect(release_file.url)
 
     # TODO: Use sendfile if enabled
-    response = HttpResponse(release_file.distribution.file,
+    response = HttpResponse(FileWrapper(release_file.distribution.file),
         content_type='application/force-download')
     response['Content-Disposition'] = 'attachment; filename=%s' % (
         release_file.filename)
