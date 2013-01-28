@@ -172,8 +172,9 @@ def download_file(request, name, pk, filename):
         content_type='application/force-download')
     response['Content-Disposition'] = 'attachment; filename=%s' % (
         release_file.filename)
-    if release_file.distribution.file.size:
-        response["Content-Length"] = release_file.distribution.file.size
+    size = release_file.distribution.file.size
+    if size:
+        response["Content-Length"] = size
     return response
 
 
