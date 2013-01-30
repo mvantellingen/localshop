@@ -1,32 +1,32 @@
 import os
 import sys
+import re
 from setuptools import setup, find_packages, Command
 
 
-install_requires = [
-    'Django==1.4.3',
-    'South==0.7.6',
-    'Pillow==2.0.0',
-    'celery==3.0.19',
-    'kombu==2.5.10',
-    'django-celery==3.0.17',
-    'django-model-utils==1.1.0',
-    'django-userena==1.2.0',
-    'django-uuidfield==0.4.0',
-    'django-storages==1.1.8',
-    'django-configurations==0.1',
-    'docutils==0.10',
-    'eventlet==0.10.0',
-    'gunicorn==0.17.4',
-    'netaddr==0.7.10',
-    'requests==1.2.0',
-]
+def parse_requirements(file_name):
+    requirements = []
+    for line in open(file_name, 'r').read().split('\n'):
+        if re.match(r'(\s*#)|(\s*$)', line):
+            continue
+        if re.match(r'\s*-e\s+', line):
+            # TODO support version numbers
+            requirements.append(re.sub(r'\s*-e\s+.*#egg=(.*)$', r'\1', line))
+        elif re.match(r'\s*-f\s+', line):
+            pass
+        else:
+            requirements.append(line)
 
-tests_requires = [
-    'mock',
-    'django-nose==1.1',
-    'factory-boy==1.2.0',
-]
+    return requirements
+
+
+def parse_dependency_links(file_name):
+    dependency_links = []
+    for line in open(file_name, 'r').read().split('\n'):
+        if re.match(r'\s*-[ef]\s+', line):
+            dependency_links.append(re.sub(r'\s*-[ef]\s+', '', line))
+
+    return dependency_links
 
 readme = []
 with open('README.rst', 'r') as fh:
@@ -78,9 +78,8 @@ setup(
     long_description='\n'.join(readme),
     packages=find_packages(),
     zip_safe=False,
-    install_requires=install_requires,
-    tests_require=tests_requires,
-    extras_require={'test': tests_requires},
+    install_requires=parse_requirements('requirements.txt'),
+    tests_require=parse_requirements('requirements-test.txt'),
     cmdclass={"test": RunTests},
     license='BSD',
     include_package_data=True,
