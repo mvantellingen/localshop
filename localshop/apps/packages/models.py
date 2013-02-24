@@ -140,6 +140,7 @@ class ReleaseFile(models.Model):
         ('bdist_rpm', 'RPM'),
         ('bdist_dumb', 'bdist_dumb'),
         ('bdist_wininst', 'bdist_wininst'),
+        ('bdist_wheel', 'bdist_wheel'),
     )
 
     created = AutoCreatedField()
