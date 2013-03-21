@@ -142,3 +142,10 @@ release from the localshop.
 
 The dotted import path of a Django storage class to be used when uploading
 a release file or retrieving it from PyPI.
+
+``LOCALSHOP_HTTP_PROXY``
+------------------------
+
+:default: ``None``
+
+Proxy server used for Internet access.

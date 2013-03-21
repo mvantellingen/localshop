@@ -1,6 +1,12 @@
+# -*- coding: utf-8 -*-
+
+import sys
 import logging
 import re
 import xmlrpclib
+import httplib
+
+from django.conf import settings
 
 from localshop.utils import now
 from localshop.apps.packages import forms
@@ -8,6 +14,28 @@ from localshop.apps.packages import models
 
 
 logger = logging.getLogger(__name__)
+
+
+class ProxiedTransport(xmlrpclib.Transport):
+    def set_proxy(self, proxy):
+        self.proxy = proxy
+
+    def make_connection(self, host):
+        self.realhost = host
+
+        # xmlrpclib Transport behaviour documented here:
+        # http://dev.laptop.org/ticket/10776
+        if sys.version_info < (2, 7):
+            h = httplib.HTTP(self.proxy)
+        else:
+            h = httplib.HTTPConnection(self.proxy)
+        return h
+
+    def send_request(self, connection, handler, request_body):
+        connection.putrequest("POST", 'http://%s%s' % (self.realhost, handler))
+
+    def send_host(self, connection, host):
+        connection.putheader('Host', self.realhost)
 
 
 def get_search_names(name):
@@ -32,7 +60,6 @@ def get_search_names(name):
                     result.add(s3.join([prefix, suffix]))
     return list(result)
 
-
 def get_package_data(name, package=None):
     """Retrieve metadata information for the given package name"""
     if not package:
@@ -41,7 +68,14 @@ def get_package_data(name, package=None):
     else:
         releases = package.get_all_releases()
 
-    client = xmlrpclib.ServerProxy('http://pypi.python.org/pypi')
+    if settings.LOCALSHOP_HTTP_PROXY:
+        p = ProxiedTransport()
+        p.set_proxy(settings.LOCALSHOP_HTTP_PROXY)
+    
+        client = xmlrpclib.ServerProxy('http://pypi.python.org/pypi',
+            transport=p)
+    else:
+        client = xmlrpclib.ServerProxy('http://pypi.python.org/pypi')
 
     versions = client.package_releases(package.name, True)
 
