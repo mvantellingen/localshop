@@ -233,6 +233,9 @@ class Base(Settings):
 
     LOCALSHOP_DISTRIBUTION_STORAGE = 'storages.backends.overwrite.OverwriteStorage'
 
+    LOCALSHOP_HTTP_PROXY = None
+
+    LOCALSHOP_ISOLATED = False
 
 class Localshop(FileSettings('~/.localshop/localshop.conf.py'), Base):
     pass

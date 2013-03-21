@@ -142,3 +142,24 @@ release from the localshop.
 
 The dotted import path of a Django storage class to be used when uploading
 a release file or retrieving it from PyPI.
+
+``LOCALSHOP_HTTP_PROXY``
+------------------------
+
+:default: ``None``
+
+Proxy server used for Internet access.
+
+``LOCALSHOP_ISOLATED``
+----------------------
+
+:default: ``False``
+
+If set to ``True`` Localshop never will try to redirect the client to PyPI. 
+This is useful for environments where the client has no Internet connection.
+
+.. note::
+   If you set ``LOCALSHOP_ISOLATED`` to ``True``, client request can be delayed
+   for a long time because the package must be downloaded from Internet before
+   it is served. You may want to set pip environment variable 
+   ``PIP_DEFAULT_TIMEOUT`` to a big value. Ex: ``300``
