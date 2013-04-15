@@ -2,6 +2,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.sites.models import Site
 from django.core.exceptions import SuspiciousOperation
 from django.core.urlresolvers import reverse
+from django.forms import ModelForm
 from django.http import HttpResponse, Http404
 from django.shortcuts import redirect, get_object_or_404
 from django.views.generic import ListView, CreateView
@@ -42,8 +43,7 @@ class CidrDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
         return reverse('permissions:cidr_index')
 
 
-class CredentialListView(LoginRequiredMixin, PermissionRequiredMixin,
-                         ListView):
+class CredentialListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     object_context_name = 'credentials'
     permission_required = 'permissions.view_credential'
 
@@ -56,8 +56,30 @@ class CredentialListView(LoginRequiredMixin, PermissionRequiredMixin,
         return context
 
 
-class CredentialDeleteView(LoginRequiredMixin, PermissionRequiredMixin,
-                           DeleteView):
+class CredentialUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+
+    class CredentialModelForm(ModelForm):
+        class Meta:
+            model = models.Credential
+            fields = ('comment',)
+
+    model = models.Credential
+    form_class = CredentialModelForm
+    slug_field = 'access_key'
+    slug_url_kwarg = 'access_key'
+    permission_required = 'permissions.change_credential'
+
+    def get_object(self, queryset=None):
+        obj = super(CredentialUpdateView, self).get_object(queryset)
+        if not obj.creator == self.request.user:
+            raise Http404
+        return obj
+
+    def get_success_url(self):
+        return reverse('permissions:credential_index')
+
+
+class CredentialDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
     model = models.Credential
     slug_field = 'access_key'
     slug_url_kwarg = 'access_key'

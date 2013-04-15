@@ -52,6 +52,8 @@ class Credential(models.Model):
     creator = models.ForeignKey(User)
     created = models.DateTimeField(default=now)
     deactivated = models.DateTimeField(blank=True, null=True)
+    comment = models.CharField(max_length=255, blank=True, null=True, default='',
+        help_text="A comment about this credential, e.g. where it's being used")
 
     objects = CredentialManager()
 
