@@ -27,11 +27,10 @@ class TestTasks(TestCase):
 
         with mock.patch('requests.get') as mock_obj:
             mock_obj.return_value = mock.Mock()
-            mock_obj.return_value.raw = HTTPResponse()
+            mock_obj.return_value.content = 'test'
             mock_obj.return_value.headers = {
                 'content-length': 1024
             }
-            mock_obj.return_value.raw._fp = StringIO('test')
             tasks.download_file(release_file.pk)
 
         release_file = models.ReleaseFile.objects.get(pk=release_file.pk)
