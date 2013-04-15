@@ -20,6 +20,8 @@ urlpatterns = patterns('',
         name='credential_deactivate'),
     url(r'^credentials/(?P<access_key>[a-f0-9]+)/secret', views.secret_key,
         name='credential_secret'),
+    url(r'^credentials/(?P<access_key>[a-f0-9]+)/edit', views.CredentialUpdateView.as_view(),
+        name='credential_edit'),
     url(r'^credentials/(?P<access_key>[a-f0-9]+)/delete', views.CredentialDeleteView.as_view(),
         name='credential_delete'),
 )
