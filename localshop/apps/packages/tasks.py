@@ -1,5 +1,6 @@
 import logging
 import os
+from cStringIO import StringIO
 
 from celery.task import task
 from django.core.files import File
@@ -17,7 +18,7 @@ def download_file(pk):
 
     # Write the file to the django file field
     filename = os.path.basename(release_file.url)
-    streaming_file = File(response.raw, filename)
+    streaming_file = File(StringIO(response.raw.read()), filename)
 
     # Setting the size manually since Django can't figure it our from
     # the raw HTTPResponse
