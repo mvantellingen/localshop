@@ -1,6 +1,8 @@
 *.egg-info
 *.egg
+/build/
 /dist/
+/source/
 localshop.db
 *.pyc
 *.swp

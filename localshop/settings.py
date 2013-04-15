@@ -233,6 +233,8 @@ class Base(Settings):
 
     LOCALSHOP_DISTRIBUTION_STORAGE = 'storages.backends.overwrite.OverwriteStorage'
 
+    LOCALSHOP_PYPI_URL = 'https://pypi.python.org/pypi'
+
     LOCALSHOP_HTTP_PROXY = None
 
     LOCALSHOP_ISOLATED = False

@@ -74,9 +74,9 @@ def get_package_data(name, package=None):
         proxy.set_proxy(settings.LOCALSHOP_HTTP_PROXY)
 
         client = xmlrpclib.ServerProxy(
-            'http://pypi.python.org/pypi', transport=proxy)
+            settings.LOCALSHOP_PYPI_URL,transport=proxy)
     else:
-        client = xmlrpclib.ServerProxy('http://pypi.python.org/pypi')
+        client = xmlrpclib.ServerProxy(settings.LOCALSHOP_PYPI_URL)
 
     versions = client.package_releases(package.name, True)
 

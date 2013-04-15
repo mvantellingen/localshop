@@ -141,6 +141,7 @@ class Detail(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
     def get_context_data(self, *args, **kwargs):
         context = super(Detail, self).get_context_data(*args, **kwargs)
         context['release'] = self.object.last_release
+        context['pypi_url'] = settings.LOCALSHOP_PYPI_URL
         return context
 
 
