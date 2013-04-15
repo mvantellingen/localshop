@@ -26,10 +26,10 @@ class ProxiedTransport(xmlrpclib.Transport):
         # xmlrpclib Transport behaviour documented here:
         # http://dev.laptop.org/ticket/10776
         if sys.version_info < (2, 7):
-            h = httplib.HTTP(self.proxy)
+            conn = httplib.HTTP(self.proxy)
         else:
-            h = httplib.HTTPConnection(self.proxy)
-        return h
+            conn = httplib.HTTPConnection(self.proxy)
+        return conn
 
     def send_request(self, connection, handler, request_body):
         connection.putrequest("POST", 'http://%s%s' % (self.realhost, handler))
@@ -60,6 +60,7 @@ def get_search_names(name):
                     result.add(s3.join([prefix, suffix]))
     return list(result)
 
+
 def get_package_data(name, package=None):
     """Retrieve metadata information for the given package name"""
     if not package:
@@ -69,11 +70,11 @@ def get_package_data(name, package=None):
         releases = package.get_all_releases()
 
     if settings.LOCALSHOP_HTTP_PROXY:
-        p = ProxiedTransport()
-        p.set_proxy(settings.LOCALSHOP_HTTP_PROXY)
-    
-        client = xmlrpclib.ServerProxy('http://pypi.python.org/pypi',
-            transport=p)
+        proxy = ProxiedTransport()
+        proxy.set_proxy(settings.LOCALSHOP_HTTP_PROXY)
+
+        client = xmlrpclib.ServerProxy(
+            'http://pypi.python.org/pypi', transport=proxy)
     else:
         client = xmlrpclib.ServerProxy('http://pypi.python.org/pypi')
 

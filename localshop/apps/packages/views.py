@@ -1,7 +1,6 @@
 import logging
-from wsgiref.util import FileWrapper
-
 from time import sleep
+from wsgiref.util import FileWrapper
 
 from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
@@ -16,8 +15,6 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 
-from localshop.http import HttpResponseUnauthorized
-from localshop.views import LoginRequiredMixin, PermissionRequiredMixin
 from localshop.apps.packages import forms
 from localshop.apps.packages import models
 from localshop.apps.packages.pypi import get_package_data
@@ -26,6 +23,8 @@ from localshop.apps.packages.signals import release_file_notfound
 from localshop.apps.packages.utils import parse_distutils_request
 from localshop.apps.permissions.utils import credentials_required
 from localshop.apps.permissions.utils import split_auth, authenticate_user
+from localshop.http import HttpResponseUnauthorized
+from localshop.views import LoginRequiredMixin, PermissionRequiredMixin
 
 logger = logging.getLogger(__name__)
 
@@ -182,7 +181,8 @@ def download_file(request, name, pk, filename):
                 release_file = models.ReleaseFile.objects.get(pk=pk)
 
     # TODO: Use sendfile if enabled
-    response = HttpResponse(FileWrapper(release_file.distribution.file),
+    response = HttpResponse(
+        FileWrapper(release_file.distribution.file),
         content_type='application/force-download')
     response['Content-Disposition'] = 'attachment; filename=%s' % (
         release_file.filename)
