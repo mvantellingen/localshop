@@ -2,3 +2,5 @@
 *.egg
 /dist/
 localshop.db
+*.pyc
+*.swp
