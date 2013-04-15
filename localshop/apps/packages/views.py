@@ -1,6 +1,9 @@
 import logging
 from wsgiref.util import FileWrapper
 
+from time import sleep
+
+from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
@@ -156,16 +159,27 @@ def refresh(request, name):
 
 @credentials_required
 def download_file(request, name, pk, filename):
-    """Redirect the client to the pypi hosted file if the file is not
-    mirror'ed yet (and isn't a local package).  Otherwise serve the file.
-
     """
+    If the requested file is not already cached locally from a previous
+    download it will be fetched from PyPi for local storage and the client will
+    be redirected to PyPi, unless the LOCALSHOP_ISOLATED variable is set to
+    True, in wich case the file will be served to the client after it is
+    downloaded.
+    """
+
     release_file = models.ReleaseFile.objects.get(pk=pk)
     if not release_file.distribution:
         logger.info("Queueing %s for mirroring", release_file.url)
         release_file_notfound.send(sender=release_file.__class__,
                                    release_file=release_file)
-        return redirect(release_file.url)
+        if not settings.LOCALSHOP_ISOLATED:
+            logger.debug("Redirecting user to pypi")
+            return redirect(release_file.url)
+        else:
+            logger.debug("Waiting for mirroring")
+            while not release_file.distribution:
+                sleep(5)
+                release_file = models.ReleaseFile.objects.get(pk=pk)
 
     # TODO: Use sendfile if enabled
     response = HttpResponse(FileWrapper(release_file.distribution.file),

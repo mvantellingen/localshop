@@ -2,20 +2,26 @@ import mimetypes
 import logging
 import os
 
+import requests
 from celery.task import task
 from django.core.files.uploadedfile import TemporaryUploadedFile
-
-import requests
+from django.conf import settings
 
 from localshop.apps.packages import models
 from localshop.apps.packages.pypi import get_package_data
-
 
 @task
 def download_file(pk):
     release_file = models.ReleaseFile.objects.get(pk=pk)
     logging.info("Downloading %s", release_file.url)
-    response = requests.get(release_file.url, stream=True)
+    if settings.LOCALSHOP_HTTP_PROXY:
+        proxyDict = {
+           "http": settings.LOCALSHOP_HTTP_PROXY,
+        }
+    else:
+        proxyDict = dict()
+
+    response = requests.get(release_file.url, stream=True, proxies=proxyDict)
 
     # Write the file to the django file field
     filename = os.path.basename(release_file.url)
