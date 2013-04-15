@@ -1,5 +1,6 @@
-import os
 import docutils.core
+import logging
+import os
 from docutils.utils import SystemMessage
 from shutil import copyfileobj
 from tempfile import NamedTemporaryFile
@@ -18,6 +19,9 @@ from model_utils.fields import AutoCreatedField, AutoLastModifiedField
 
 from localshop.apps.packages.signals import release_file_notfound
 from localshop.apps.packages.utils import delete_files
+
+
+logger = logging.getLogger(__name__)
 
 
 class Classifier(models.Model):
@@ -192,8 +196,16 @@ if settings.LOCALSHOP_DELETE_FILES:
 
 
 def download_missing_release_file(sender, release_file, **kwargs):
+    """Start a celery task to download the release file from pypi.
+
+    If `settings.LOCALSHOP_ISOLATED` is True then download the file in-process.
+
+    """
     from .tasks import download_file
-    download_file.delay(pk=release_file.pk)
+    if not settings.LOCALSHOP_ISOLATED:
+        download_file.delay(pk=release_file.pk)
+    else:
+        download_file(pk=release_file.pk)
 
 release_file_notfound.connect(download_missing_release_file,
     dispatch_uid='localshop_download_release_file')

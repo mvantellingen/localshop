@@ -1,5 +1,4 @@
 import logging
-from time import sleep
 from wsgiref.util import FileWrapper
 
 from django.conf import settings
@@ -175,10 +174,7 @@ def download_file(request, name, pk, filename):
             logger.debug("Redirecting user to pypi")
             return redirect(release_file.url)
         else:
-            logger.debug("Waiting for mirroring")
-            while not release_file.distribution:
-                sleep(5)
-                release_file = models.ReleaseFile.objects.get(pk=pk)
+            release_file = models.ReleaseFile.objects.get(pk=pk)
 
     # TODO: Use sendfile if enabled
     response = HttpResponse(
