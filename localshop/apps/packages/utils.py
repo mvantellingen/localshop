@@ -1,4 +1,5 @@
 import inspect
+import hashlib
 import logging
 import os
 
@@ -108,3 +109,14 @@ def delete_files(sender, **kwargs):
                 logger.exception(
                     'Error when trying to delete file %s of package %s:' % (
                         instance.pk, fieldfile.path))
+
+
+def md5_hash_file(fh):
+    """Return the md5 hash of the given file-object"""
+    md5 = hashlib.md5()
+    while True:
+        data = fh.read(8192)
+        if not data:
+            break
+        md5.update(data)
+    return md5.hexdigest()

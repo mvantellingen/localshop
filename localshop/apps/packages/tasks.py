@@ -9,6 +9,7 @@ from django.core.files.uploadedfile import TemporaryUploadedFile
 
 from localshop.apps.packages import models
 from localshop.apps.packages.pypi import get_package_data
+from localshop.apps.packages.utils import md5_hash_file
 
 
 @task
@@ -44,6 +45,14 @@ def download_file(pk):
                                content_type=content_type) as temp_file:
         temp_file.write(response.content)
         temp_file.seek(0)
+
+        # Validate the md5 hash of the downloaded file
+        md5_hash = md5_hash_file(temp_file)
+        if md5_hash != release_file.md5_digest:
+            logging.error("MD5 hash mismatch: %s (expected: %s)" % (
+                md5_hash, release_file.md5_digest))
+            return
+
         release_file.distribution.save(filename, temp_file)
         release_file.save()
     logging.info("Complete")
