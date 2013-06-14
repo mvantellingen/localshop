@@ -44,6 +44,7 @@ localshop!
 The next step is to give access to various hosts to use the shop. This
 is done via the webinterface (menu -> permissions -> cidr). Each ip
 address listed there will be able to download and upload packages.
+If you are unsure about ips configuration, but still want to use authentication, specify "0.0.0.0/0" as the unique cidr configuration. It will enable for any ip address.
 
 
 How it works
