@@ -84,6 +84,14 @@ To install packages with pip from your localshop add `-i` flag, e.g.::
     
     pip install -i http://localhost:8900/simple/ localshop
 
+or edit/create a ~/.pip/pip.conf file following this template::
+
+    [global]
+    index-url = http://<access_key>:<secret_key>@localhost:8900/simple
+
+Then just use pip install as you are used to do.
+You can replace access_key and secret_key by a valid username and password.
+
 Credentials for authentication
 ------------------------------
 
