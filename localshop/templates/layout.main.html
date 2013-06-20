@@ -30,6 +30,10 @@
                         <ul class="dropdown-menu" role="menu">
                             <li><a href="{% url 'userena_profile_edit' user.username %}">{% trans "Edit details" %}</a></li>
                             <li><a href="{% url 'userena_password_change' user.username %}">{% trans "Change password" %}</a></li>
+                            {% if user.is_staff %}
+                                    <li class="divider"></li>
+                                    <li><a href="{% url 'admin:index' %}">{% trans "Django admin" %}</a></li>
+                            {% endif %}
                             <li class="divider"></li>
                             <li><a href="{% url 'userena_signout' %}">{% trans "Logout" %}</a></li>
                         </ul>
