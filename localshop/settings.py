@@ -8,6 +8,11 @@ djcelery.setup_loader()
 from configurations import Settings
 from configurations.utils import uppercase_attributes
 
+try:
+    DEFAULT_PATH = os.environ['LOCALSHOP_HOME']
+except KeyError:
+    DEFAULT_PATH = os.path.expanduser('~/.localshop')
+
 
 def FileSettings(path):
     path = os.path.expanduser(path)
@@ -46,7 +51,7 @@ class Base(Settings):
     DATABASES = {
         'default': {
             'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.expanduser('~/.localshop/localshop.db'),
+            'NAME': os.path.join(DEFAULT_PATH, 'localshop.db'),
             'USER': '',
             'PASSWORD': '',
             'HOST': '',
@@ -113,7 +118,7 @@ class Base(Settings):
     TEMPLATE_LOADERS = (
         'django.template.loaders.filesystem.Loader',
         'django.template.loaders.app_directories.Loader',
-    #     'django.template.loaders.eggs.Loader',
+        #'django.template.loaders.eggs.Loader',
     )
 
     TEMPLATE_CONTEXT_PROCESSORS = [
@@ -239,5 +244,6 @@ class Base(Settings):
 
     LOCALSHOP_ISOLATED = False
 
-class Localshop(FileSettings('~/.localshop/localshop.conf.py'), Base):
+
+class Localshop(FileSettings(os.path.join(DEFAULT_PATH, 'localshop.conf.py')), Base):
     pass
