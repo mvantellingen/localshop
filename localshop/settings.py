@@ -13,6 +13,7 @@ try:
 except KeyError:
     DEFAULT_PATH = os.path.expanduser('~/.localshop')
 
+
 def FileSettings(path):
     path = os.path.expanduser(path)
     mod = imp.new_module('localshop.local')
@@ -117,7 +118,7 @@ class Base(Settings):
     TEMPLATE_LOADERS = (
         'django.template.loaders.filesystem.Loader',
         'django.template.loaders.app_directories.Loader',
-    #     'django.template.loaders.eggs.Loader',
+        #'django.template.loaders.eggs.Loader',
     )
 
     TEMPLATE_CONTEXT_PROCESSORS = [
@@ -243,5 +244,6 @@ class Base(Settings):
 
     LOCALSHOP_ISOLATED = False
 
-class Localshop(FileSettings(os.path.join(DEFAULT_PATH,'localshop.conf.py')), Base):
+
+class Localshop(FileSettings(os.path.join(DEFAULT_PATH, 'localshop.conf.py')), Base):
     pass
