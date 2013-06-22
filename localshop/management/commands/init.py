@@ -1,4 +1,4 @@
-import os.path
+import os
 import uuid
 
 from django.core.management import call_command
@@ -9,7 +9,10 @@ from django.conf import settings
 class Command(BaseCommand):
 
     def handle(self, *args, **kwargs):
-        default_path = os.path.expanduser('~/.localshop')
+        try:
+            default_path = os.environ['LOCALSHOP_HOME']
+        except KeyError:
+            default_path = os.path.expanduser('~/.localshop')
 
         if not os.path.exists(default_path):
             os.mkdir(default_path)
