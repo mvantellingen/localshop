@@ -35,7 +35,7 @@ If you like to start listening on a different HTTP port, you can use after "run_
 
 You can also start it via honcho using the Procfile::
 
-    pip install -r honcho
+    pip install honcho
     honcho start
 
 You can now visit http://localhost:8000/ and view all the packages in your
