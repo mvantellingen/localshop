@@ -26,7 +26,7 @@ If you are upgrading from an earlier version simply run::
 And then start it via::
 
     localshop run_gunicorn
-    localshop celeryd -B -E
+    localshop celery worker -B -E
 
 Celeryd is required to do the mirroring of the pypi packages once they 
 are needed.
