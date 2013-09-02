@@ -7,6 +7,8 @@ A pypi server which automatically proxies and mirrors pypi packages based
 upon packages requested. It also supports the uploading of local (private) 
 packages.
 
+**Supported Python versions:** 2.6 & 2.7.
+
 Getting started
 ---------------
 
