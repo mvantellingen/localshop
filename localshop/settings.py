@@ -234,6 +234,8 @@ class Base(Settings):
         },
     }
 
+    ALLOWED_HOSTS = ['*']
+
     LOCALSHOP_DELETE_FILES = False
 
     LOCALSHOP_DISTRIBUTION_STORAGE = 'storages.backends.overwrite.OverwriteStorage'
