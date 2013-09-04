@@ -68,7 +68,7 @@
                         <li><a href="http://crate.io/packages/{{ package.name }}">crate.io</a></li>
                     </ul>
 
-                    <a href="{% url packages:refresh name=package.name %}" class="btn"><span class="icon-refresh"></span> Refresh</a>
+                    <a href="{% url 'packages:refresh' name=package.name %}" class="btn"><span class="icon-refresh"></span> Refresh</a>
                     {% endif %}
                 </div>
             </div>
