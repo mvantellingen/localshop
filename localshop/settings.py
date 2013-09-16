@@ -246,6 +246,8 @@ class Base(Settings):
 
     LOCALSHOP_ISOLATED = False
 
+    LOCALSHOP_ISSUE_REDIRECT = False
+
 
 class Localshop(FileSettings(os.path.join(DEFAULT_PATH, 'localshop.conf.py')), Base):
     pass
