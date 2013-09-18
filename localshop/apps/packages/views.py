@@ -104,7 +104,7 @@ class SimpleDetail(DetailView):
             return redirect(url)
 
         releases = package.releases
-        if version:
+        if version and not package.is_local:
             releases = releases.filter(version=version)
 
             # Perhaps this version is new, refresh data
