@@ -1,2 +1,2 @@
 [run]
-omit = migrations, localshop/conf/server.py
+omit = migrations, localshop/settings.py
