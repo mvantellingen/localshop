@@ -1,4 +1,4 @@
-Django==1.5.2
+Django==1.5.4
 South==0.8.2
 Pillow==2.1.0
 celery==3.0.23
