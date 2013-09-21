@@ -247,5 +247,8 @@ class Base(Settings):
     LOCALSHOP_ISOLATED = False
 
 
+class LocalshopUnitTest(Base):
+    SECRET_KEY = "TEST-KEY"
+
 class Localshop(FileSettings(os.path.join(DEFAULT_PATH, 'localshop.conf.py')), Base):
     pass
