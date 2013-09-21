@@ -1,7 +1,6 @@
 language: python
 env:
-    - DJANGO_CONFIGURATION=Localshop
-    - DJANGO_SETTINGS_MODULE=localshop.settings
+    - DJANGO_CONFIGURATION=Localshop DJANGO_SETTINGS_MODULE=localshop.settings
 python: 
     - "2.6"
     - "2.7"
