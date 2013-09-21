@@ -57,7 +57,7 @@ class RunTests(Command):
         os.environ['DJANGO_SETTINGS_MODULE'] = os.environ.get(
             'DJANGO_SETTINGS_MODULE', 'localshop.settings')
         os.environ['DJANGO_CONFIGURATION'] = os.environ.get(
-            'DJANGO_CONFIGURATION', 'LocalshopUnitTest')
+            'DJANGO_CONFIGURATION', 'TestConfig')
 
         from configurations.management import execute_from_command_line
         execute_from_command_line([__file__, 'test'])
