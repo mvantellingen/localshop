@@ -1,5 +1,5 @@
 <html><head><title>Simple Index</title></head><body>
 {% for package in packages %}
-<a href="{% url 'packages-simple:simple_detail' slug=package.name version=None %}">{{ package.name }}</a><br />
+<a href="{% url 'packages-simple:simple_detail' slug=package.name version="" %}">{{ package.name }}</a><br />
 {% endfor %}
 </body></html>
