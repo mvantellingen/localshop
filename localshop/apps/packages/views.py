@@ -195,6 +195,7 @@ def handle_register_or_upload(post_data, files, user):
     This method is called with the authenticated user.
 
     """
+    print post_data
     name = post_data.get('name')
     version = post_data.get('version')
     if not name or not version:
@@ -227,6 +228,9 @@ def handle_register_or_upload(post_data, files, user):
         release = None
 
     # Validate the data
+    if not 'metadata_version' in post_data:
+        post_data['metadata_version'] = version
+
     form = forms.ReleaseForm(post_data, instance=release)
     if not form.is_valid():
         return HttpResponseBadRequest('ERRORS %s' % form.errors)
