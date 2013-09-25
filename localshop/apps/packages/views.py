@@ -195,7 +195,6 @@ def handle_register_or_upload(post_data, files, user):
     This method is called with the authenticated user.
 
     """
-    print post_data
     name = post_data.get('name')
     version = post_data.get('version')
     if not name or not version:
