@@ -1,0 +1,18 @@
+{% extends "layout.main.html" %}
+
+{% block content %}
+<h1>Hostname overview</h1>
+
+<form method="post" action="" class="form-horizontal">
+    <fieldset>
+        {% include "partial/_form_field.html" with field=form.hostname %}
+        {% include "partial/_form_field.html" with field=form.is_regex %}
+    </fieldset>
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary"><span class="icon-ok icon-white"></span> Save</button>
+        <a href="{% url 'permissions:hostname_index' %}" class="btn">Cancel</a>
+    </div>
+    {% csrf_token %}
+</form>
+{% endblock %}
