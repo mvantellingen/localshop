@@ -10,5 +10,10 @@ class CidrAdmin(admin.ModelAdmin):
 class CredentialAdmin(admin.ModelAdmin):
     list_display = ['creator', 'access_key', 'created', 'comment']
 
+
+class HostnameAdmin(admin.ModelAdmin):
+    pass
+
+admin.site.register(models.Hostname, HostnameAdmin)
 admin.site.register(models.CIDR, CidrAdmin)
 admin.site.register(models.Credential, CredentialAdmin)
