@@ -1,3 +1,6 @@
+0.4.2:
+* Allow localshop to be initialised without any interaction, useful for automating installation
+
 0.4.1 (2013-01-23):
 * Fix a bug which resulted in throwing 404's for packages which have a dot in
   the name.
