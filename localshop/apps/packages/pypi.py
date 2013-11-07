@@ -40,19 +40,22 @@ def get_package_data(name, package=None):
     if not package.pk:
         package.save()
 
+    multi_data = xmlrpclib.MultiCall(client)
+    multi_urls = xmlrpclib.MultiCall(client)
     for version in versions:
+        multi_data.release_data(package.name, version)
+        multi_urls.package_urls(package.name, version)
+
+    for data, release_files, version in zip(multi_data(), multi_urls(), versions):
         release, files = releases.get(version, (None, {}))
         if not release:
             release = models.Release(package=package, version=version)
             release.save()
 
-        data = client.release_data(package.name, release.version)
-
         release_form = forms.PypiReleaseDataForm(data, instance=release)
         if release_form.is_valid():
             release_form.save()
 
-        release_files = client.package_urls(package.name, release.version)
         for info in release_files:
             release_file = files.get(info['filename'])
             if not release_file:

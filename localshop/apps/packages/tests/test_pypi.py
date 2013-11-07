@@ -6,6 +6,17 @@ from localshop.apps.packages import models
 
 
 class TestPypi(TestCase):
+    def set_up_multi_call(self, class_mock):
+        def new_mock(client):
+            obj_mock = mock.Mock()
+            obj_mock.side_effect = lambda: [
+                getattr(client, mcall[0])(*mcall[1], **mcall[2])
+                for mcall in obj_mock.method_calls
+            ]
+            return obj_mock
+        class_mock.side_effect = new_mock
+        return class_mock
+
     def test_get_package_data_new(self):
         from localshop.apps.packages.pypi import get_package_data
 
@@ -59,7 +70,9 @@ class TestPypi(TestCase):
                 }
             client.release_data.side_effect = release_data_side_effect
 
-            package = get_package_data('localshop')
+            with mock.patch('xmlrpclib.MultiCall') as multi_call_class_mock:
+                self.set_up_multi_call(multi_call_class_mock)
+                package = get_package_data('localshop')
 
         package = models.Package.objects.get(pk=package.pk)
 
@@ -137,7 +150,9 @@ class TestPypi(TestCase):
                         'localshop/localshop-0.1.tar.gz'
                 }]
 
-            package = get_package_data('Localshop')
+            with mock.patch('xmlrpclib.MultiCall') as multi_call_class_mock:
+                self.set_up_multi_call(multi_call_class_mock)
+                package = get_package_data('Localshop')
 
             client.search.called_with({'name': 'Localshop'})
 
