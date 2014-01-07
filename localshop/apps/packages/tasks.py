@@ -19,7 +19,7 @@ def download_file(pk):
 
     proxies = None
     if settings.LOCALSHOP_HTTP_PROXY:
-        proxies = {'http': settings.LOCALSHOP_HTTP_PROXY}
+        proxies = settings.LOCALSHOP_HTTP_PROXY
     response = requests.get(release_file.url, stream=True, proxies=proxies)
 
     # Write the file to the django file field

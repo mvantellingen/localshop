@@ -5,6 +5,8 @@ import logging
 import re
 import xmlrpclib
 import httplib
+import requests
+from copy import copy
 
 from django.conf import settings
 
@@ -16,26 +18,31 @@ from localshop.apps.packages import models
 logger = logging.getLogger(__name__)
 
 
-class ProxiedTransport(xmlrpclib.Transport):
-    def set_proxy(self, proxy):
-        self.proxy = proxy
+class RequestTransport(xmlrpclib.Transport, object):
 
-    def make_connection(self, host):
-        self.realhost = host
+    def __init__(self, use_datetime=0, proxies=None):
+        super(RequestTransport, self).__init__(use_datetime)
+        self.session = requests.Session()
+        self.configure_requests(proxies=proxies)
 
-        # xmlrpclib Transport behaviour documented here:
-        # http://dev.laptop.org/ticket/10776
-        if sys.version_info < (2, 7):
-            conn = httplib.HTTP(self.proxy)
-        else:
-            conn = httplib.HTTPConnection(self.proxy)
-        return conn
+    def configure_requests(self, proxies=None):
+        self.session.headers.update({
+            'Content-Type': 'text/xml',
+            'User-Agent': self.user_agent,
+            'Accept-Encoding': 'identity',
+        })
+        self.session.proxies = copy(proxies)
 
-    def send_request(self, connection, handler, request_body):
-        connection.putrequest("POST", 'http://%s%s' % (self.realhost, handler))
+    def set_proxy(self, proxies):
+        self.session.proxies = copy(proxies)
 
-    def send_host(self, connection, host):
-        connection.putheader('Host', self.realhost)
+    def request(self, host, handler, request_body, verbose=0):
+        r = self.session.post('https://%s%s' % (host, handler), data=request_body)
+        if r.status_code == 200:
+            self.verbose = verbose
+            from StringIO import StringIO
+            s = StringIO(r.content)
+            return self.parse_response(s)
 
 
 def get_search_names(name):
@@ -70,7 +77,7 @@ def get_package_data(name, package=None):
         releases = package.get_all_releases()
 
     if settings.LOCALSHOP_HTTP_PROXY:
-        proxy = ProxiedTransport()
+        proxy = RequestTransport()
         proxy.set_proxy(settings.LOCALSHOP_HTTP_PROXY)
 
         client = xmlrpclib.ServerProxy(
