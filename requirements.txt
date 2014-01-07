@@ -13,4 +13,4 @@ docutils==0.11
 eventlet==0.13.0
 gunicorn==18.0
 netaddr==0.7.10
-requests==1.2.3
+requests==2.1.0
