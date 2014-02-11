@@ -6,8 +6,8 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.db.models import Q
-from django.http import Http404, HttpResponse, HttpResponseBadRequest
-from django.http import HttpResponseForbidden
+from django.http import (Http404, HttpResponse, HttpResponseBadRequest,
+                         HttpResponseForbidden)
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
@@ -176,6 +176,9 @@ def download_file(request, name, pk, filename):
             return redirect(release_file.url)
         else:
             release_file = models.ReleaseFile.objects.get(pk=pk)
+
+    if settings.MEDIA_URL:
+        return redirect(release_file.distribution.url)
 
     # TODO: Use sendfile if enabled
     response = HttpResponse(
