@@ -37,7 +37,7 @@ And then start it via::
 Celeryd is required to do the mirroring of the pypi packages once they 
 are needed.
 
-If you like to start listening on a different HTTP port, you can use after "run_gunicorn" the parameter 0.0.0.0:80, wich will make your sistem to listen all network interfaces on port 80. This affects all URL examples below, because they are using 8000, which is the default HTTP port.
+If you like to start listening on a different network interface and HTTP port, you can use the parameter "0.0.0.0:80" after "run_gunicorn". This example will make your system listen to all network interfaces on port 80. This affects all URL examples below, because they are using 8000 (the default HTTP port).
 
 You can also start it via honcho using the Procfile::
 
