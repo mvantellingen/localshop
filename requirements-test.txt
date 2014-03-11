@@ -3,4 +3,4 @@ mock==1.0.1
 coverage==3.6
 coveralls
 django-nose==1.2
-factory_boy==2.1.2
+factory_boy==2.3.1
