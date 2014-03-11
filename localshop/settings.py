@@ -23,8 +23,9 @@ def FileSettings(path):
         pass
 
     try:
-        execfile(path, mod.__dict__)
-    except IOError, e:
+        with open(path, 'r') as fh:
+            exec(fh.read(), mod.__dict__)
+    except IOError as e:
         print("Notice: Unable to load configuration file %s (%s), "
               "using default settings\n\n" % (path, e.strerror))
         return Holder
