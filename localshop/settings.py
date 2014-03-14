@@ -8,6 +8,10 @@ djcelery.setup_loader()
 from configurations import Settings
 from configurations.utils import uppercase_attributes
 
+import ldap
+from django_auth_ldap.config import LDAPSearch, GroupOfNamesType
+
+
 try:
     DEFAULT_PATH = os.environ['LOCALSHOP_HOME']
 except KeyError:
@@ -23,9 +27,8 @@ def FileSettings(path):
         pass
 
     try:
-        with open(path, 'r') as fh:
-            exec(fh.read(), mod.__dict__)
-    except IOError as e:
+        execfile(path, mod.__dict__)
+    except IOError, e:
         print("Notice: Unable to load configuration file %s (%s), "
               "using default settings\n\n" % (path, e.strerror))
         return Holder
@@ -198,7 +201,10 @@ class Base(Settings):
         'userena.backends.UserenaAuthenticationBackend',
         'guardian.backends.ObjectPermissionBackend',
         'localshop.apps.permissions.backend.CredentialBackend',
+        'localshop.apps.permissions.backend.LDAPBackend',
+        'django_auth_ldap.backend.LDAPBackend',
         'django.contrib.auth.backends.ModelBackend',
+
     )
 
     AUTH_PROFILE_MODULE = 'permissions.AuthProfile'
@@ -208,6 +214,15 @@ class Base(Settings):
     USERENA_MUGSHOT_GRAVATAR = True
     USERENA_MUGSHOT_SIZE = 20
     ANONYMOUS_USER_ID = -1
+
+
+    # LDAP
+    AUTH_LDAP_SERVER_URI = "ldap://ldapsample.com"
+
+    AUTH_LDAP_BIND_DN = "cn=username,dc=ldapsample,dc=com"
+    AUTH_LDAP_BIND_PASSWORD = "sompass"
+    #AUTH_LDAP_USER_DN_TEMPLATE = "uid=%(user)s,ou=users,dc=ldapsample,dc=com"
+    AUTH_LDAP_USER_SEARCH = LDAPSearch("ou=users,dc=ldapsample,dc=com", ldap.SCOPE_SUBTREE, "(uid=%(user)s)")
 
     # A sample logging configuration. The only tangible logging
     # performed by this configuration is to send an email to
