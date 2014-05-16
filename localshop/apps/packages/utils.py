@@ -18,10 +18,7 @@ def parse_distutils_request(request):
 
     """
 
-    try:
-        sep = request.raw_post_data.splitlines()[1]
-    except:
-        raise ValueError('Invalid post data')
+    sep = request.raw_post_data.splitlines()[1]
 
     request.POST = QueryDict('', mutable=True)
     try:
