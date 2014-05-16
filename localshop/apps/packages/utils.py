@@ -13,12 +13,12 @@ logger = logging.getLogger(__name__)
 
 
 def parse_distutils_request(request):
-    """Parse the `request.raw_post_data` and update the request POST and FILES
+    """Parse the `request.body` and update the request POST and FILES
     attributes .
 
     """
 
-    sep = request.raw_post_data.splitlines()[1]
+    sep = request.body.splitlines()[1]
 
     request.POST = QueryDict('', mutable=True)
     try:
@@ -26,7 +26,7 @@ def parse_distutils_request(request):
     except Exception:
         pass
 
-    for part in filter(lambda e: e.strip(), request.raw_post_data.split(sep)):
+    for part in filter(lambda e: e.strip(), request.body.split(sep)):
         try:
             header, content = part.lstrip().split('\n', 1)
         except Exception:
