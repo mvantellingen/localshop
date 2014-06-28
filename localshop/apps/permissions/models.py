@@ -7,6 +7,8 @@ from userena.models import UserenaBaseProfile
 from uuidfield import UUIDField
 
 from localshop.utils import now
+import re
+import socket
 
 
 class AuthProfile(UserenaBaseProfile):
@@ -20,6 +22,26 @@ class CIDRManager(models.Manager):
             require_credentials=with_credentials
         ).values_list('cidr', flat=True)
         return bool(netaddr.all_matching_cidrs(ip_addr, cidrs))
+
+class Hostname(models.Model):
+
+    hostname = models.CharField(
+        max_length=255, help_text='Add a hostname, or regex to match aginst')
+    is_regex = models.BooleanField(default=False)
+
+    def __unicode__(self):
+        return self.hostname
+
+    def is_matching(self, ip_addr):
+
+        hostname = socket.gethostbyaddr(ip_addr)[0]
+
+        if self.is_regex:
+            match = re.search(self.hostname, hostname)
+            return bool(match)
+        else:
+            hostname_ip = socket.gethostbyname(self.hostname)
+            return hostname_ip == ip_addr
 
 
 class CIDR(models.Model):

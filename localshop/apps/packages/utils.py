@@ -2,6 +2,7 @@ import inspect
 import hashlib
 import logging
 import os
+import xmlrpclib
 
 from django.core.files.uploadedfile import TemporaryUploadedFile
 from django.db.models import FieldDoesNotExist
@@ -17,23 +18,23 @@ def parse_distutils_request(request):
     attributes .
 
     """
-
-    try:
-        sep = request.raw_post_data.splitlines()[1]
-    except:
-        raise ValueError('Invalid post data')
-
+    lines = request.raw_post_data.splitlines()
+    seperator = next(line for line in lines if line.startswith('----'))
     request.POST = QueryDict('', mutable=True)
+
+    raw_post = request.raw_post_data.split(seperator)
+
+    raw_lines = [line.lstrip() for line in raw_post if line.lstrip()]
     try:
         request._files = MultiValueDict()
     except Exception:
         pass
 
-    for part in filter(lambda e: e.strip(), request.raw_post_data.split(sep)):
-        try:
-            header, content = part.lstrip().split('\n', 1)
-        except Exception:
-            continue
+    for line in raw_lines:
+
+        line_content = line.lstrip().split('\n', 1)
+        header = line_content[0]
+        content = line_content[1]
 
         if content.startswith('\n'):
             content = content[1:]
@@ -60,7 +61,6 @@ def parse_distutils_request(request):
             if content == 'UNKNOWN':
                 content = None
             request.POST.appendlist(headers["name"], content)
-
 
 def parse_header(header):
     headers = {}

@@ -12,6 +12,24 @@ from localshop.views import LoginRequiredMixin, PermissionRequiredMixin
 from localshop.utils import now
 from localshop.apps.permissions import models
 
+class HostnameListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+    model = models.Hostname
+    permission_required = 'permissions.view_hostname'
+
+class HostnameUpdateView(LoginRequiredMixin, PermissionRequiredMixin,
+                         UpdateView):
+    model = models.Hostname
+    permission_required = 'permissions.change_hostname'
+
+class HostnameCreateView(LoginRequiredMixin, PermissionRequiredMixin,
+                         CreateView):
+    model = models.Hostname
+    permission_required = 'permissions.add_hostname'
+
+class HostnameDeleteView(LoginRequiredMixin, PermissionRequiredMixin,
+                         DeleteView):
+    model = models.Hostname
+    permission_required = 'permissions.delete_hostname'
 
 class CidrListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = models.CIDR
