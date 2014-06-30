@@ -38,7 +38,7 @@ def FileSettings(path):
 
 class Base(Settings):
     # Django settings for localshop project.
-    PROJECT_ROOT = os.path.join(os.path.dirname(__file__), os.pardir)
+    PROJECT_ROOT = os.path.dirname(__file__)
 
     DEBUG = False
     TEMPLATE_DEBUG = DEBUG
