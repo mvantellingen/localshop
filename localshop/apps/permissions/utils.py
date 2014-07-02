@@ -26,9 +26,9 @@ def authenticate_user(request):
     method, identity = split_auth(request)
     if method is not None and method.lower() == 'basic':
         key, secret = decode_credentials(identity)
-        user = authenticate(access_key=key, secret_key=secret)
+        user = authenticate(username=key, password=secret)
         if not user:
-            user = authenticate(username=key, password=secret)
+            user = authenticate(access_key=key, secret_key=secret)
         return user
 
 
