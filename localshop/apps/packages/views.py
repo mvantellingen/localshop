@@ -183,9 +183,15 @@ def download_file(request, name, pk, filename):
         content_type='application/force-download')
     response['Content-Disposition'] = 'attachment; filename=%s' % (
         release_file.filename)
-    size = release_file.distribution.file.size
-    if size:
-        response["Content-Length"] = size
+
+    try:
+        size = release_file.distribution.file.size
+    except (AttributeError, NotImplementedError):
+        pass
+    else:
+        if size:
+            response["Content-Length"] = size
+    
     return response
 
 
