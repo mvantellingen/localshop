@@ -14,7 +14,7 @@ dispatcher = SimpleXMLRPCDispatcher(allow_none=False, encoding=None)
 @credentials_required
 def handle_request(request):
     response = HttpResponse(mimetype='application/xml')
-    response.write(dispatcher._marshaled_dispatch(request.raw_post_data))
+    response.write(dispatcher._marshaled_dispatch(request.body))
     return response
 
 
