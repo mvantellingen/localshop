@@ -177,12 +177,32 @@ def download_file(request, name, pk, filename):
         else:
             release_file = models.ReleaseFile.objects.get(pk=pk)
 
-    # TODO: Use sendfile if enabled
-    response = HttpResponse(
-        FileWrapper(release_file.distribution.file),
-        content_type='application/force-download')
-    response['Content-Disposition'] = 'attachment; filename=%s' % (
-        release_file.filename)
+    content_type = 'application/force-download'
+
+    if hasattr(settings, 'USE_ACCEL_REDIRECT'):
+        use_accel_redirect = settings.USE_ACCEL_REDIRECT
+    else:
+        use_accel_redirect = False
+
+    if use_accel_redirect:
+        response = HttpResponse(content='', content_type=content_type)
+        url = release_file.distribution.url
+        try:
+            response['X-Accel-Redirect'] = settings.ACCEL_REDIRECT_SLUG + url
+        except AttributeError as exc:
+            logger.error('ACCEL_REDIRECT_SLUG should be defined')
+            raise
+        response['X-Accel-Buffering'] = 'yes'
+
+    else:
+        response = HttpResponse(
+            FileWrapper(release_file.distribution.file),
+            content_type=content_type,
+        )
+
+    response['Content-Disposition'] = (
+        'attachment; filename={}'.format(release_file.filename)
+    )
 
     try:
         size = release_file.distribution.file.size
