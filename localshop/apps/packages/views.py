@@ -185,6 +185,12 @@ def download_file(request, name, pk, filename):
         use_accel_redirect = False
 
     if use_accel_redirect:
+        # Nginx-config must contain something like that:
+        # location /.storage/ {
+        #     internal;
+        #     proxy_pass $arg_fileurl;
+        #     proxy_hide_header Content-Type;
+        # }
         response = HttpResponse(content='', content_type=content_type)
         url = release_file.distribution.url
         try:
