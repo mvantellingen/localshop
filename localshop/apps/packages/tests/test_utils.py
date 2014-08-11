@@ -65,7 +65,7 @@ class TestParseDistutilsRequest(TestCase):
             '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254--\n'
         )
         request = Mock()
-        request.raw_post_data = data
+        request.body = data
         request.FILES = MultiValueDict()
         parse_distutils_request(request)
 
