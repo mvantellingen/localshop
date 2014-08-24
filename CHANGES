@@ -2,6 +2,8 @@
 * Allow localshop to be initialised without any interaction, useful for automating installation
 * Fix downloading packages with mismatched underscore vs dashes in the package
   names.
+* Switch to pytest
+* Include various fixes (see pull-requests / contributors)
 
 0.4.1 (2013-01-23):
 * Fix a bug which resulted in throwing 404's for packages which have a dot in
