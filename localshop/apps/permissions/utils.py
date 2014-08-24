@@ -3,6 +3,7 @@ from functools import wraps
 from django.contrib.auth import login, authenticate
 from django.utils.decorators import available_attrs
 from django.http import HttpResponseForbidden
+from django.db import DataError, DatabaseError
 
 from localshop.apps.permissions.models import CIDR
 from localshop.http import HttpResponseUnauthorized
@@ -26,7 +27,11 @@ def authenticate_user(request):
     method, identity = split_auth(request)
     if method is not None and method.lower() == 'basic':
         key, secret = decode_credentials(identity)
-        user = authenticate(access_key=key, secret_key=secret)
+        try:
+            user = authenticate(access_key=key, secret_key=secret)
+        except (DatabaseError, DataError):
+            # we fallback on django user auth in case of DB error
+            user = None
         if not user:
             user = authenticate(username=key, password=secret)
         return user
