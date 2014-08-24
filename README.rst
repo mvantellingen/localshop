@@ -110,7 +110,7 @@ localshop can create for you.
 
 Go to the Credentials section and click on create. Use the access key
 as the username and the secret key as the password when uloading packages.
-A ``.pypirc`` could look like this::
+A ``~/.pypirc`` could look like this::
 
     [distutils]
     index-servers =
