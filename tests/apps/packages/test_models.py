@@ -2,13 +2,13 @@ import os.path
 from cStringIO import StringIO
 
 from django.test import TestCase
-
 from storages.backends.overwrite import OverwriteStorage
 
 from localshop.apps.packages import models
 from localshop.apps.packages import utils
-from localshop.apps.packages.tests import factories
 from localshop.utils import TemporaryMediaRootMixin
+
+from tests.apps.packages import factories
 
 
 class TestReleaseFile(TemporaryMediaRootMixin, TestCase):

@@ -150,9 +150,6 @@ class Base(Settings):
         os.path.join(PROJECT_ROOT, 'localshop', 'templates'),
     )
 
-    TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
-    NOSE_ARGS = ['--logging-clear-handlers', '--cover-package=localshop']
-
     BROKER_URL = "django://"
 
     CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
@@ -185,13 +182,6 @@ class Base(Settings):
         'localshop.apps.packages',
         'localshop.apps.permissions',
     ]
-
-    import pkg_resources
-    try:
-        pkg_resources.get_distribution('django_nose')
-        INSTALLED_APPS.append('django_nose')
-    except pkg_resources.DistributionNotFound:
-        pass
 
     # Auth settings
     AUTHENTICATION_BACKENDS = (
