@@ -1,12 +1,9 @@
-# -*- coding: utf-8 -*-
-
-import sys
 import logging
 import re
-import xmlrpclib
-import httplib
 import requests
+import xmlrpclib
 from copy import copy
+from StringIO import StringIO
 
 from django.conf import settings
 
@@ -38,12 +35,13 @@ class RequestTransport(xmlrpclib.Transport, object):
         self.session.proxies = copy(proxies)
 
     def request(self, host, handler, request_body, verbose=0):
-        r = self.session.post('https://%s%s' % (host, handler), data=request_body)
-        if r.status_code == 200:
+        response = self.session.post(
+            'https://%s%s' % (host, handler), data=request_body)
+
+        if response.status_code == 200:
             self.verbose = verbose
-            from StringIO import StringIO
-            s = StringIO(r.content)
-            return self.parse_response(s)
+            fh = StringIO(response.content)
+            return self.parse_response(fh)
 
 
 def get_search_names(name):
@@ -69,6 +67,19 @@ def get_search_names(name):
     return list(result)
 
 
+def get_xmlrpc_client():
+    """Return XMLRPC client"""
+    if settings.LOCALSHOP_HTTP_PROXY:
+        proxy = RequestTransport()
+        proxy.set_proxy(settings.LOCALSHOP_HTTP_PROXY)
+
+        client = xmlrpclib.ServerProxy(
+            settings.LOCALSHOP_PYPI_URL, transport=proxy)
+    else:
+        client = xmlrpclib.ServerProxy(settings.LOCALSHOP_PYPI_URL)
+    return client
+
+
 def get_package_data(name, package=None):
     """Retrieve metadata information for the given package name"""
     if not package:
@@ -77,14 +88,7 @@ def get_package_data(name, package=None):
     else:
         releases = package.get_all_releases()
 
-    if settings.LOCALSHOP_HTTP_PROXY:
-        proxy = RequestTransport()
-        proxy.set_proxy(settings.LOCALSHOP_HTTP_PROXY)
-
-        client = xmlrpclib.ServerProxy(
-            settings.LOCALSHOP_PYPI_URL,transport=proxy)
-    else:
-        client = xmlrpclib.ServerProxy(settings.LOCALSHOP_PYPI_URL)
+    client = get_xmlrpc_client()
 
     versions = client.package_releases(package.name, True)
 
@@ -123,7 +127,6 @@ def get_package_data(name, package=None):
             release.save()
 
         data = client.release_data(package.name, release.version)
-
         release_form = forms.PypiReleaseDataForm(data, instance=release)
         if release_form.is_valid():
             release_form.save()
