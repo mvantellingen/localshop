@@ -14,6 +14,9 @@ from localshop.apps.packages.utils import md5_hash_file
 
 @task
 def download_file(pk):
+    """Download the file reference in `models.ReleaseFile` with the given pk.
+
+    """
     release_file = models.ReleaseFile.objects.get(pk=pk)
     logging.info("Downloading %s", release_file.url)
 
@@ -60,6 +63,7 @@ def download_file(pk):
 
 @task
 def update_packages():
+    """Update package information for all packages"""
     logging.info('Updated packages')
     for package in models.Package.objects.filter(is_local=False):
         logging.info('Updating package %s', package.name)

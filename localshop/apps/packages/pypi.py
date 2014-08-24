@@ -19,6 +19,7 @@ logger = logging.getLogger(__name__)
 
 
 class RequestTransport(xmlrpclib.Transport, object):
+    """Custom transport (using requests) for the XMLRPC connection."""
 
     def __init__(self, use_datetime=0, proxies=None):
         super(RequestTransport, self).__init__(use_datetime)
