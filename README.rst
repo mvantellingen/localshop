@@ -221,8 +221,3 @@ If set to ``False``, users will be preveneted from overwriting already existing
 release files. Can be used to encourage developers to bump versions rather than
 overwriting. This is PyPI's behaviour.
 
-.. note::
-   If you set ``LOCALSHOP_ISOLATED`` to ``True``, client request can be delayed
-   for a long time because the package must be downloaded from Internet before
-   it is served. You may want to set pip environment variable 
-   ``PIP_DEFAULT_TIMEOUT`` to a big value. Ex: ``300``
