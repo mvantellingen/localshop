@@ -236,7 +236,7 @@ class Base(Settings):
 
     LOCALSHOP_ISOLATED = False
     
-    LOCALSHOP_RELEASE_OVERWRITE = False
+    LOCALSHOP_RELEASE_OVERWRITE = True
 
     # Use X-Forwarded-For header as the source for the client's IP.
     # Use where you have Nginx/Apache/etc as a reverse proxy infront of Localshop/Gunicorn.
