@@ -34,8 +34,12 @@ def parse_distutils_request(request):
 
         if content.startswith('\n'):
             content = content[1:]
+        elif content.startswith("\r\n"):
+            content = content[2:]
 
-        if content.endswith('\n'):
+        if content.endswith("\r\n"):
+            content = content[:-2]
+        elif content.endswith('\n') or content.endswith("\r"):
             content = content[:-1]
 
         headers = parse_header(header)
