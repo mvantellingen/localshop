@@ -27,6 +27,8 @@ urlpatterns = patterns('',
     # POST requests to /simple/ and /simple both work
     url(r'^simple$', 'localshop.apps.packages.views.simple_index'),
 
+    url(r'^local/', 'localshop.apps.packages.views.local_list'),
+
     url(r'^permissions/',
         include('localshop.apps.permissions.urls', namespace='permissions')),
 

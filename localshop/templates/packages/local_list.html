@@ -1,0 +1,15 @@
+<html>
+  <head>
+      <meta charset="utf-8" />
+      <title>Local files</title>
+      <style>
+        a { display: block; }
+      </style>
+  </head>
+  <body>
+    <h1>Local files</h1>
+{% for file in files %}
+    <a href="{{ file.get_absolute_url }}" rel="package">{{ file.filename }}</a>
+{% endfor %}
+  </body>
+</html>

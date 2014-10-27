@@ -120,6 +120,27 @@ class SimpleDetail(DetailView):
 simple_detail = SimpleDetail.as_view()
 
 
+class LocalList(ListView):
+    """Index with all mirrored or local files
+
+    This page can be used by pip as url for --find-links option and when used
+    with --no-index we ensure that no request can be done to pypi.python.org
+    """
+
+    queryset = models.ReleaseFile.objects.exclude(
+        distribution="",
+    ).order_by("release__package__name")
+    context_object_name = "files"
+    http_method_names = ["get"]
+    template_name = "packages/local_list.html"
+
+    @method_decorator(credentials_required)
+    def dispatch(self, request, *args, **kwargs):
+        return super(LocalList, self).dispatch(request, *args, **kwargs)
+
+local_list = LocalList.as_view()
+
+
 class Index(LoginRequiredMixin, PermissionRequiredMixin, ListView):
     model = models.Package
     context_object_name = 'packages'
