@@ -196,3 +196,12 @@ This is useful for environments where the client has no Internet connection.
    for a long time because the package must be downloaded from Internet before
    it is served. You may want to set pip environment variable 
    ``PIP_DEFAULT_TIMEOUT`` to a big value. Ex: ``300``
+
+``LOCALSHOP_USE_PROXIED_IP``
+----------------------------
+
+:default: ``False``
+
+If set to ``True`` Localshop will use the X-Forwarded-For header to validate
+the client IP address. Use this when Localshop is running behind a reverse
+proxy such as Nginx or Apache and you want to use IP-based permissions.

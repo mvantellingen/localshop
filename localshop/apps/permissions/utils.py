@@ -1,5 +1,6 @@
 from functools import wraps
 
+from django.conf import settings
 from django.contrib.auth import login, authenticate
 from django.utils.decorators import available_attrs
 from django.http import HttpResponseForbidden
@@ -44,7 +45,17 @@ def credentials_required(view_func):
     """
     @wraps(view_func, assigned=available_attrs(view_func))
     def decorator(request, *args, **kwargs):
-        ip_addr = request.META['REMOTE_ADDR']
+        if settings.LOCALSHOP_USE_PROXIED_IP:
+            try:
+                ip_addr = request.META['HTTP_X_FORWARDED_FOR']
+            except KeyError:
+                return HttpResponseForbidden('No permission')
+            else:
+                # HTTP_X_FORWARDED_FOR can be a comma-separated list of IPs. The
+                # client's IP will be the first one.
+                ip_addr = ip_addr.split(",")[0].strip()
+        else:
+            ip_addr = request.META['REMOTE_ADDR']
 
         if CIDR.objects.has_access(ip_addr, with_credentials=False):
             return view_func(request, *args, **kwargs)

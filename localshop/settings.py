@@ -237,6 +237,10 @@ class Base(Settings):
 
     LOCALSHOP_ISOLATED = False
 
+    # Use X-Forwarded-For header as the source for the client's IP.
+    # Use where you have Nginx/Apache/etc as a reverse proxy infront of Localshop/Gunicorn.
+    LOCALSHOP_USE_PROXIED_IP = False
+
 
 class TestConfig(Base):
     SECRET_KEY = "TEST-KEY"
