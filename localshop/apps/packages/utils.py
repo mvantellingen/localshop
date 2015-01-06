@@ -13,50 +13,59 @@ logger = logging.getLogger(__name__)
 
 
 def parse_distutils_request(request):
-    """Parse the `request.body` and update the request POST and FILES
-    attributes .
+    """
+    Due to a bug in the Python distutils library, the request post is sent using \n
+    as a separator instead of the \r\n that the HTTP spec demands. This breaks the Django
+    form parser and therefore we have to write a custom parser.
 
+    This bug was fixed in the Python 2.7.4 and 3.4:
+
+    http://bugs.python.org/issue10510
     """
 
-    sep = request.body.splitlines()[1]
+    if not request.body.startswith('\r\n'):
+        sep = request.body.splitlines()[1]
 
-    request.POST = QueryDict('', mutable=True)
-    try:
-        request._files = MultiValueDict()
-    except Exception:
-        pass
-
-    for part in filter(lambda e: e.strip(), request.body.split(sep)):
+        request.POST = QueryDict('', mutable=True)
         try:
-            header, content = part.lstrip().split('\n', 1)
+            request._files = MultiValueDict()
         except Exception:
-            continue
+            pass
 
-        if content.startswith('\n'):
-            content = content[1:]
+        for part in filter(lambda e: e.strip(), request.body.split(sep)):
+            try:
+                header, content = part.lstrip().split('\n', 1)
+            except Exception:
+                continue
 
-        if content.endswith('\n'):
-            content = content[:-1]
+            if content.startswith('\n'):
+                content = content[1:]
 
-        headers = parse_header(header)
+            if content.endswith('\n'):
+                content = content[:-1]
 
-        if "name" not in headers:
-            continue
+            headers = parse_header(header)
 
-        if "filename" in headers and headers['name'] == 'content':
-            dist = TemporaryUploadedFile(name=headers["filename"],
-                                         size=len(content),
-                                         content_type="application/gzip",
-                                         charset='utf-8')
-            dist.write(content)
-            dist.seek(0)
-            request.FILES.appendlist('distribution', dist)
-        else:
-            # Distutils sends UNKNOWN for empty fields (e.g platform)
-            # [russell.sim@gmail.com]
-            if content == 'UNKNOWN':
-                content = None
-            request.POST.appendlist(headers["name"], content)
+            if "name" not in headers:
+                continue
+
+            if "filename" in headers and headers['name'] == 'content':
+                dist = TemporaryUploadedFile(name=headers["filename"],
+                                             size=len(content),
+                                             content_type="application/gzip",
+                                             charset='utf-8')
+                dist.write(content)
+                dist.seek(0)
+                request.FILES.appendlist('distribution', dist)
+            else:
+                request.POST.appendlist(headers["name"], content)
+    else:
+        request.FILES['distribution'] = request.FILES['content']
+
+    # Distutils sends UNKNOWN for empty fields (e.g platform)
+    for key, value in request.POST.items():
+        if value == 'UNKNOWN':
+            request.POST[key] = None
 
 
 def parse_header(header):
