@@ -173,7 +173,6 @@ class Base(Settings):
 
         'kombu.transport.django',
         'djcelery',
-        'south',
         'gunicorn',
         'userena',
         'guardian',
