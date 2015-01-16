@@ -7,8 +7,8 @@ localshop
 .. image:: https://coveralls.io/repos/mvantellingen/localshop/badge.svg?branch=develop
     :target: https://coveralls.io/r/mvantellingen/localshop?branch=develop
 
-A pypi server which automatically proxies and mirrors pypi packages based 
-upon packages requested. It also supports the uploading of local (private) 
+A pypi server which automatically proxies and mirrors pypi packages based
+upon packages requested. It also supports the uploading of local (private)
 packages.
 
 **Supported Python version:** 2.7.
@@ -20,7 +20,7 @@ Download and install localshop via the following command::
 
     pip install localshop
 
-This should best be done in a new virtualenv. Now initialize your localshop 
+This should best be done in a new virtualenv. Now initialize your localshop
 environment by issuing the following command::
 
     localshop init
@@ -34,7 +34,7 @@ And then start it via::
     gunicorn localshop.wsgi:application
     localshop celery worker -B -E
 
-Celeryd is required to do the mirroring of the pypi packages once they 
+Celeryd is required to do the mirroring of the pypi packages once they
 are needed.
 
 If you like to start listening on a different network interface and HTTP port, you can use the parameter "0.0.0.0:80" after "run_gunicorn". This example will make your system listen to all network interfaces on port 80. This affects all URL examples below, because they are using 8000 (the default HTTP port).
@@ -56,18 +56,18 @@ If you are unsure about ips configuration, but still want to use authentication,
 How it works
 ============
 
-Packages which are requested and are unknown are looked up on pypi via the 
+Packages which are requested and are unknown are looked up on pypi via the
 xmlrpc interface.  At the moment the client downloads one of the files which
-is not yet mirror'ed a 302 redirect is issued to the correct file (on pypi).  
-At that point the worker starts downloading the package and stores it in 
-~/.localshop/files so that the next time the package is request it is 
+is not yet mirror'ed a 302 redirect is issued to the correct file (on pypi).
+At that point the worker starts downloading the package and stores it in
+~/.localshop/files so that the next time the package is request it is
 available within your own shop!
 
 
 Uploading local/private packages
 --------------------------------
 
-To upload your own packages to your shop you need to modify/create a .pypirc 
+To upload your own packages to your shop you need to modify/create a .pypirc
 file.  See the following example::
 
     [distutils]
@@ -80,7 +80,7 @@ file.  See the following example::
     repository: http://localhost:8000/simple/
 
 To upload a custom package issue the following command in your package::
-    
+
     python setup.py upload -r local
 
 It should now be available via the webinterace
@@ -90,7 +90,7 @@ Using the shop for package installation
 =======================================
 
 To install packages with pip from your localshop add `-i` flag, e.g.::
-    
+
     pip install -i http://localhost:8000/simple/ localshop
 
 or edit/create a ~/.pip/pip.conf file following this template::
@@ -188,11 +188,11 @@ http://docs.python-requests.org/en/latest/user/advanced/#proxies
 
 :default: ``False``
 
-If set to ``True`` Localshop never will try to redirect the client to PyPI. 
+If set to ``True`` Localshop never will try to redirect the client to PyPI.
 This is useful for environments where the client has no Internet connection.
 
 .. note::
    If you set ``LOCALSHOP_ISOLATED`` to ``True``, client request can be delayed
    for a long time because the package must be downloaded from Internet before
-   it is served. You may want to set pip environment variable 
+   it is served. You may want to set pip environment variable
    ``PIP_DEFAULT_TIMEOUT`` to a big value. Ex: ``300``
