@@ -68,7 +68,7 @@ Uploading local/private packages
 --------------------------------
 
 To upload your own packages to your shop you need to modify/create a .pypirc
-file.  See the following example::
+file.  See the following example:
 
 .. code-block:: ini
 
@@ -95,7 +95,9 @@ To install packages with pip from your localshop add `-i` flag, e.g.::
 
     pip install -i http://localhost:8000/simple/ localshop
 
-or edit/create a ~/.pip/pip.conf file following this template::
+or edit/create a ~/.pip/pip.conf file following this template:
+
+.. code-block:: ini
 
     [global]
     index-url = http://<access_key>:<secret_key>@localhost:8000/simple
@@ -112,7 +114,9 @@ localshop can create for you.
 
 Go to the Credentials section and click on create. Use the access key
 as the username and the secret key as the password when uloading packages.
-A ``~/.pypirc`` could look like this::
+A ``~/.pypirc`` could look like this:
+
+.. code-block:: ini
 
     [distutils]
     index-servers =
