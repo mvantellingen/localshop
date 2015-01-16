@@ -1,11 +1,11 @@
 localshop
 =========
 
-.. image:: https://travis-ci.org/mvantellingen/localshop.png?branch=develop   
+.. image:: https://travis-ci.org/mvantellingen/localshop.svg?branch=develop
     :target: https://travis-ci.org/mvantellingen/localshop
 
-.. image:: https://coveralls.io/repos/mvantellingen/localshop/badge.png?branch=develop 
-   :target: https://coveralls.io/r/mvantellingen/localshop?branch=develop
+.. image:: https://coveralls.io/repos/mvantellingen/localshop/badge.svg?branch=develop
+    :target: https://coveralls.io/r/mvantellingen/localshop?branch=develop
 
 A pypi server which automatically proxies and mirrors pypi packages based 
 upon packages requested. It also supports the uploading of local (private) 
