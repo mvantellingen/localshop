@@ -1,10 +1,15 @@
 from base64 import standard_b64encode
 
+from django.core.urlresolvers import reverse
+import mock
 import pytest
 import requests
 
 from localshop.apps.packages.models import Package
+from localshop.apps.packages.views import download_file
 from localshop.apps.permissions.models import CIDR
+
+from tests.apps.packages.factories import ReleaseFileFactory
 
 
 @pytest.mark.parametrize('separator', ['\n', '\r\n'])
@@ -209,3 +214,26 @@ def test_package_register(live_server, admin_user):
     assert release.summary == 'A private pypi server including auto-mirroring of pypi.'
     assert release.user == admin_user
     assert release.version == '0.1'
+
+
+@mock.patch('localshop.apps.packages.tasks.download_file')
+@pytest.mark.django_db
+def test_download_file_with_missing_release(download_file_mock, rf):
+    CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
+    release_file = ReleaseFileFactory()
+
+    args = (release_file.release.package.name,
+            release_file.pk,
+            release_file.filename)
+
+    request = rf.get(reverse('packages:download', args=args))
+
+    response = download_file(request, *args)
+
+    # The request is redirected to PyPI
+    assert response.status_code == 302
+    assert response.url == release_file.url
+
+    # The download file task must the queued
+    assert download_file_mock.delay.call_count == 1
+    assert download_file_mock.delay.call_args[1] == {'pk': release_file.pk}
