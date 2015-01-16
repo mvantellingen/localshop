@@ -70,6 +70,8 @@ Uploading local/private packages
 To upload your own packages to your shop you need to modify/create a .pypirc
 file.  See the following example::
 
+.. code-block:: ini
+
     [distutils]
     index-servers =
         local
