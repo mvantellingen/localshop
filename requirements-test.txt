@@ -1,6 +1,4 @@
 -r requirements.txt
 mock==1.0.1
 pytest-django
-coverage==3.7.1
-coveralls
 factory_boy==2.4.1
