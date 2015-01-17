@@ -1,4 +1,5 @@
 from md5 import md5
+import os
 
 from django.core.urlresolvers import reverse
 from mock import Mock
@@ -88,3 +89,31 @@ def test_download_local_release(rf, isolated, settings):
     assert response.content == 'the file data'
     assert response.get('Content-Length') == '13'
     assert response.get('Content-Disposition') == 'attachment; filename=test-1.0.0-sdist.zip'
+
+
+@mock.patch('localshop.apps.packages.tasks.download_file')
+@pytest.mark.django_db
+def test_release_with_a_missing_file(download_file_mock, rf):
+    """
+    If a local ReleaseFile had a missing file we must set local as False,
+    redirect to the PyPI, requeue the download_file task.
+    """
+    CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
+    release_file = ReleaseFileFactory()
+    os.remove(release_file.distribution.path)
+
+    args = (release_file.release.package.name,
+            release_file.pk,
+            release_file.filename)
+
+    request = rf.get(reverse('packages:download', args=args))
+
+    response = download_file(request, *args)
+
+    # The request is redirected to PyPI
+    assert response.status_code == 302
+    assert response.url == release_file.url
+
+    # The download file task must the queued
+    assert download_file_mock.delay.call_count == 1
+    assert download_file_mock.delay.call_args[1] == {'pk': release_file.pk}
