@@ -28,6 +28,8 @@ class ReleaseFileFactory(factory.DjangoModelFactory):
     FACTORY_FOR = models.ReleaseFile
 
     release = factory.SubFactory(ReleaseFactory)
+    distribution = factory.django.FileField(filename='the_file.dat',
+                                            data='the file data')
     size = 1120
     filetype = 'sdist'
     filename = factory.LazyAttribute(lambda a: 'test-%s-%s.zip' % (
