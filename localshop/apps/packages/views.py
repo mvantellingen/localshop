@@ -163,7 +163,7 @@ def download_file(request, name, pk, filename):
     If the requested file is not already cached locally from a previous
     download it will be fetched from PyPi for local storage and the client will
     be redirected to PyPi, unless the LOCALSHOP_ISOLATED variable is set to
-    True, in wich case the file will be served to the client after it is
+    True, in which case the file will be served to the client after it is
     downloaded.
     """
 
