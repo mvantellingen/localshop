@@ -1,4 +1,7 @@
+from md5 import md5
+
 from django.core.urlresolvers import reverse
+from mock import Mock
 import mock
 import pytest
 
@@ -10,7 +13,7 @@ from tests.apps.packages.factories import ReleaseFileFactory
 
 @mock.patch('localshop.apps.packages.tasks.download_file')
 @pytest.mark.django_db
-def test_download_file_with_missing_distribution(download_file_mock, rf):
+def test_download_pypi_release(download_file_mock, rf):
     CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
     release_file = ReleaseFileFactory(distribution=None)
 
@@ -31,8 +34,44 @@ def test_download_file_with_missing_distribution(download_file_mock, rf):
     assert download_file_mock.delay.call_args[1] == {'pk': release_file.pk}
 
 
+@mock.patch('requests.get')
 @pytest.mark.django_db
-def test_download_file_with_existing_distribution(rf):
+def test_download_pypi_release_when_isolated_is_on(requests_mock, rf, settings):
+    file_data = 'Hello from PyPI'
+    md5_digest = md5(file_data).hexdigest()
+
+    settings.LOCALSHOP_ISOLATED = True
+
+    CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
+    release_file = ReleaseFileFactory(distribution=None, md5_digest=md5_digest)
+
+    args = (release_file.release.package.name,
+            release_file.pk,
+            release_file.filename)
+
+    requests_mock.return_value = Mock(**{
+            'headers': {
+                'content-length': len(file_data),
+                'content-type': 'application/octet-stream',
+            },
+            'content': file_data,
+        })
+
+    request = rf.get(reverse('packages:download', args=args))
+    response = download_file(request, *args)
+
+    assert response.status_code == 200
+    assert response.content == file_data
+    requests_mock.assert_called_with(
+        u'http://www.example.org/download/test-1.0.0-sdist.zip',
+        proxies=None, stream=True)
+
+
+@pytest.mark.parametrize('isolated', [True, False])
+@pytest.mark.django_db
+def test_download_local_release(rf, isolated, settings):
+    settings.LOCALSHOP_ISOLATED = isolated
+
     CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
     release_file = ReleaseFileFactory()
 
