@@ -1,3 +1,11 @@
+0.6.0:
+* Upgraded to Django 1.7
+* Dropped Python 2.6 support
+* Fixed bug #117 (Localshop return a 404 when uploading a package from
+  a python version >=2.7.9 or >=3.4.2
+* Fixed bug #116 (Localshop returns a 500 error when trying to download
+  a package with a missing file in disk)
+
 0.5.0:
 * Allow localshop to be initialised without any interaction, useful for automating installation
 * Fix downloading packages with mismatched underscore vs dashes in the package
