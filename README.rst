@@ -185,8 +185,8 @@ a release file or retrieving it from PyPI.
 
 :default: ``None``
 
-Proxy configuration used for Internet access. Expects a dictionnary configured
-as mentionned by
+Proxy configuration used for Internet access. Expects a dictionary configured
+as mentioned by
 http://docs.python-requests.org/en/latest/user/advanced/#proxies
 
 ``LOCALSHOP_ISOLATED``
