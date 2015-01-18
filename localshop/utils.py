@@ -4,12 +4,7 @@ import tempfile
 
 from django.conf import settings
 from django.test.utils import override_settings
-
-try:
-    from django.utils.timezone import now
-except ImportError:
-    from datetime import datetime
-    now = datetime.now
+from django.utils.timezone import now
 
 
 class TemporaryMediaRootMixin(object):
