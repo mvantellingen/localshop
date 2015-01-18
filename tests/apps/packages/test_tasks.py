@@ -4,7 +4,7 @@ import mock
 import pytest
 
 from localshop.apps.packages import tasks, models
-from tests.apps.packages.factories import ReleaseFileFactory
+from tests.apps.packages.factories import ReleaseFileFactory, PackageFactory
 
 
 @mock.patch('requests.get')
@@ -99,3 +99,15 @@ def test_download_file_with_proxy_enabled(requests_mock, settings):
         'http://www.example.org/download/test-1.0.0-sdist.zip',
         proxies=settings.LOCALSHOP_HTTP_PROXY,
         stream=True)
+
+
+@mock.patch('localshop.apps.packages.tasks.get_package_data')
+@pytest.mark.django_db
+def test_update_package_should_call_get_package_data(get_package_mock):
+    PackageFactory(name='local', is_local=True)
+    pypi_package = PackageFactory(name='pypi', is_local=False)
+
+    tasks.update_packages()
+
+    assert get_package_mock.call_count == 1
+    get_package_mock.assert_called_once_with(pypi_package.name, pypi_package)
