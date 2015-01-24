@@ -4,7 +4,7 @@ localshop
 .. image:: https://travis-ci.org/mvantellingen/localshop.svg?branch=develop
     :target: https://travis-ci.org/mvantellingen/localshop
 
-.. image:: https://coveralls.io/repos/mvantellingen/localshop/badge.svg?branch=develop
+.. image:: https://coveralls.io/repos/mvantellingen/localshop/badge.svg?branch=develop&cache=1
     :target: https://coveralls.io/r/mvantellingen/localshop?branch=develop
 
 A pypi server which automatically proxies and mirrors pypi packages based
