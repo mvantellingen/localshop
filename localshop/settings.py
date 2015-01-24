@@ -243,6 +243,7 @@ class Base(Settings):
 
 class TestConfig(Base):
     SECRET_KEY = "TEST-KEY"
+    LOCALSHOP_PYPI_URL = 'http://localhost:12946'
 
 
 class Localshop(FileSettings(os.path.join(DEFAULT_PATH, 'localshop.conf.py')), Base):
