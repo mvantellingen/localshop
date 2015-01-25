@@ -24,7 +24,7 @@ def test_success(client, admin_user, pypi_stub):
 
 
 @pytest.mark.django_db
-def test_missing_package(client, admin_user, pypi_stub):
+def test_missing_package_local_package(client, admin_user, pypi_stub):
     CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
 
     response = client.get(reverse('packages-simple:simple_detail', kwargs={
@@ -38,3 +38,15 @@ def test_missing_package(client, admin_user, pypi_stub):
     assert '<a href="/packages/minibar/download/2/minibar-0.4.0.tar.gz#md5=a3768a7f948871d8e47b146053265100" rel="package">minibar-0.4.0.tar.gz</a>' in response.content
     assert '<a href="/packages/minibar/download/3/minibar-0.4.0-py2.py3-none-any.whl#md5=0bbdf41e028a4e6c75dfbd59660b6328" rel="package">minibar-0.4.0-py2.py3-none-any.whl</a>' in response.content
     assert '<a href="/packages/minibar/download/4/minibar-0.4.0.tar.gz#md5=a3768a7f948871d8e47b146053265100" rel="package">minibar-0.4.0.tar.gz</a>' in response.content
+
+
+@pytest.mark.django_db
+def test_nonexistent_package(client, admin_user, pypi_stub):
+    CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
+
+    response = client.get(reverse('packages-simple:simple_detail', kwargs={
+        'slug': 'nonexistent',
+        'version': '',
+    }))
+
+    assert response.status_code == 404

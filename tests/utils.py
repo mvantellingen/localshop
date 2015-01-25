@@ -100,6 +100,8 @@ DB = {
 class PyPiXMLRPCStub():
 
     def package_releases(self, package_name, show_hidden=False):
+        if package_name not in DB:
+            return []
         return DB[package_name]['releases'].keys()
 
     def search(self, query_dict):
