@@ -93,7 +93,79 @@ DB = {
             'packagetype': 'sdist',
             'size': 3956
         }],
-    }
+    },
+    'pyramid_debugtoolbar': {
+        'info': {
+            'maintainer': None,
+            'docs_url': '',
+            'requires_python': None,
+            'maintainer_email': None,
+            'cheesecake_code_kwalitee_id': None,
+            'keywords': 'wsgi pylons pyramid transaction',
+            'package_url': 'http://pypi.python.org/pypi/pyramid_debugtoolbar',
+            'author': 'Chris McDonough, Michael Merickel, Casey Duncan, Blaise Laflamme',
+            'author_email': 'pylons-devel@googlegroups.com',
+            'download_url': 'UNKNOWN',
+            'platform': 'UNKNOWN',
+            'version': '2.3',
+            'cheesecake_documentation_id': None,
+            '_pypi_hidden': False,
+            'description': '',
+            'release_url': 'http://pypi.python.org/pypi/pyramid_debugtoolbar/2.3',
+            'downloads': {
+                'last_month': 21891,
+                'last_week': 1452,
+                'last_day': 44
+            },
+            '_pypi_ordering': 36,
+            'classifiers': ['Framework :: Pyramid'],
+            'name': 'pyramid_debugtoolbar',
+            'bugtrack_url': None,
+            'license': 'BSD',
+            'summary': 'A package which provides an interactive HTML debugger for Pyramid application development',
+            'home_page': 'http://docs.pylonsproject.org/projects/pyramid-debugtoolbar/en/latest/',
+            'stable_version': None,
+            'cheesecake_installability_id': None
+        },
+        'releases': {
+            '1.0': [{
+                'has_sig': False,
+                'upload_time': '2012-03-17T22:43:08',
+                'comment_text': '',
+                'python_version': 'source',
+                'url': 'https://pypi.python.org/packages/source/p/pyramid_debugtoolbar/pyramid_debugtoolbar-1.0.tar.gz',
+                'md5_digest': '37bff0f1d44941b97137dab24facc978',
+                'downloads': 6487,
+                'filename': 'pyramid_debugtoolbar-1.0.tar.gz',
+                'packagetype': 'sdist',
+                'size': 1626279
+            }],
+        },
+        'urls': [{
+                'has_sig': False,
+                'upload_time': '2015-01-05T21:45:08',
+                'comment_text': '',
+                'python_version': '2.7',
+                'url': 'https://pypi.python.org/packages/2.7/p/pyramid_debugtoolbar/pyramid_debugtoolbar-2.3-py2.py3-none-any.whl',
+                'md5_digest': '64e1cfcf6a988edb189af13e36ab875c',
+                'downloads': 4425,
+                'filename': 'pyramid_debugtoolbar-2.3-py2.py3-none-any.whl',
+                'packagetype': 'bdist_wheel',
+                'size': 449260
+            },
+            {
+                'has_sig': False,
+                'upload_time': '2015-01-05T21:44:32',
+                'comment_text': '',
+                'python_version': 'source',
+                'url': 'https://pypi.python.org/packages/source/p/pyramid_debugtoolbar/pyramid_debugtoolbar-2.3.tar.gz',
+                'md5_digest': '3d4c2af7d4f45efd796cdd58126ac446',
+                'downloads': 9075,
+                'filename': 'pyramid_debugtoolbar-2.3.tar.gz',
+                'packagetype': 'sdist',
+                'size': 3017109
+            }]
+        }
 }
 
 
@@ -105,13 +177,18 @@ class PyPiXMLRPCStub():
         return DB[package_name]['releases'].keys()
 
     def search(self, query_dict):
+        name_list = [n.lower() for n in query_dict['name']]
         return [{'_pypi_ordering': 8,
-                 'name': 'minibar',
-                 'summary': 'Simple text progress bar library',
-                 'version': '0.4.0'}]
+                 'name': name,
+                 'summary': data['info']['summary'],
+                 'version': data['info']['version']} for name, data in DB.items() if name in name_list]
 
     def release_data(self, package_name, version):
-        return DB[package_name]['info']
+        if version not in DB[package_name]['releases']:
+            return None
+        output = DB[package_name]['info'].copy()
+        output['version'] = version
+        return output
 
     def package_urls(self, package_name, version):
         return DB[package_name]['releases'][version]
