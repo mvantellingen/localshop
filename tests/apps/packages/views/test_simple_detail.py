@@ -34,9 +34,9 @@ def test_missing_package_local_package(client, admin_user, pypi_stub):
 
     assert response.status_code == 200
     assert 'Links for minibar' in response.content
-    assert '<a href="/packages/minibar/download/2/minibar-0.4.0-py2.py3-none-any.whl#md5=0bbdf41e028a4e6c75dfbd59660b6328" rel="package">minibar-0.4.0-py2.py3-none-any.whl</a>' in response.content
-    assert '<a href="/packages/minibar/download/3/minibar-0.4.0.tar.gz#md5=a3768a7f948871d8e47b146053265100" rel="package">minibar-0.4.0.tar.gz</a>' in response.content
-    assert '<a href="/packages/minibar/download/1/minibar-0.1.tar.gz#md5=c935bfa49cb49e4f97fb8e24371105d7" rel="package">minibar-0.1.tar.gz</a>' in response.content
+    assert 'minibar-0.4.0-py2.py3-none-any.whl#md5=0bbdf41e028a4e6c75dfbd59660b6328' in response.content
+    assert 'minibar-0.4.0.tar.gz#md5=a3768a7f948871d8e47b146053265100' in response.content
+    assert 'minibar-0.1.tar.gz#md5=c935bfa49cb49e4f97fb8e24371105d7' in response.content
 
 
 @pytest.mark.django_db
