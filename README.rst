@@ -1,6 +1,10 @@
 localshop
 =========
 
+.. image:: https://pypip.in/version/localshop/badge.svg
+    :target: https://pypi.python.org/pypi/localshop/
+    :alt: Latest Version
+
 .. image:: https://travis-ci.org/mvantellingen/localshop.svg?branch=develop
     :target: https://travis-ci.org/mvantellingen/localshop
 
@@ -220,4 +224,3 @@ proxy such as Nginx or Apache and you want to use IP-based permissions.
 If set to ``False``, users will be preveneted from overwriting already existing
 release files. Can be used to encourage developers to bump versions rather than
 overwriting. This is PyPI's behaviour.
-
