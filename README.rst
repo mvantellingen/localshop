@@ -36,15 +36,20 @@ If you are upgrading from an earlier version simply run::
 And then start it via::
 
     gunicorn localshop.wsgi:application
+
+You will also need to start the celery daemon, it's responsible for downloading
+and updating the packages from PyPI. So open another terminal, activate your
+virtualenv (if you have created one) and run the following command::
+
     localshop celery worker -B -E
 
-Celeryd is required to do the mirroring of the pypi packages once they
-are needed.
+You can now visit http://localhost:8000/ and view all the packages in your localshop!
 
-If you like to start listening on a different network interface and HTTP port, you can use the parameter "0.0.0.0:80" after "run_gunicorn". This example will make your system listen to all network interfaces on port 80. This affects all URL examples below, because they are using 8000 (the default HTTP port).
+**Note:** If you prefer to start listening on a different network interface and
+HTTP port, you have the pass the parameter ``-b`` to ``gunicorn``. For example,
+the following command starts localshop on port 7000 instead of 8000:
 
-You can now visit http://localhost:8000/ and view all the packages in your
-localshop!
+    gunicorn localshop.wsgi:application -b 0.0.0.0:7000
 
 The next step is to give access to various hosts to use the shop. This
 is done via the webinterface (menu -> permissions -> cidr). Each ip
