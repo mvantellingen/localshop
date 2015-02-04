@@ -213,7 +213,7 @@ the client IP address. Use this when Localshop is running behind a reverse
 proxy such as Nginx or Apache and you want to use IP-based permissions.
 
 ``LOCALSHOP_RELEASE_OVERWRITE``
-----------------------
+-------------------------------
 
 :default: ``True``
 
