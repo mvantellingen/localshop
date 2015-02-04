@@ -211,3 +211,13 @@ This is useful for environments where the client has no Internet connection.
 If set to ``True`` Localshop will use the X-Forwarded-For header to validate
 the client IP address. Use this when Localshop is running behind a reverse
 proxy such as Nginx or Apache and you want to use IP-based permissions.
+
+``LOCALSHOP_RELEASE_OVERWRITE``
+----------------------
+
+:default: ``True``
+
+If set to ``False``, users will be preveneted from overwriting already existing
+release files. Can be used to encourage developers to bump versions rather than
+overwriting. This is PyPI's behaviour.
+

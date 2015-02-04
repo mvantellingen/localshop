@@ -247,6 +247,9 @@ def handle_register_or_upload(post_data, files, user):
         filename = files['distribution']._name
         try:
             release_file = release.files.get(filename=filename)
+            if settings.LOCALSHOP_RELEASE_OVERWRITE is False:
+                message = 'That it already released, please bump version.'
+                return HttpResponseBadRequest(message)
         except ObjectDoesNotExist:
             release_file = models.ReleaseFile(
                 release=release, filename=filename, user=user)
