@@ -47,7 +47,7 @@ You can now visit http://localhost:8000/ and view all the packages in your local
 
 **Note:** If you prefer to start listening on a different network interface and
 HTTP port, you have the pass the parameter ``-b`` to ``gunicorn``. For example,
-the following command starts localshop on port 7000 instead of 8000:
+the following command starts localshop on port 7000 instead of 8000::
 
     gunicorn localshop.wsgi:application -b 0.0.0.0:7000
 
