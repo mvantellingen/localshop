@@ -49,3 +49,17 @@ def test_nonexistent_package(client, admin_user, pypi_stub):
     }))
 
     assert response.status_code == 404
+
+
+@pytest.mark.django_db
+def test_wrong_package_name_case(client, admin_user, pypi_stub):
+    CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
+    release_file = ReleaseFileFactory(release__package__name='minibar')
+
+    response = client.get(reverse('packages-simple:simple_detail', kwargs={
+        'slug': 'Minibar',
+        'version': '',
+    }))
+
+    assert response.status_code == 302
+    assert response.url == 'http://testserver/simple/minibar'
