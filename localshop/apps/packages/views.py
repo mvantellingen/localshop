@@ -7,7 +7,7 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.db.models import Q
-from django.http import Http404, HttpResponse, HttpResponseBadRequest
+from django.http import Http404, HttpResponse, HttpResponseBadRequest, HttpResponseNotFound
 from django.http import HttpResponseForbidden
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
@@ -64,7 +64,7 @@ class SimpleIndex(ListView):
 
         handler = actions.get(request.POST.get(':action'))
         if not handler:
-            raise Http404('Unknown action')
+            return HttpResponseNotFound('Unknown action')
         return handler(request.POST, request.FILES, user)
 
 simple_index = SimpleIndex.as_view()
