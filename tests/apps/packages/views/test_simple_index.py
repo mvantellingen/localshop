@@ -6,6 +6,59 @@ import requests
 from localshop.apps.packages.models import Package
 from localshop.apps.permissions.models import CIDR
 
+REGISTER_POST = '\n'.join([
+    '',
+    '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
+    'Content-Disposition: form-data; name="license"',
+    '',
+    'BSD',
+    '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
+    'Content-Disposition: form-data; name="name"',
+    '',
+    'localshop',
+    '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
+    'Content-Disposition: form-data; name="metadata_version"',
+    '',
+    '1.0',
+    '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
+    'Content-Disposition: form-data; name="author"',
+    '',
+    'Michael van Tellingen',
+    '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
+    'Content-Disposition: form-data; name="home_page"',
+    '',
+    'http://github.com/mvantellingen/localshop',
+    '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
+    'Content-Disposition: form-data; name=":action"',
+    '',
+    'submit',
+    '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
+    'Content-Disposition: form-data; name="download_url"',
+    '',
+    'UNKNOWN',
+    '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
+    'Content-Disposition: form-data; name="summary"',
+    '',
+    'A private pypi server including auto-mirroring of pypi.',
+    '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
+    'Content-Disposition: form-data; name="author_email"',
+    '',
+    'michaelvantellingen@gmail.com',
+    '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
+    'Content-Disposition: form-data; name="version"',
+    '',
+    '0.1',
+    '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
+    'Content-Disposition: form-data; name="platform"',
+    '',
+    'UNKNOWN',
+    '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
+    'Content-Disposition: form-data; name="description"',
+    '',
+    'UNKNOWN',
+    '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254--',
+    ''])
+
 
 @pytest.mark.parametrize('separator', ['\n', '\r\n'])
 def test_package_upload(live_server, admin_user, separator):
@@ -129,65 +182,12 @@ def test_package_upload(live_server, admin_user, separator):
 def test_package_register(live_server, admin_user):
     CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
 
-    post_data = '\n'.join([
-        '',
-        '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-        'Content-Disposition: form-data; name="license"',
-        '',
-        'BSD',
-        '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-        'Content-Disposition: form-data; name="name"',
-        '',
-        'localshop',
-        '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-        'Content-Disposition: form-data; name="metadata_version"',
-        '',
-        '1.0',
-        '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-        'Content-Disposition: form-data; name="author"',
-        '',
-        'Michael van Tellingen',
-        '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-        'Content-Disposition: form-data; name="home_page"',
-        '',
-        'http://github.com/mvantellingen/localshop',
-        '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-        'Content-Disposition: form-data; name=":action"',
-        '',
-        'submit',
-        '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-        'Content-Disposition: form-data; name="download_url"',
-        '',
-        'UNKNOWN',
-        '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-        'Content-Disposition: form-data; name="summary"',
-        '',
-        'A private pypi server including auto-mirroring of pypi.',
-        '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-        'Content-Disposition: form-data; name="author_email"',
-        '',
-        'michaelvantellingen@gmail.com',
-        '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-        'Content-Disposition: form-data; name="version"',
-        '',
-        '0.1',
-        '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-        'Content-Disposition: form-data; name="platform"',
-        '',
-        'UNKNOWN',
-        '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-        'Content-Disposition: form-data; name="description"',
-        '',
-        'UNKNOWN',
-        '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254--',
-        ''])
-
     headers = {
         'Content-type': 'multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
         'Authorization': 'Basic ' + standard_b64encode('admin:password')
     }
 
-    response = requests.post(live_server + '/simple/', post_data, headers=headers)
+    response = requests.post(live_server + '/simple/', REGISTER_POST, headers=headers)
 
     assert response.status_code == 200
 
@@ -209,3 +209,30 @@ def test_package_register(live_server, admin_user):
     assert release.summary == 'A private pypi server including auto-mirroring of pypi.'
     assert release.user == admin_user
     assert release.version == '0.1'
+
+
+def test_missing_auth(live_server, admin_user):
+    CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
+
+    headers = {
+        'Content-type': 'multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
+    }
+
+    response = requests.post(live_server + '/simple/', REGISTER_POST, headers=headers)
+
+    assert response.status_code == 401
+    assert response.content == 'Missing auth header'
+
+
+def test_invalid_auth(live_server, admin_user):
+    CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
+
+    headers = {
+        'Content-type': 'multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
+        'Authorization': 'Basic ' + standard_b64encode('moises:arcoiro')
+    }
+
+    response = requests.post(live_server + '/simple/', REGISTER_POST, headers=headers)
+
+    assert response.status_code == 401
+    assert response.content == 'Invalid username/password'
