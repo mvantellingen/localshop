@@ -54,7 +54,7 @@ def test_nonexistent_package(client, admin_user, pypi_stub):
 @pytest.mark.django_db
 def test_wrong_package_name_case(client, admin_user, pypi_stub):
     CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
-    release_file = ReleaseFileFactory(release__package__name='minibar')
+    ReleaseFileFactory(release__package__name='minibar')
 
     response = client.get(reverse('packages-simple:simple_detail', kwargs={
         'slug': 'Minibar',
