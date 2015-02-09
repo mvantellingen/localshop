@@ -74,7 +74,6 @@ class SimpleDetail(DetailView):
     """List all available files for a specific package.
 
     This page is used by pip/easy_install to find the files.
-
     """
     model = models.Package
     context_object_name = 'package'
@@ -84,7 +83,7 @@ class SimpleDetail(DetailView):
     def dispatch(self, request, *args, **kwargs):
         return super(SimpleDetail, self).dispatch(request, *args, **kwargs)
 
-    def get(self, request, slug, version=None):
+    def get(self, request, slug):
         condition = Q()
         for name in get_search_names(slug):
             condition |= Q(name__iexact=name)
@@ -99,23 +98,14 @@ class SimpleDetail(DetailView):
 
         # Redirect if slug is not an exact match
         if slug != package.name:
-            url = reverse('packages-simple:simple_detail', kwargs={
-                'slug': package.name, 'version': version
-            })
+            url = reverse('packages-simple:simple_detail',
+                          kwargs={'slug': package.name})
             return redirect(url)
-
-        releases = package.releases
-        if version and not package.is_local:
-            releases = releases.filter(version=version)
-
-            # Perhaps this version is new, refresh data
-            if releases.count() == 0:
-                get_package_data(slug, package)
 
         self.object = package
         context = self.get_context_data(
             object=self.object,
-            releases=list(releases.all()))
+            releases=list(package.releases.all()))
         return self.render_to_response(context)
 
 simple_detail = SimpleDetail.as_view()
