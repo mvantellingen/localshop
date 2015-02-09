@@ -22,8 +22,7 @@ def parse_distutils_request(request):
 
     http://bugs.python.org/issue10510
     """
-
-    if not request.body.startswith('\r\n'):
+    if not request.body.endswith('\r\n'):
         sep = request.body.splitlines()[1]
 
         request.POST = QueryDict('', mutable=True)
