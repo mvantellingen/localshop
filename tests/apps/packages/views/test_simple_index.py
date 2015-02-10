@@ -241,14 +241,17 @@ def test_invalid_auth(live_server, admin_user):
 def test_invalid_action(live_server, admin_user):
     CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
 
-    invalid_action = REGISTER_POST.replace('submit', 'invalid')
-
     headers = {
-        'Content-type': 'multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
         'Authorization': 'Basic ' + standard_b64encode('admin:password')
     }
 
-    response = requests.post(live_server + '/simple/', invalid_action, headers=headers)
+    data = {
+        ':action': 'invalid',
+        'name': 'test',
+        'version': '1.0',
+    }
+
+    response = requests.post(live_server + '/simple/', data=data, files={'content': 'Hi'}, headers=headers)
 
     assert response.status_code == 404
     assert response.content == 'Unknown action'
@@ -261,8 +264,10 @@ def test_missing_name(live_server, admin_user):
         'Authorization': 'Basic ' + standard_b64encode('admin:password')
     }
 
-    data = {':action': 'file_upload',
-            'version': '1.0'}
+    data = {
+        ':action': 'file_upload',
+        'version': '1.0',
+    }
 
     response = requests.post(live_server + '/simple/', data=data, files={'content': 'Hi'}, headers=headers)
 
@@ -278,8 +283,10 @@ def test_missing_version(live_server, admin_user):
         'Authorization': 'Basic ' + standard_b64encode('admin:password')
     }
 
-    data = {':action': 'file_upload',
-            'name': 'test'}
+    data = {
+        ':action': 'file_upload',
+        'name': 'test',
+    }
 
     response = requests.post(live_server + '/simple/', data=data, files={'content': 'Hi'}, headers=headers)
 
