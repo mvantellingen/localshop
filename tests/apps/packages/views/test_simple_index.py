@@ -5,6 +5,8 @@ import requests
 
 from localshop.apps.packages.models import Package
 from localshop.apps.permissions.models import CIDR
+from tests.apps.packages.factories import ReleaseFileFactory
+
 
 REGISTER_POST = '\n'.join([
     '',
@@ -279,7 +281,6 @@ def test_missing_version(live_server, admin_user):
     CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
 
     headers = {
-        # 'Content-type': 'multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
         'Authorization': 'Basic ' + standard_b64encode('admin:password')
     }
 
@@ -292,3 +293,18 @@ def test_missing_version(live_server, admin_user):
 
     assert response.status_code == 400
     assert response.content == 'No name or version given'
+
+
+def test_upload_should_not_overwrite_pypi_package(live_server, admin_user):
+    CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
+    ReleaseFileFactory(release__package__name='localshop')
+
+    headers = {
+        'Content-type': 'multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
+        'Authorization': 'Basic ' + standard_b64encode('admin:password')
+    }
+
+    response = requests.post(live_server + '/simple/', REGISTER_POST, headers=headers)
+
+    assert response.status_code == 400
+    assert response.content == 'localshop is a pypi package!'
