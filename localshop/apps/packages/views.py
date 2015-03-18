@@ -168,6 +168,9 @@ def download_file(request, name, pk, filename):
         else:
             release_file = models.ReleaseFile.objects.get(pk=pk)
 
+    if settings.MEDIA_URL:
+        return redirect(release_file.distribution.url)
+
     # TODO: Use sendfile if enabled
     response = HttpResponse(
         FileWrapper(release_file.distribution.file),
