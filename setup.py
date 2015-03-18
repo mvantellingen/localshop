@@ -37,7 +37,7 @@ with open('README.rst', 'r') as fh:
 
 setup(
     name='localshop',
-    version='0.6.0',
+    version='0.6.1',
     author='Michael van Tellingen',
     author_email='michaelvantellingen@gmail.com',
     url='http://github.com/mvantellingen/localshop',

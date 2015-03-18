@@ -1,3 +1,6 @@
+0.6.1:
+ * Localshop return a redirect when the MEDIA_URL is set.
+
 0.6.0:
 * Upgraded to Django 1.7
 * Dropped Python 2.6 support
