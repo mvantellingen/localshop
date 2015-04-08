@@ -1,4 +1,4 @@
-from datetime import datetime
+import json
 
 
 DB = {
@@ -34,7 +34,7 @@ DB = {
         'releases': {
             '0.4.0': [{
                 'has_sig': False,
-                'upload_time': datetime(2015, 1, 1, 12, 0, 0),
+                'upload_time': '2014-06-02T16:24:33',
                 'comment_text': '',
                 'python_version': '3.4',
                 'url': 'https://pypi.python.org/packages/3.4/m/minibar/minibar-0.4.0-py2.py3-none-any.whl',
@@ -46,7 +46,7 @@ DB = {
             },
             {
                 'has_sig': False,
-                'upload_time': datetime(2015, 1, 1, 12, 0, 0),
+                'upload_time': '2014-06-02T16:24:33',
                 'comment_text': '',
                 'python_version': 'source',
                 'url': 'https://pypi.python.org/packages/source/m/minibar/minibar-0.4.0.tar.gz',
@@ -169,26 +169,25 @@ DB = {
 }
 
 
-class PyPiXMLRPCStub():
+def pypi_app(environ, start_response):
+    package_name = environ['PATH_INFO'].split('/')[2]
 
-    def package_releases(self, package_name, show_hidden=False):
-        if package_name not in DB:
-            return []
-        return DB[package_name]['releases'].keys()
+    if package_name in DB:
+        data = json.dumps(DB[package_name])
 
-    def search(self, query_dict):
-        name_list = [n.lower() for n in query_dict['name']]
-        return [{'_pypi_ordering': 8,
-                 'name': name,
-                 'summary': data['info']['summary'],
-                 'version': data['info']['version']} for name, data in DB.items() if name in name_list]
+        start_response('200 OK', [
+            ('Content-Type', 'application/json; charset="UTF-8"'),
+            ('Content-Length', str(len(data)))])
+        return [data]
 
-    def release_data(self, package_name, version):
-        if version not in DB[package_name]['releases']:
-            return None
-        output = DB[package_name]['info'].copy()
-        output['version'] = version
-        return output
+    package_name = package_name.lower().replace('-', '_')
 
-    def package_urls(self, package_name, version):
-        return DB[package_name]['releases'][version]
+    if package_name in DB:
+        start_response('301 Moved Permanently', [
+            ('Location', '/pypi/{}/json'.format(package_name)),
+            ('Content-Length', '0')])
+        return ['']
+
+    start_response('404 Not Found', [
+        ('Content-Length', '0')])
+    return ['']

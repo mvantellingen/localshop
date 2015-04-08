@@ -67,46 +67,25 @@ def get_search_names(name):
     return list(result)
 
 
-def get_xmlrpc_client():
-    """Return XMLRPC client"""
-    if settings.LOCALSHOP_HTTP_PROXY:
-        proxy = RequestTransport()
-        proxy.set_proxy(settings.LOCALSHOP_HTTP_PROXY)
-
-        client = xmlrpclib.ServerProxy(
-            settings.LOCALSHOP_PYPI_URL, transport=proxy)
-    else:
-        client = xmlrpclib.ServerProxy(settings.LOCALSHOP_PYPI_URL)
-    return client
-
-
 def get_package_data(name, package=None):
     """Retrieve metadata information for the given package name"""
+
+    response = requests.get(settings.LOCALSHOP_PYPI_URL + '/{}/json'.format(name))
+
+    if response.status_code == 404:
+        return
+
+    if response.status_code != 200:
+        return
+
+    package_data = response.json()
+    name = package_data['info']['name']
+
     if not package:
         package = models.Package(name=name)
         releases = {}
     else:
         releases = package.get_all_releases()
-
-    client = get_xmlrpc_client()
-
-    versions = client.package_releases(package.name, True)
-
-    # package_releases() method is case-sensitive, if nothing found
-    # then we search for it
-    # XXX: Ask pypi to make it case-insensitive?
-    names = get_search_names(name)
-    if not versions:
-        for item in client.search({'name': names}):
-            if item['name'].lower() in [n.lower() for n in names]:
-                package.name = name = item['name']
-                break
-        else:
-            logger.info("No packages found matching %r", name)
-            return
-
-        # Retry retrieving the versions with the new/correct name
-        versions = client.package_releases(package.name, True)
 
     # If the matched package differs from the name we tried to retrieve then
     # retry to fetch the package from the database.
@@ -120,29 +99,38 @@ def get_package_data(name, package=None):
     if not package.pk:
         package.save()
 
-    for version in versions:
+    for version, release_list in package_data['releases'].items():
         release, files = releases.get(version, (None, {}))
         if not release:
             release = models.Release(package=package, version=version)
             release.save()
 
-        data = client.release_data(package.name, release.version)
-        release_form = forms.PypiReleaseDataForm(data, instance=release)
+        release_data = {
+            'author': package_data['info']['author'],
+            'author_email': package_data['info']['author_email'],
+            'description': package_data['info']['description'],
+            'download_url': package_data['info']['download_url'],
+            'home_page': package_data['info']['home_page'],
+            'license': package_data['info']['license'],
+            'summary': package_data['info']['summary'],
+            'version': version,
+        }
+
+        release_form = forms.PypiReleaseDataForm(release_data, instance=release)
         if release_form.is_valid():
             release_form.save()
 
-        release_files = client.package_urls(package.name, release.version)
-        for info in release_files:
-            release_file = files.get(info['filename'])
+        for data in release_list:
+            release_file = files.get(data['filename'])
             if not release_file:
                 release_file = models.ReleaseFile(
-                    release=release, filename=info['filename'])
+                    release=release, filename=data['filename'])
 
-            release_file.python_version = info['python_version']
-            release_file.filetype = info['packagetype']
-            release_file.url = info['url']
-            release_file.size = info['size']
-            release_file.md5_digest = info['md5_digest']
+            release_file.python_version = data['python_version']
+            release_file.filetype = data['packagetype']
+            release_file.url = data['url']
+            release_file.size = data['size']
+            release_file.md5_digest = data['md5_digest']
             release_file.save()
 
     package.update_timestamp = now()
