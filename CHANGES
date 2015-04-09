@@ -1,3 +1,7 @@
+0.7.0:
+ * Localshop no longer uses the PyPI XmlRPC API. It was replaced with the the JSON API.
+ * Fixed issue #134
+
 0.6.1:
  * Localshop return a redirect when the MEDIA_URL is set.
 
