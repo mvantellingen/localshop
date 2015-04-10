@@ -5,8 +5,7 @@ from django.db import models
 from django.utils.translation import ugettext as _
 from userena.models import UserenaBaseProfile
 from uuidfield import UUIDField
-
-from localshop.utils import now
+from django.utils.timezone import now
 
 
 class AuthProfile(UserenaBaseProfile):

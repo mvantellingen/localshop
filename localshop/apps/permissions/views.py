@@ -7,9 +7,9 @@ from django.http import HttpResponse, Http404
 from django.shortcuts import redirect, get_object_or_404
 from django.views.generic import ListView, CreateView
 from django.views.generic import UpdateView, DeleteView
+from django.utils.timezone import now
 
 from localshop.views import LoginRequiredMixin, PermissionRequiredMixin
-from localshop.utils import now
 from localshop.apps.permissions import models
 
 

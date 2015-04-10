@@ -7,17 +7,18 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.db.models import Q
-from django.http import Http404, HttpResponse, HttpResponseBadRequest, HttpResponseNotFound
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFound
 from django.http import HttpResponseForbidden
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
+from django.views.decorators.cache import cache_page
 
-from localshop.apps.packages import forms
-from localshop.apps.packages import models
-from localshop.apps.packages.pypi import get_package_data
+from localshop.utils import enqueue
+from localshop.apps.packages import forms, models
+from localshop.apps.packages.tasks import fetch_package
 from localshop.apps.packages.pypi import get_search_names
 from localshop.apps.packages.signals import release_file_notfound
 from localshop.apps.packages.utils import parse_distutils_request
@@ -91,10 +92,8 @@ class SimpleDetail(DetailView):
         try:
             package = models.Package.objects.get(condition)
         except ObjectDoesNotExist:
-            package = get_package_data(slug)
-
-        if package is None:
-            raise Http404
+            enqueue(fetch_package, slug)
+            return redirect('https://pypi.python.org/simple/{}'.format(slug))
 
         # Redirect if slug is not an exact match
         if slug != package.name:
@@ -108,7 +107,7 @@ class SimpleDetail(DetailView):
             releases=list(package.releases.all()))
         return self.render_to_response(context)
 
-simple_detail = SimpleDetail.as_view()
+simple_detail = cache_page(60)(SimpleDetail.as_view())
 
 
 class Index(LoginRequiredMixin, PermissionRequiredMixin, ListView):
@@ -143,7 +142,7 @@ def refresh(request, name):
         package = models.Package.objects.get(name__iexact=name)
     except ObjectDoesNotExist:
         package = None
-    package = get_package_data(name, package)
+        enqueue(fetch_package, name)
     return redirect(package)
 
 

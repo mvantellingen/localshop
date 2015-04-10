@@ -4,6 +4,7 @@ from django.core.urlresolvers import reverse
 
 from localshop.apps.permissions.models import CIDR
 from tests.apps.packages.factories import ReleaseFileFactory
+from localshop.apps.packages.tasks import fetch_package
 
 
 @pytest.mark.django_db
@@ -25,6 +26,8 @@ def test_success(client, admin_user, pypi_stub):
 def test_missing_package_local_package(client, admin_user, pypi_stub):
     CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
 
+    fetch_package.run('minibar')
+
     response = client.get(reverse('packages-simple:simple_detail',
                                   kwargs={'slug': 'minibar'}))
 
@@ -42,7 +45,8 @@ def test_nonexistent_package(client, admin_user, pypi_stub):
     response = client.get(reverse('packages-simple:simple_detail',
                                   kwargs={'slug': 'nonexistent'}))
 
-    assert response.status_code == 404
+    assert response.url == 'https://pypi.python.org/simple/nonexistent'
+    assert response.status_code == 302
 
 
 @pytest.mark.django_db

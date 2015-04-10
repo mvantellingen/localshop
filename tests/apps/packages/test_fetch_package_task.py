@@ -1,14 +1,18 @@
 import pytest
 
-from localshop.apps.packages.pypi import get_package_data
+from localshop.apps.packages.tasks import fetch_package
+from localshop.apps.packages.models import Package
 
 from tests.apps.packages.factories import ReleaseFactory, PackageFactory
 
 
 @pytest.mark.django_db
-def test_get_package_data(pypi_stub):
-    package = get_package_data('minibar')
+def test_fetch_package(pypi_stub):
+    fetch_package('minibar')
 
+    package = Package.objects.filter(name='minibar').first()
+
+    assert package
     assert package.name == 'minibar'
     assert not package.is_local
     assert package.releases.count() == 2
@@ -66,36 +70,37 @@ def test_get_package_data(pypi_stub):
 
 
 @pytest.mark.django_db
-def test_get_package_data_with_wrong_case(pypi_stub):
-    package = get_package_data('Minibar')
+def test_fetch_package_with_wrong_case(pypi_stub):
+    fetch_package('Minibar')
 
-    assert package
-    assert package.name == 'minibar'
-
-
-@pytest.mark.django_db
-def test_get_package_data_with_wrong_separator(pypi_stub):
-    package = get_package_data('pyramid-debugtoolbar')
-
-    assert package
-    assert package.name == 'pyramid_debugtoolbar'
+    assert Package.objects.filter(name='minibar').first()
 
 
 @pytest.mark.django_db
-def test_get_package_data_with_inexistent_package(pypi_stub):
-    package = get_package_data('arcoiro')
+def test_fetch_package_with_wrong_separator(pypi_stub):
+    fetch_package('pyramid-debugtoolbar')
 
-    assert package is None
+    assert Package.objects.filter(name='pyramid_debugtoolbar').first()
 
 
 @pytest.mark.django_db
-def test_get_package_data_should_update_existing_package(pypi_stub):
+def test_fetch_package_with_inexistent_package(pypi_stub):
+    fetch_package('arcoiro')
+
+    assert not Package.objects.filter(name='arcoiro').first()
+
+
+@pytest.mark.django_db
+def test_fetch_package_should_update_existing_package(pypi_stub):
     package = PackageFactory(name='minibar')
     ReleaseFactory(package=package, version='0.1')
     ReleaseFactory(package=package, version='0.2')
 
-    package = get_package_data('minibar', package)
+    fetch_package('minibar')
 
+    package = Package.objects.filter(name='minibar').first()
+
+    assert package
     assert package.name == 'minibar'
     assert not package.is_local
     assert package.releases.count() == 3

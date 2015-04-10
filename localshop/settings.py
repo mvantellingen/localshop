@@ -40,6 +40,13 @@ class Base(Settings):
     # Django settings for localshop project.
     PROJECT_ROOT = os.path.join(os.path.dirname(__file__), os.pardir)
 
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+            'LOCATION': os.path.join(DEFAULT_PATH, 'localshop.cache'),
+        }
+    }
+
     DEBUG = False
     TEMPLATE_DEBUG = DEBUG
 
@@ -235,7 +242,7 @@ class Base(Settings):
     LOCALSHOP_HTTP_PROXY = None
 
     LOCALSHOP_ISOLATED = False
-    
+
     LOCALSHOP_RELEASE_OVERWRITE = True
 
     # Use X-Forwarded-For header as the source for the client's IP.
@@ -246,6 +253,12 @@ class Base(Settings):
 class TestConfig(Base):
     SECRET_KEY = "TEST-KEY"
     LOCALSHOP_PYPI_URL = 'http://localhost:12946/pypi'
+
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+        }
+    }
 
 
 class Localshop(FileSettings(os.path.join(DEFAULT_PATH, 'localshop.conf.py')), Base):
