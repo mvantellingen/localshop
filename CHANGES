@@ -1,3 +1,6 @@
+0.8.0
+ * Changed the simple_detail view so that it creates the Package model asynchronously.
+
 0.7.0:
  * Localshop no longer uses the PyPI XmlRPC API. It was replaced with the the JSON API.
  * Fixed issue #134
