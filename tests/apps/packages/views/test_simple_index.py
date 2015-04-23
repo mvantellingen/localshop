@@ -308,3 +308,37 @@ def test_upload_should_not_overwrite_pypi_package(live_server, admin_user):
 
     assert response.status_code == 400
     assert response.content == 'localshop is a pypi package!'
+
+
+def test_package_name_with_hyphen_instead_underscore(live_server, admin_user):
+    CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
+
+    headers = {
+        'Authorization': 'Basic ' + standard_b64encode('admin:password')
+    }
+
+    data = {
+        ':action': 'file_upload',
+        'name': 'package-name',
+        'version': '1.0',
+        'metadata_version': '1.0',
+        'filetype': 'sdist',
+        'md5_digest': '06ffe94789d7bd9efba1109f40e935cf',
+    }
+
+    response = requests.post(live_server + '/simple/', data=data, files={'content': 'Hi'}, headers=headers)
+
+    assert response.status_code == 200
+
+    data['name'] = 'package_name'
+    data['version'] = '2.0'
+    response = requests.post(live_server + '/simple/', data=data, files={'content': 'Hi'}, headers=headers)
+
+    assert response.status_code == 200
+
+    assert Package.objects.count() == 1
+    package = Package.objects.first()
+    assert package.name == 'package_name'
+    assert package.releases.count() == 2
+    assert package.releases.filter(version='2.0').exists()
+    assert package.releases.filter(version='1.0').exists()

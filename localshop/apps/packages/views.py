@@ -195,7 +195,11 @@ def handle_register_or_upload(post_data, files, user):
         return HttpResponseBadRequest('No name or version given')
 
     try:
-        package = models.Package.objects.get(name=name)
+        condition = Q()
+        for name in get_search_names(name):
+            condition |= Q(name__iexact=name)
+
+        package = models.Package.objects.get(condition)
 
         # Error out when we try to override a mirror'ed package for now
         # not sure what the best thing is
