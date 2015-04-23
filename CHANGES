@@ -1,3 +1,7 @@
+0.8.1
+ * Fixed bug #137. Twine replaces underscores with hyphen in package names. This
+   caused localshop to create a new package instead of using the existing.
+
 0.8.0
  * Changed the simple_detail view so that it creates the Package model asynchronously.
 
