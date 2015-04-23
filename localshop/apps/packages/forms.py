@@ -6,19 +6,28 @@ from localshop.apps.packages import models
 class PypiReleaseDataForm(forms.ModelForm):
     class Meta:
         model = models.Release
-        exclude = ['classifiers', 'package', 'user', 'metadata_version']
+        fields = [
+            'author', 'author_email', 'description', 'download_url',
+            'home_page', 'license', 'summary', 'version',
+        ]
 
 
 class ReleaseForm(forms.ModelForm):
     class Meta:
         model = models.Release
-        exclude = ['classifiers', 'package', 'user']
+        fields = [
+            'author', 'author_email', 'description', 'download_url',
+            'home_page', 'license', 'metadata_version', 'summary', 'version',
+        ]
 
 
 class ReleaseFileForm(forms.ModelForm):
     class Meta:
         model = models.ReleaseFile
-        exclude = ['size', 'release', 'filename', 'user']
+        fields = [
+            'filetype', 'distribution', 'md5_digest', 'python_version',
+            'url'
+        ]
 
     def __init__(self, *args, **kwargs):
         super(ReleaseFileForm, self).__init__(*args, **kwargs)

@@ -38,6 +38,13 @@ class Base(Settings):
     # Django settings for localshop project.
     PROJECT_ROOT = os.path.join(os.path.dirname(__file__), os.pardir)
 
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
+            'LOCATION': os.path.join(DEFAULT_PATH, 'localshop.cache'),
+        }
+    }
+
     DEBUG = False
     TEMPLATE_DEBUG = DEBUG
 
@@ -148,9 +155,6 @@ class Base(Settings):
         os.path.join(PROJECT_ROOT, 'localshop', 'templates'),
     )
 
-    TEST_RUNNER = 'django_nose.NoseTestSuiteRunner'
-    NOSE_ARGS = ['--logging-clear-handlers', '--cover-package=localshop']
-
     BROKER_URL = "django://"
 
     CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
@@ -174,7 +178,6 @@ class Base(Settings):
 
         'kombu.transport.django',
         'djcelery',
-        'south',
         'gunicorn',
         'userena',
         'guardian',
@@ -183,13 +186,6 @@ class Base(Settings):
         'localshop.apps.packages',
         'localshop.apps.permissions',
     ]
-
-    import pkg_resources
-    try:
-        pkg_resources.get_distribution('django_nose')
-        INSTALLED_APPS.append('django_nose')
-    except pkg_resources.DistributionNotFound:
-        pass
 
     # Auth settings
     AUTHENTICATION_BACKENDS = (
@@ -245,9 +241,22 @@ class Base(Settings):
 
     LOCALSHOP_ISOLATED = False
 
+    LOCALSHOP_RELEASE_OVERWRITE = True
+
+    # Use X-Forwarded-For header as the source for the client's IP.
+    # Use where you have Nginx/Apache/etc as a reverse proxy infront of Localshop/Gunicorn.
+    LOCALSHOP_USE_PROXIED_IP = False
+
 
 class TestConfig(Base):
     SECRET_KEY = "TEST-KEY"
+    LOCALSHOP_PYPI_URL = 'http://localhost:12946/pypi'
+
+    CACHES = {
+        'default': {
+            'BACKEND': 'django.core.cache.backends.dummy.DummyCache',
+        }
+    }
 
 
 class Localshop(FileSettings(os.path.join(DEFAULT_PATH, 'localshop.conf.py')), Base):

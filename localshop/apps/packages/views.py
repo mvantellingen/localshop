@@ -1,4 +1,5 @@
 import logging
+import os
 from wsgiref.util import FileWrapper
 
 from django.conf import settings
@@ -6,17 +7,18 @@ from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.db.models import Q
-from django.http import Http404, HttpResponse, HttpResponseBadRequest
+from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFound
 from django.http import HttpResponseForbidden
 from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
+from django.views.decorators.cache import cache_page
 
-from localshop.apps.packages import forms
-from localshop.apps.packages import models
-from localshop.apps.packages.pypi import get_package_data
+from localshop.utils import enqueue
+from localshop.apps.packages import forms, models
+from localshop.apps.packages.tasks import fetch_package
 from localshop.apps.packages.pypi import get_search_names
 from localshop.apps.packages.signals import release_file_notfound
 from localshop.apps.packages.utils import parse_distutils_request
@@ -63,7 +65,7 @@ class SimpleIndex(ListView):
 
         handler = actions.get(request.POST.get(':action'))
         if not handler:
-            raise Http404('Unknown action')
+            return HttpResponseNotFound('Unknown action')
         return handler(request.POST, request.FILES, user)
 
 simple_index = SimpleIndex.as_view()
@@ -73,7 +75,6 @@ class SimpleDetail(DetailView):
     """List all available files for a specific package.
 
     This page is used by pip/easy_install to find the files.
-
     """
     model = models.Package
     context_object_name = 'package'
@@ -83,7 +84,7 @@ class SimpleDetail(DetailView):
     def dispatch(self, request, *args, **kwargs):
         return super(SimpleDetail, self).dispatch(request, *args, **kwargs)
 
-    def get(self, request, slug, version=None):
+    def get(self, request, slug):
         condition = Q()
         for name in get_search_names(slug):
             condition |= Q(name__iexact=name)
@@ -91,33 +92,22 @@ class SimpleDetail(DetailView):
         try:
             package = models.Package.objects.get(condition)
         except ObjectDoesNotExist:
-            package = get_package_data(slug)
-
-        if package is None:
-            raise Http404
+            enqueue(fetch_package, slug)
+            return redirect('https://pypi.python.org/simple/{}'.format(slug))
 
         # Redirect if slug is not an exact match
         if slug != package.name:
-            url = reverse('packages-simple:simple_detail', kwargs={
-                'slug': package.name, 'version': version
-            })
+            url = reverse('packages-simple:simple_detail',
+                          kwargs={'slug': package.name})
             return redirect(url)
-
-        releases = package.releases
-        if version and not package.is_local:
-            releases = releases.filter(version=version)
-
-            # Perhaps this version is new, refresh data
-            if releases.count() == 0:
-                get_package_data(slug, package)
 
         self.object = package
         context = self.get_context_data(
             object=self.object,
-            releases=list(releases.all()))
+            releases=list(package.releases.all()))
         return self.render_to_response(context)
 
-simple_detail = SimpleDetail.as_view()
+simple_detail = cache_page(60)(SimpleDetail.as_view())
 
 
 class Index(LoginRequiredMixin, PermissionRequiredMixin, ListView):
@@ -152,7 +142,7 @@ def refresh(request, name):
         package = models.Package.objects.get(name__iexact=name)
     except ObjectDoesNotExist:
         package = None
-    package = get_package_data(name, package)
+        enqueue(fetch_package, name)
     return redirect(package)
 
 
@@ -162,12 +152,12 @@ def download_file(request, name, pk, filename):
     If the requested file is not already cached locally from a previous
     download it will be fetched from PyPi for local storage and the client will
     be redirected to PyPi, unless the LOCALSHOP_ISOLATED variable is set to
-    True, in wich case the file will be served to the client after it is
+    True, in which case the file will be served to the client after it is
     downloaded.
     """
 
     release_file = models.ReleaseFile.objects.get(pk=pk)
-    if not release_file.distribution:
+    if not release_file.distribution or not os.path.isfile(release_file.distribution.path):
         logger.info("Queueing %s for mirroring", release_file.url)
         release_file_notfound.send(sender=release_file.__class__,
                                    release_file=release_file)
@@ -176,6 +166,9 @@ def download_file(request, name, pk, filename):
             return redirect(release_file.url)
         else:
             release_file = models.ReleaseFile.objects.get(pk=pk)
+
+    if settings.MEDIA_URL:
+        return redirect(release_file.distribution.url)
 
     content_type = 'application/force-download'
 
@@ -206,6 +199,7 @@ def download_file(request, name, pk, filename):
             content_type=content_type,
         )
 
+    # TODO: Use sendfile if enabled
     response['Content-Disposition'] = (
         'attachment; filename={}'.format(release_file.filename)
     )
@@ -278,6 +272,9 @@ def handle_register_or_upload(post_data, files, user):
         filename = files['distribution']._name
         try:
             release_file = release.files.get(filename=filename)
+            if settings.LOCALSHOP_RELEASE_OVERWRITE is False:
+                message = 'That it already released, please bump version.'
+                return HttpResponseBadRequest(message)
         except ObjectDoesNotExist:
             release_file = models.ReleaseFile(
                 release=release, filename=filename, user=user)

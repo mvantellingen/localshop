@@ -1,7 +1,27 @@
+0.8.0
+ * Changed the simple_detail view so that it creates the Package model asynchronously.
+
+0.7.0:
+ * Localshop no longer uses the PyPI XmlRPC API. It was replaced with the the JSON API.
+ * Fixed issue #134
+
+0.6.1:
+ * Localshop return a redirect when the MEDIA_URL is set.
+
+0.6.0:
+* Upgraded to Django 1.7
+* Dropped Python 2.6 support
+* Fixed bug #117 (Localshop return a 404 when uploading a package from
+  a python version >=2.7.9 or >=3.4.2
+* Fixed bug #116 (Localshop returns a 500 error when trying to download
+  a package with a missing file in disk)
+
 0.5.0:
 * Allow localshop to be initialised without any interaction, useful for automating installation
 * Fix downloading packages with mismatched underscore vs dashes in the package
   names.
+* Switch to pytest
+* Include various fixes (see pull-requests / contributors)
 
 0.4.1 (2013-01-23):
 * Fix a bug which resulted in throwing 404's for packages which have a dot in

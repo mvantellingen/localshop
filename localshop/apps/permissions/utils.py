@@ -1,8 +1,10 @@
 from functools import wraps
 
+from django.conf import settings
 from django.contrib.auth import login, authenticate
 from django.utils.decorators import available_attrs
 from django.http import HttpResponseForbidden
+from django.db import DataError, DatabaseError
 
 from localshop.apps.permissions.models import CIDR
 from localshop.http import HttpResponseUnauthorized
@@ -26,7 +28,11 @@ def authenticate_user(request):
     method, identity = split_auth(request)
     if method is not None and method.lower() == 'basic':
         key, secret = decode_credentials(identity)
-        user = authenticate(access_key=key, secret_key=secret)
+        try:
+            user = authenticate(access_key=key, secret_key=secret)
+        except (DatabaseError, DataError):
+            # we fallback on django user auth in case of DB error
+            user = None
         if not user:
             user = authenticate(username=key, password=secret)
         return user
@@ -39,7 +45,17 @@ def credentials_required(view_func):
     """
     @wraps(view_func, assigned=available_attrs(view_func))
     def decorator(request, *args, **kwargs):
-        ip_addr = request.META['REMOTE_ADDR']
+        if settings.LOCALSHOP_USE_PROXIED_IP:
+            try:
+                ip_addr = request.META['HTTP_X_FORWARDED_FOR']
+            except KeyError:
+                return HttpResponseForbidden('No permission')
+            else:
+                # HTTP_X_FORWARDED_FOR can be a comma-separated list of IPs. The
+                # client's IP will be the first one.
+                ip_addr = ip_addr.split(",")[0].strip()
+        else:
+            ip_addr = request.META['REMOTE_ADDR']
 
         if CIDR.objects.has_access(ip_addr, with_credentials=False):
             return view_func(request, *args, **kwargs)
