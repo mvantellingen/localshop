@@ -196,8 +196,8 @@ def handle_register_or_upload(post_data, files, user):
 
     try:
         condition = Q()
-        for name in get_search_names(name):
-            condition |= Q(name__iexact=name)
+        for search_name in get_search_names(name):
+            condition |= Q(name__iexact=search_name)
 
         package = models.Package.objects.get(condition)
 

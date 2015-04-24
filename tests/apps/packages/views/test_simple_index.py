@@ -338,7 +338,7 @@ def test_package_name_with_hyphen_instead_underscore(live_server, admin_user):
 
     assert Package.objects.count() == 1
     package = Package.objects.first()
-    assert package.name == 'package_name'
+    assert package.name == 'package-name'
     assert package.releases.count() == 2
     assert package.releases.filter(version='2.0').exists()
     assert package.releases.filter(version='1.0').exists()
