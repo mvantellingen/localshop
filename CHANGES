@@ -1,3 +1,6 @@
+0.8.3
+ * Fixed a bug added by the in the #137 fix. Package upload was not working correctly.
+
 0.8.2
  * Fixed bug #139. XMLRPC endpoints were broken.
 
