@@ -13,12 +13,12 @@ dispatcher = SimpleXMLRPCDispatcher(allow_none=False, encoding=None)
 @csrf_exempt
 @credentials_required
 def handle_request(request):
-    response = HttpResponse(mimetype='application/xml')
+    response = HttpResponse(content_type='application/xml')
     response.write(dispatcher._marshaled_dispatch(request.body))
     return response
 
 
-def search(query, operator):
+def search(spec, operator='and'):
     """Implement xmlrpc search command.
 
     This only searches through the mirrored and private packages
@@ -30,7 +30,7 @@ def search(query, operator):
     }
 
     query_filter = None
-    for field, values in query.iteritems():
+    for field, values in spec.iteritems():
         for value in values:
             if field not in field_map:
                 continue
