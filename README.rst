@@ -15,8 +15,6 @@ A pypi server which automatically proxies and mirrors pypi packages based
 upon packages requested. It also supports the uploading of local (private)
 packages.
 
-**Supported Python version:** 2.7.
-
 The full documentation is available on `Read The Docs`_
 
 .. _`Read The Docs`: http://localshop.readthedocs.org/
