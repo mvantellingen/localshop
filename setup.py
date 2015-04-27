@@ -46,7 +46,6 @@ setup(
     packages=find_packages(),
     zip_safe=False,
     install_requires=parse_requirements('requirements.txt'),
-    tests_require=parse_requirements('requirements-test.txt'),
     license='BSD',
     include_package_data=True,
     entry_points={
