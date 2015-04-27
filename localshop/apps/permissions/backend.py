@@ -1,4 +1,5 @@
 from django.contrib.auth.backends import ModelBackend
+from django_auth_ldap.backend import LDAPBackend as Orig
 
 from .models import Credential
 
@@ -15,3 +16,10 @@ class CredentialBackend(ModelBackend):
             if credential.creator.is_active:
                 return credential.creator
         return None
+
+
+class LDAPBackend(Orig):
+    def authenticate(self, username=None, password=None, identification=None):
+        if identification and not username:
+            username = identification
+        return super(LDAPBackend, self).authenticate(username, password)
