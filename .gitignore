@@ -7,3 +7,4 @@
 localshop.db
 *.pyc
 *.swp
+.coverage
