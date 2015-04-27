@@ -11,7 +11,7 @@ localshop
 .. image:: https://coveralls.io/repos/mvantellingen/localshop/badge.svg?branch=develop&cache=1
     :target: https://coveralls.io/r/mvantellingen/localshop?branch=develop
 
-A pypi server which automatically proxies and mirrors pypi packages based
+A PyPI server which automatically proxies and mirrors PyPI packages based
 upon packages requested. It also supports the uploading of local (private)
 packages.
 
