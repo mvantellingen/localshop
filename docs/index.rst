@@ -1,16 +1,31 @@
-.. Localshop documentation master file, created by
-   sphinx-quickstart on Mon Apr 27 13:39:49 2015.
-   You can adapt this file completely to your liking, but it should at least
-   contain the root `toctree` directive.
+======================
+ Welcome to Localshop
+======================
 
-Welcome to Localshop's documentation!
-=====================================
+.. image:: https://pypip.in/version/localshop/badge.svg
+    :target: https://pypi.python.org/pypi/localshop/
+    :alt: Latest Version
+
+.. image:: https://travis-ci.org/mvantellingen/localshop.svg?branch=develop
+    :target: https://travis-ci.org/mvantellingen/localshop
+
+.. image:: https://coveralls.io/repos/mvantellingen/localshop/badge.svg?branch=develop&cache=1
+    :target: https://coveralls.io/r/mvantellingen/localshop?branch=develop
+
+Localshop is a PyPI server which automatically proxies and mirrors PyPI packages
+based upon packages requested. It also supports the uploading of local (private)
+packages.
+
 
 Contents:
 
 .. toctree::
    :maxdepth: 2
 
+   installing
+   how_it_works
+   adding_users
+   settings
 
 
 Indices and tables
@@ -19,4 +34,3 @@ Indices and tables
 * :ref:`genindex`
 * :ref:`modindex`
 * :ref:`search`
-
