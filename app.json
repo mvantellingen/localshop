@@ -1,6 +1,6 @@
 {
   "name": "Localshop",
-  "description": "A PyPI server which automatically proxies and mirrors PyPI packages based upon packages requested. It also supports the uploading of local (private) packages.",
+  "description": "A PyPI server which automatically proxies and mirrors PyPI packages based upon packages requested.",
   "keywords": [
     "pypi",
     "python"
@@ -9,9 +9,6 @@
   "repository": "https://github.com/mvantellingen/localshop",
   "success_url": "/",
   "scripts": {
-    "postdeploy": "
-      localshop syncdb --no-color --noinput &&
-      echo \"from django.contrib.auth.models import User; User.objects.create_superuser('localshop', 'localshop@localshop.com', 'localshop')\" | python manage.py shell
-    "
+    "postdeploy": "localshop syncdb --no-color --noinput && echo \"from django.contrib.auth.models import User; User.objects.create_superuser('localshop', 'localshop@localshop.com', 'localshop')\" | python manage.py shell"
   }
 }
