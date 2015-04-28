@@ -9,7 +9,9 @@ djcelery.setup_loader()
 from configurations import Settings
 from configurations.utils import uppercase_attributes
 
-env = environ.Env(DEBUG=(bool, False),)
+env = environ.Env(
+    DEBUG=(bool, False),
+    BROKER_URL_ENV=(str, 'BROKER_URL'))
 
 try:
     DEFAULT_PATH = os.environ['LOCALSHOP_HOME']
@@ -153,7 +155,7 @@ class Base(Settings):
         os.path.join(PROJECT_ROOT, 'localshop', 'templates'),
     )
 
-    BROKER_URL = "django://"
+    BROKER_URL = env(env('BROKER_URL_ENV'), default='django://')
 
     CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
     CELERYD_FORCE_EXECV = False

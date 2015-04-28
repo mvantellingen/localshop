@@ -10,5 +10,11 @@
   "success_url": "/",
   "scripts": {
     "postdeploy": "localshop herokuinit"
+  },
+  "addons": [
+    "rediscloud"
+  ],
+  "env": {
+    "BROKER_URL_ENV": "REDISCLOUD_URL"
   }
 }
