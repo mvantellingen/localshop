@@ -39,3 +39,17 @@ will be able to download and upload packages. If you are unsure about ips
 configuration, but still want to use authentication, specify "0.0.0.0/0" as the
 unique cidr configuration. It will enable for any ip address.
 
+
+Docker alternative
+------------------
+Install docker and docker-compose and then run:
+
+.. code-block:: bash
+
+    cp docker.conf.py{.example,}
+    docker-compose build
+    docker-compose run localshop syncdb
+    docker-compose run localshop createsuperuser
+    docker-compose up
+
+You should be able to see localshop running in `http://docker-host:8000`.

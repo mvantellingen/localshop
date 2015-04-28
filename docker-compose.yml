@@ -1,0 +1,31 @@
+localshop:
+  build: .
+  volumes:
+    - ".:/localshop"
+  links:
+    - db
+    - broker
+  command: runserver 0.0.0.0:8000
+  ports:
+    - "8000:8000"
+
+celery:
+  build: .
+  command: celery worker -B -E
+  volumes:
+    - ".:/localshop"
+  entrypoint: localshop
+  environment:
+    - C_FORCE_ROOT=1
+  links:
+    - db
+    - broker
+
+db:
+  image: mysql:5.6
+  environment:
+    - MYSQL_ROOT_PASSWORD=1234
+    - MYSQL_DATABASE=localshop
+
+broker:
+  image: rabbitmq
