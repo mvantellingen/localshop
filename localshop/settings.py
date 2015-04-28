@@ -9,7 +9,7 @@ djcelery.setup_loader()
 from configurations import Settings
 from configurations.utils import uppercase_attributes
 
-env = environ.Env()
+env = environ.Env(DEBUG=(bool, False),)
 
 try:
     DEFAULT_PATH = os.environ['LOCALSHOP_HOME']
@@ -50,7 +50,7 @@ class Base(Settings):
         }
     }
 
-    DEBUG = False
+    DEBUG = env('DEBUG')
     TEMPLATE_DEBUG = DEBUG
 
     ADMINS = (
