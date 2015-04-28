@@ -16,12 +16,18 @@ from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
 from django.views.decorators.cache import cache_page
 
+from versio.version import Version
+from versio.version_scheme import Pep440VersionScheme, Simple3VersionScheme, Simple4VersionScheme, PerlVersionScheme
+
+Version.set_supported_version_schemes((Simple3VersionScheme, Simple4VersionScheme, Pep440VersionScheme,))
+
+
 from localshop.utils import enqueue
 from localshop.apps.packages import forms, models
 from localshop.apps.packages.tasks import fetch_package
 from localshop.apps.packages.pypi import get_search_names
 from localshop.apps.packages.signals import release_file_notfound
-from localshop.apps.packages.utils import parse_distutils_request
+from localshop.apps.packages.utils import parse_distutils_request, get_versio_versioning_scheme
 from localshop.apps.permissions.utils import credentials_required
 from localshop.apps.permissions.utils import split_auth, authenticate_user
 from localshop.http import HttpResponseUnauthorized
@@ -190,6 +196,14 @@ def handle_register_or_upload(post_data, files, user):
     """
     name = post_data.get('name')
     version = post_data.get('version')
+
+    if settings.LOCALSHOP_VERSIONING_TYPE:
+        scheme = get_versio_versioning_scheme(settings.LOCALSHOP_VERSIONING_TYPE)
+        try:
+            Version(version, scheme=scheme)
+        except AttributeError:
+            return HttpResponseBadRequest('Invalid version supplied {} for {!r} scheme'.format(version, settings.LOCALSHOP_VERSIONING_TYPE))
+
     if not name or not version:
         logger.info("Missing name or version for package")
         return HttpResponseBadRequest('No name or version given')

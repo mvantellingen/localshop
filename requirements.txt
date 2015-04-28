@@ -13,3 +13,4 @@ docutils==0.11
 gunicorn==19.1.1
 netaddr==0.7.12
 requests==2.5.1
+Versio==0.2.1

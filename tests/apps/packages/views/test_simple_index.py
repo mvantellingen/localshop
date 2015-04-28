@@ -1,11 +1,13 @@
 from base64 import standard_b64encode
 
+from django.core.urlresolvers import reverse
 import pytest
 import requests
 
 from localshop.apps.packages.models import Package
 from localshop.apps.permissions.models import CIDR
 from tests.apps.packages.factories import ReleaseFileFactory
+from tests.utils import NamedStringIO
 
 
 REGISTER_POST = '\n'.join([
@@ -342,3 +344,54 @@ def test_package_name_with_hyphen_instead_underscore(live_server, admin_user):
     assert package.releases.count() == 2
     assert package.releases.filter(version='2.0').exists()
     assert package.releases.filter(version='1.0').exists()
+
+
+@pytest.mark.django_db
+def test_invalid_version_upload(client, settings, admin_user):
+    settings.LOCALSHOP_VERSIONING_TYPE = 'versio.version_scheme.Simple3VersionScheme'
+    CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
+
+    auth = {
+        'HTTP_AUTHORIZATION': 'Basic ' + standard_b64encode('admin:password')
+    }
+
+    data = {
+        ':action': 'file_upload',
+        'name': 'package-name',
+        'version': '01.0',
+        'metadata_version': '1.0',
+        'md5_digest': '06ffe94789d7bd9efba1109f40e935cf',
+        'filetype': 'sdist',
+        'content': NamedStringIO(u'Hi', name='blabla')
+    }
+
+    response = client.post('/simple', data=data, **auth)
+
+    assert response.status_code == 400
+    assert "Invalid version supplied 01.0 for 'versio.version_scheme.Simple3VersionScheme' scheme" in response.content
+
+
+@pytest.mark.django_db
+def test_valid_version_upload(client, settings, admin_user):
+    """Test a valid version upload when enforcement is activated"""
+
+    settings.LOCALSHOP_VERSIONING_TYPE = 'versio.version_scheme.Simple3VersionScheme'
+    CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
+
+    auth = {
+        'HTTP_AUTHORIZATION': 'Basic ' + standard_b64encode('admin:password')
+    }
+
+    data = {
+        ':action': 'file_upload',
+        'name': 'package-name',
+        'version': '0.1.0',
+        'metadata_version': '1.0',
+        'md5_digest': '06ffe94789d7bd9efba1109f40e935cf',
+        'filetype': 'sdist',
+        'content': NamedStringIO(u'Hi', name='blabla')
+    }
+
+    response = client.post('/simple', data=data, **auth)
+
+    assert response.status_code == 200

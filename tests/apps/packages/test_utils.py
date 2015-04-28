@@ -3,7 +3,9 @@ from mock import Mock
 from django.test import TestCase
 from django.utils.datastructures import MultiValueDict
 
-from localshop.apps.packages.utils import parse_distutils_request
+from versio.version_scheme import VersionScheme
+
+from localshop.apps.packages.utils import parse_distutils_request, get_versio_versioning_scheme
 
 
 class TestParseDistutilsRequest(TestCase):
@@ -96,3 +98,8 @@ class TestParseDistutilsRequest(TestCase):
 
         self.assertEqual(request.POST, expected_post)
         self.assertEqual(request.FILES, expected_files)
+
+
+def test_versio_schema_retrieval():
+    obj = get_versio_versioning_scheme('versio.version_scheme.Pep440VersionScheme')
+    assert isinstance(obj, VersionScheme)
