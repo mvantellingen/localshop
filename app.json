@@ -1,0 +1,14 @@
+{
+  "name": "Localshop",
+  "description": "A PyPI server which automatically proxies and mirrors PyPI packages based upon packages requested. It also supports the uploading of local (private) packages.",
+  "keywords": [
+    "pypi",
+    "python"
+  ],
+  "website": "https://github.com/mvantellingen/localshop",
+  "repository": "https://github.com/mvantellingen/localshop",
+  "success_url": "/",
+  "scripts": {
+    "postdeploy": "localshop syncdb"
+  },
+}
