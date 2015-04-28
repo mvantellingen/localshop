@@ -11,7 +11,7 @@
   "scripts": {
     "postdeploy": "
       localshop syncdb --no-color --noinput &&
-      localshop createsuperuser --username=localshop --email=localshop@localshop.com --noinput
+      echo \"from django.contrib.auth.models import User; User.objects.create_superuser('localshop', 'localshop@localshop.com', 'localshop')\" | python manage.py shell
     "
   }
 }
