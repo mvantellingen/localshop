@@ -56,8 +56,14 @@ class Base(Settings):
     TEMPLATE_DEBUG = DEBUG
 
     ADMINS = (
-        # ('Your Name', 'your_email@example.com'),
+        ('Cesar Canassa', 'cesar.canassa@gmail.com'),
     )
+
+    EMAIL_HOST = env('EMAIL_HOST', default='localhost')
+    EMAIL_HOST_USER = env('EMAIL_HOST_USER', default='')
+    EMAIL_HOST_PASSWORD = env('EMAIL_HOST_PASSWORD', default='')
+    EMAIL_PORT = env.int('EMAIL_PORT', default=25)
+    EMAIL_USE_TLS = env.bool('EMAIL_USE_TLS', default=False)
 
     MANAGERS = ADMINS
 
