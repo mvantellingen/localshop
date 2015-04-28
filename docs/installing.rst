@@ -52,6 +52,17 @@ simply pressing this button:
     :target: https://heroku.com/deploy?template=https://github.com/mvantellingen/localshop/tree/heroku-support
     :alt: Deploy to Heroku
 
+After the instance has been created, you can access it using the user
+``localshop`` and password ``localshop``. You should change this password to a
+something more secure as soon as possible. A CIDR permission allowing
+unauthenticated requests from any IP is automatically added too.
+
+You can test your Heroku Localshop instance by running the following command:
+
+.. code-block:: bash
+
+    pip install <package> -i https://<app_name>.herokuapp.com/simple/
+
 
 Docker alternative
 ------------------

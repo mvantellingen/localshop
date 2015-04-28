@@ -9,6 +9,6 @@
   "repository": "https://github.com/mvantellingen/localshop",
   "success_url": "/",
   "scripts": {
-    "postdeploy": "localshop syncdb --no-color --noinput && echo \"from django.contrib.auth.models import User; User.objects.create_superuser('localshop', 'localshop@localshop.com', 'localshop')\" | python manage.py shell"
+    "postdeploy": "localshop herokuinit"
   }
 }
