@@ -49,7 +49,7 @@ to deploy your server. You can deploy a new Localshop instance on Heroku by
 simply pressing this button:
 
 .. image:: https://www.herokucdn.com/deploy/button.png
-    :target: https://heroku.com/deploy
+    :target: https://heroku.com/deploy?template=https://github.com/mvantellingen/localshop/tree/heroku-support
     :alt: Deploy to Heroku
 
 
