@@ -1,5 +1,6 @@
 import os
 import imp
+import environ
 from celery.schedules import crontab
 
 import djcelery
@@ -7,6 +8,8 @@ djcelery.setup_loader()
 
 from configurations import Settings
 from configurations.utils import uppercase_attributes
+
+env = environ.Env()
 
 try:
     DEFAULT_PATH = os.environ['LOCALSHOP_HOME']
@@ -57,14 +60,7 @@ class Base(Settings):
     MANAGERS = ADMINS
 
     DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(DEFAULT_PATH, 'localshop.db'),
-            'USER': '',
-            'PASSWORD': '',
-            'HOST': '',
-            'PORT': '',
-        }
+        'default': env.db('DATABASE_URL', default='sqlite:///' + os.path.join(DEFAULT_PATH, 'localshop.db')),
     }
 
     # Local time zone for this installation. Choices can be found here:
