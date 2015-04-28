@@ -19,9 +19,6 @@ from django.views.decorators.cache import cache_page
 from versio.version import Version
 from versio.version_scheme import Pep440VersionScheme, Simple3VersionScheme, Simple4VersionScheme, PerlVersionScheme
 
-Version.set_supported_version_schemes((Simple3VersionScheme, Simple4VersionScheme, Pep440VersionScheme,))
-
-
 from localshop.utils import enqueue
 from localshop.apps.packages import forms, models
 from localshop.apps.packages.tasks import fetch_package
@@ -34,6 +31,7 @@ from localshop.http import HttpResponseUnauthorized
 from localshop.views import LoginRequiredMixin, PermissionRequiredMixin
 
 logger = logging.getLogger(__name__)
+Version.set_supported_version_schemes((Simple3VersionScheme, Simple4VersionScheme, Pep440VersionScheme,))
 
 
 class SimpleIndex(ListView):
@@ -202,7 +200,10 @@ def handle_register_or_upload(post_data, files, user):
         try:
             Version(version, scheme=scheme)
         except AttributeError:
-            return HttpResponseBadRequest('Invalid version supplied {} for {!r} scheme'.format(version, settings.LOCALSHOP_VERSIONING_TYPE))
+            response = HttpResponseBadRequest(
+                reason='Invalid version supplied {!r} for {!r} scheme.'.format(
+                    version, settings.LOCALSHOP_VERSIONING_TYPE))
+            return response
 
     if not name or not version:
         logger.info("Missing name or version for package")
