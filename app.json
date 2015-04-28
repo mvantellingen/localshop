@@ -10,5 +10,5 @@
   "success_url": "/",
   "scripts": {
     "postdeploy": "localshop syncdb"
-  },
+  }
 }
