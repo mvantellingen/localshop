@@ -40,6 +40,19 @@ configuration, but still want to use authentication, specify "0.0.0.0/0" as the
 unique cidr configuration. It will enable for any ip address.
 
 
+Heroku
+------
+
+Heroku is a cloud PaaS that supports multiple programming languages. The
+Locashop project already includes Heroku support thus making it the easiest way
+to deploy your server. You can deploy a new Localshop instance on Heroku by
+simply pressing this button:
+
+.. image:: https://www.herokucdn.com/deploy/button.png
+    :target: https://heroku.com/deploy
+    :alt: Deploy to Heroku
+
+
 Docker alternative
 ------------------
 Install docker and docker-compose and then run:
