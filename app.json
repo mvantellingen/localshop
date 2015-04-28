@@ -9,6 +9,8 @@
   "repository": "https://github.com/mvantellingen/localshop",
   "success_url": "/",
   "scripts": {
-    "postdeploy": "localshop syncdb"
+    "postdeploy": [
+      "localshop syncdb --no-color --noinput",
+      "localshop createsuperuser --username=localshop --email=localshop@localshop.com --noinput"]
   }
 }
