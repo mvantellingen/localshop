@@ -65,7 +65,7 @@ setup(
         'mysql': ['mysqlclient==1.3.6'],
         'postgresql': ['psycopg2==2.6'],
         'gunicorn': ['gunicorn==19.1.1'],
-        'redis': ['celery[redis]==3.1.17'],
+        'redis': ['redis==2.10.3'],
     },
     license='BSD',
     include_package_data=True,
