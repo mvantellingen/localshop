@@ -15,6 +15,7 @@
     "rediscloud"
   ],
   "env": {
-    "BROKER_URL_ENV": "REDISCLOUD_URL"
+    "BROKER_URL_ENV": "REDISCLOUD_URL",
+    "BROKER_POOL_LIMIT": "1"
   }
 }
