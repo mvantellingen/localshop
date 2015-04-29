@@ -163,6 +163,8 @@ class Base(Settings):
 
     BROKER_URL = env(env('BROKER_URL_ENV'), default='django://')
 
+    BROKER_POOL_LIMIT = env.int('BROKER_POOL_LIMIT', default=10)
+
     CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
     CELERYD_FORCE_EXECV = False
     CELERYBEAT_SCHEDULE = {
