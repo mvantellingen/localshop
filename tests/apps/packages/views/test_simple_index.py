@@ -368,7 +368,7 @@ def test_invalid_version_upload(client, settings, admin_user):
     response = client.post('/simple', data=data, **auth)
 
     assert response.status_code == 400
-    assert "Invalid version supplied 01.0 for 'versio.version_scheme.Simple3VersionScheme' scheme" in response.content
+    assert "Invalid version supplied u'01.0' for 'versio.version_scheme.Simple3VersionScheme' scheme." == response.reason_phrase
 
 
 @pytest.mark.django_db
