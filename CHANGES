@@ -1,3 +1,6 @@
+0.9.0
+ * Added optional package version checking using the Versio library.
+
 0.8.3
  * Fixed a bug added by the in the #137 fix. Package upload was not working correctly.
 
