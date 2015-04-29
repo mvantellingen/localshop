@@ -16,6 +16,7 @@ urlpatterns = patterns('',
 
     # Default path for xmlrpc calls
     url(r'^RPC2$', handle_request),
+    url(r'^pypi$', handle_request),
 
     url(r'^packages/',
         include('localshop.apps.packages.urls', namespace='packages')),
