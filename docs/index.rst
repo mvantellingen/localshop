@@ -2,7 +2,7 @@
  Welcome to Localshop
 ======================
 
-.. image:: https://pypip.in/version/localshop/badge.svg
+.. image:: https://img.shields.io/pypi/v/localshop.svg
     :target: https://pypi.python.org/pypi/localshop/
     :alt: Latest Version
 
