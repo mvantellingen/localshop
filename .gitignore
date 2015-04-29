@@ -9,3 +9,4 @@ localshop.db
 *.swp
 .coverage
 docker.conf.py
+.cache
