@@ -4,14 +4,13 @@ from localshop.apps.packages import models
 
 
 class PackageFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = models.Package
-
     name = 'test-package'
+
+    class Meta:
+        model = models.Package
 
 
 class ReleaseFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = models.Release
-
     author = 'John Doe'
     author_email = 'j.doe@example.org'
     description = 'A test release'
@@ -23,10 +22,11 @@ class ReleaseFactory(factory.DjangoModelFactory):
     summary = 'Summary of the test package'
     version = '1.0.0'
 
+    class Meta:
+        model = models.Release
+
 
 class ReleaseFileFactory(factory.DjangoModelFactory):
-    FACTORY_FOR = models.ReleaseFile
-
     release = factory.SubFactory(ReleaseFactory)
     distribution = factory.django.FileField(filename='the_file.dat',
                                             data='the file data')
@@ -38,3 +38,6 @@ class ReleaseFileFactory(factory.DjangoModelFactory):
     python_version = '2.7'
     url = factory.LazyAttribute(lambda a: (
         'http://www.example.org/download/%s' % a.filename))
+
+    class Meta:
+        model = models.ReleaseFile
