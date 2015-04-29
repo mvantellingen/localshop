@@ -60,3 +60,19 @@ proxy such as Nginx or Apache and you want to use IP-based permissions.
 If set to ``False``, users will be preveneted from overwriting already existing
 release files. Can be used to encourage developers to bump versions rather than
 overwriting. This is PyPI's behaviour.
+
+``LOCALSHOP_VERSIONING_TYPE``
+-------------------------------
+
+:default: ``None``
+
+If set to ``False``, no versioning "style" will be enforced.
+
+If you want to validated versions you can choose any `Versio <https://pypi.python.org/pypi/Versio>`_ available backends.
+
+**IMPORTANT** the value of this config must be a full path of the wanted class e.g. `versio.version_scheme.Pep440VersionScheme`.
+
+- **Simple3VersionScheme** which supports 3 numerical part versions (A.B.C where A, B, and C are integers)
+- **Simple4VersionScheme** which supports 4 numerical part versions (A.B.C.D where A, B, C, and D are integers)
+- **Pep440VersionScheme** which supports `PEP 440 <http://www.python.org/dev/peps/pep-0440/>`_ versions (N[.N]+[{a|b|c|rc}N][.postN][.- devN][+local])
+- **PerlVersionScheme** which supports 2 numerical part versions where the second part is at least two digits A.BB where A and B - are integers and B is zero padded on the left. For example: 1.02, 1.34, 1.567)
