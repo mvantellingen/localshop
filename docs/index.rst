@@ -30,6 +30,7 @@ Contents:
    how_it_works
    adding_users
    settings
+   contributing
 
 
 Indices and tables
