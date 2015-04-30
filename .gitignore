@@ -8,5 +8,4 @@ localshop.db
 *.pyc
 *.swp
 .coverage
-docker.conf.py
 .cache
