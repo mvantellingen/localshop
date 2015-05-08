@@ -312,6 +312,27 @@ def test_upload_should_not_overwrite_pypi_package(live_server, admin_user):
     assert response.content == 'localshop is a pypi package!'
 
 
+def test_package_name_with_whitespace(live_server, admin_user):
+    CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
+
+    headers = {
+        'Authorization': 'Basic ' + standard_b64encode('admin:password')
+    }
+
+    data = {
+        ':action': 'file_upload',
+        'version': '1.0',
+        'metadata_version': '1.0',
+        'filetype': 'sdist',
+        'md5_digest': '06ffe94789d7bd9efba1109f40e935cf',
+    }
+    data["name"] = "invalid name"
+    response = requests.post(live_server + '/simple/', data=data, files={'content': 'Hi'}, headers=headers)
+
+    assert response.status_code == 400
+    assert "Enter a valid name consisting of letters, numbers, underscores or hyphens" in response.content
+
+
 def test_package_name_with_hyphen_instead_underscore(live_server, admin_user):
     CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
 
