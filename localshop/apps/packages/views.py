@@ -241,12 +241,12 @@ def handle_register_or_upload(post_data, files, user):
     # Validate the data
     form = forms.ReleaseForm(post_data, instance=release)
     if not form.is_valid():
-        return HttpResponseBadRequest('ERRORS %s' % form.errors)
+        return HttpResponseBadRequest(reason=form.errors.values()[0][0])
 
     if not package:
         pkg_form = forms.PackageForm(post_data, user=user)
         if not pkg_form.is_valid():
-            return HttpResponseBadRequest('ERRORS %s' % pkg_form.errors.as_text())
+            return HttpResponseBadRequest(reason=pkg_form.errors.values()[0][0])
         package = pkg_form.save()
 
     release = form.save(commit=False)

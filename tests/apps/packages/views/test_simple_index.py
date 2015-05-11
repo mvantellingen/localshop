@@ -330,7 +330,7 @@ def test_package_name_with_whitespace(live_server, admin_user):
     response = requests.post(live_server + '/simple/', data=data, files={'content': 'Hi'}, headers=headers)
 
     assert response.status_code == 400
-    assert "Enter a valid name consisting of letters, numbers, underscores or hyphens" in response.content
+    assert response.reason == 'Enter a valid name consisting of letters, numbers, underscores or hyphens'
 
 
 def test_package_name_with_hyphen_instead_underscore(live_server, admin_user):
