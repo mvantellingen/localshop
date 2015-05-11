@@ -244,9 +244,10 @@ def handle_register_or_upload(post_data, files, user):
         return HttpResponseBadRequest('ERRORS %s' % form.errors)
 
     if not package:
-        package = models.Package.objects.create(name=name, is_local=True)
-        package.owners.add(user)
-        package.save()
+        pkg_form = forms.PackageForm(post_data, user=user)
+        if not pkg_form.is_valid():
+            return HttpResponseBadRequest('ERRORS %s' % pkg_form.errors.as_text())
+        package = pkg_form.save()
 
     release = form.save(commit=False)
     release.package = package
