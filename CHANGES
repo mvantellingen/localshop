@@ -1,3 +1,6 @@
+0.9.2
+ * BUGFIX: Invalid template path in config. Fixes #149
+
 0.9.1
  * BUGFIX: Validate package name before save.
 
