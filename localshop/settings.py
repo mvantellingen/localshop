@@ -150,7 +150,7 @@ class Base(Settings):
     WSGI_APPLICATION = 'localshop.wsgi.application'
 
     TEMPLATE_DIRS = (
-        os.path.join(PROJECT_ROOT, 'localshop', 'templates'),
+        os.path.join(PROJECT_ROOT, 'templates'),
     )
 
     BROKER_URL = "django://"
