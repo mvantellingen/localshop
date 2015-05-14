@@ -1,6 +1,11 @@
 from django.conf.urls import patterns, url
+from django.views.decorators.cache import cache_page
 
-urlpatterns = patterns('localshop.apps.packages.views',
-    url(r'^$', 'simple_index', name='simple_index'),
-    url(r'^(?P<slug>[-\._\w]+)/$', 'simple_detail', name='simple_detail')
-)
+from localshop.apps.packages import views
+
+
+urlpatterns = [
+    url(r'^$', views.SimpleIndex.as_view(), name='simple_index'),
+    url(r'^(?P<slug>[-\._\w]+)/$', cache_page(60)(views.SimpleDetail.as_view()),
+        name='simple_detail')
+]

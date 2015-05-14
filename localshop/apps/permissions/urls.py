@@ -1,9 +1,9 @@
-from django.conf.urls import patterns, url
+from django.conf.urls import url
 
 from localshop.apps.permissions import views
 
 
-urlpatterns = patterns('',
+urlpatterns = [
     url(r'^cidr/$', views.CidrListView.as_view(), name='cidr_index'),
     url(r'^cidr/create$', views.CidrCreateView.as_view(), name='cidr_create'),
     url(r'^cidr/(?P<pk>\d+)/edit', views.CidrUpdateView.as_view(),
@@ -24,4 +24,4 @@ urlpatterns = patterns('',
         name='credential_edit'),
     url(r'^credentials/(?P<access_key>[a-f0-9]+)/delete', views.CredentialDeleteView.as_view(),
         name='credential_delete'),
-)
+]

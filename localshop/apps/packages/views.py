@@ -14,8 +14,6 @@ from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.detail import DetailView
 from django.views.generic.list import ListView
-from django.views.decorators.cache import cache_page
-
 from versio.version import Version
 from versio.version_scheme import Pep440VersionScheme, Simple3VersionScheme, Simple4VersionScheme, PerlVersionScheme
 
@@ -71,8 +69,6 @@ class SimpleIndex(ListView):
             return HttpResponseNotFound('Unknown action')
         return handler(request.POST, request.FILES, user)
 
-simple_index = SimpleIndex.as_view()
-
 
 class SimpleDetail(DetailView):
     """List all available files for a specific package.
@@ -109,8 +105,6 @@ class SimpleDetail(DetailView):
             object=self.object,
             releases=list(package.releases.all()))
         return self.render_to_response(context)
-
-simple_detail = cache_page(60)(SimpleDetail.as_view())
 
 
 class Index(LoginRequiredMixin, PermissionRequiredMixin, ListView):
