@@ -189,7 +189,7 @@ class ReleaseFile(models.Model):
 
     @property
     def file_is_available(self):
-        return self.distribution and os.path.isfile(self.distribution.path)
+        return self.distribution and self.distribution.storage.exists(self.distribution.name)
 
     def download(self):
         """Start a celery task to download the release file from pypi.
