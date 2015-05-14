@@ -23,7 +23,6 @@ from localshop.utils import enqueue
 from localshop.apps.packages import forms, models
 from localshop.apps.packages.tasks import fetch_package
 from localshop.apps.packages.pypi import get_search_names
-from localshop.apps.packages.signals import release_file_notfound
 from localshop.apps.packages.utils import parse_distutils_request, get_versio_versioning_scheme
 from localshop.apps.permissions.utils import credentials_required
 from localshop.apps.permissions.utils import split_auth, authenticate_user
@@ -163,8 +162,7 @@ def download_file(request, name, pk, filename):
     release_file = models.ReleaseFile.objects.get(pk=pk)
     if not release_file.file_is_available:
         logger.info("Queueing %s for mirroring", release_file.url)
-        release_file_notfound.send(sender=release_file.__class__,
-                                   release_file=release_file)
+        release_file.download()
         if not settings.LOCALSHOP_ISOLATED:
             logger.debug("Redirecting user to pypi")
             return redirect(release_file.url)

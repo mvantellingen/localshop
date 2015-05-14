@@ -17,7 +17,6 @@ from django.utils.html import escape
 from model_utils import Choices
 from model_utils.fields import AutoCreatedField, AutoLastModifiedField
 
-from localshop.apps.packages.signals import release_file_notfound
 from localshop.apps.packages.utils import delete_files
 
 
@@ -192,24 +191,21 @@ class ReleaseFile(models.Model):
     def file_is_available(self):
         return self.distribution and os.path.isfile(self.distribution.path)
 
+    def download(self):
+        """Start a celery task to download the release file from pypi.
+
+        If `settings.LOCALSHOP_ISOLATED` is True then download the file
+        in-process.
+
+        """
+        from .tasks import download_file
+        if not settings.LOCALSHOP_ISOLATED:
+            download_file.delay(pk=self.pk)
+        else:
+            download_file(pk=self.pk)
+
 
 if settings.LOCALSHOP_DELETE_FILES:
     post_delete.connect(
         delete_files, sender=ReleaseFile,
         dispatch_uid="localshop.apps.packages.utils.delete_files")
-
-
-def download_missing_release_file(sender, release_file, **kwargs):
-    """Start a celery task to download the release file from pypi.
-
-    If `settings.LOCALSHOP_ISOLATED` is True then download the file in-process.
-
-    """
-    from .tasks import download_file
-    if not settings.LOCALSHOP_ISOLATED:
-        download_file.delay(pk=release_file.pk)
-    else:
-        download_file(pk=release_file.pk)
-
-release_file_notfound.connect(download_missing_release_file,
-    dispatch_uid='localshop_download_release_file')
