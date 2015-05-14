@@ -1,10 +1,11 @@
+sudo: false
 language: python
 env:
   - TOX_ENV=py27
 python:
     - "2.7"
 before_install:
-    - codecov
+    - pip install codecov
 install:
     - pip install tox
 script:
