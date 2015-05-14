@@ -161,7 +161,7 @@ def download_file(request, name, pk, filename):
     """
 
     release_file = models.ReleaseFile.objects.get(pk=pk)
-    if not release_file.distribution or not os.path.isfile(release_file.distribution.path):
+    if not release_file.file_is_available:
         logger.info("Queueing %s for mirroring", release_file.url)
         release_file_notfound.send(sender=release_file.__class__,
                                    release_file=release_file)

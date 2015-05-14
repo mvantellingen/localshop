@@ -188,6 +188,10 @@ class ReleaseFile(models.Model):
         copyfileobj(fh, tmp_file)
         self.distribution.save(filename, File(tmp_file))
 
+    @property
+    def file_is_available(self):
+        return self.distribution and os.path.isfile(self.distribution.path)
+
 
 if settings.LOCALSHOP_DELETE_FILES:
     post_delete.connect(
