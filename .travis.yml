@@ -3,9 +3,11 @@ env:
   - TOX_ENV=py27
 python:
     - "2.7"
+before_install:
+    - codecov
 install:
-    - pip install tox python-coveralls
+    - pip install tox
 script:
     - tox -e $TOX_ENV
 after_success:
-    - coveralls
+    - codecov

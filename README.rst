@@ -8,8 +8,8 @@ localshop
 .. image:: https://travis-ci.org/mvantellingen/localshop.svg?branch=develop
     :target: https://travis-ci.org/mvantellingen/localshop
 
-.. image:: https://coveralls.io/repos/mvantellingen/localshop/badge.svg?branch=develop&cache=1
-    :target: https://coveralls.io/r/mvantellingen/localshop?branch=develop
+.. image:: http://codecov.io/github/mvantellingen/localshop/coverage.svg?branch=develop
+    :target: http://codecov.io/github/mvantellingen/localshop?branch=develop
 
 .. image:: https://requires.io/github/mvantellingen/localshop/requirements.svg?branch=develop
      :target: https://requires.io/github/mvantellingen/localshop/requirements/?branch=develop
