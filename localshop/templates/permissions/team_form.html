@@ -1,0 +1,18 @@
+{% extends "layout.main.html" %}
+
+{% block content %}
+<h1>Create team</h1>
+
+<form method="post" action="" class="form-horizontal">
+    <fieldset>
+        {% include "partial/_form_field.html" with field=form.name %}
+        {% include "partial/_form_field.html" with field=form.description %}
+    </fieldset>
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary"><span class="icon-ok icon-white"></span> Save</button>
+        <a href="{% url 'permissions:team_list' %}" class="btn">Cancel</a>
+    </div>
+    {% csrf_token %}
+</form>
+{% endblock %}

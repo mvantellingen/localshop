@@ -5,6 +5,7 @@ from django.core.urlresolvers import reverse
 from django.forms import ModelForm
 from django.http import HttpResponse, Http404
 from django.shortcuts import redirect, get_object_or_404
+from django.views import generic
 from django.views.generic import ListView, CreateView
 from django.views.generic import UpdateView, DeleteView
 from django.utils.timezone import now
@@ -93,6 +94,43 @@ class CredentialDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteVi
 
     def get_success_url(self):
         return reverse('permissions:credential_index')
+
+
+class TeamListView(LoginRequiredMixin, generic.ListView):
+    queryset = models.Team.objects.all()
+
+
+class TeamCreateView(LoginRequiredMixin, generic.CreateView):
+    model = models.Team
+    fields = ['description', 'name']
+    template_name = 'permissions/team_form.html'
+
+    def get_success_url(self):
+        return reverse(
+            'permissions:team_detail', kwargs={'pk': self.object.pk})
+
+
+class TeamDetailView(LoginRequiredMixin, generic.DetailView):
+    model = models.Team
+
+
+class TeamUpdateView(LoginRequiredMixin, generic.UpdateView):
+    model = models.Team
+    fields = ['description', 'name']
+    template_name = 'permissions/team_form.html'
+
+    def get_success_url(self):
+        return reverse(
+            'permissions:team_detail', kwargs={'pk': self.object.pk})
+
+
+class TeamDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = models.Team
+
+    def get_success_url(self):
+        return reverse(
+            'permissions:team_detail', kwargs={'pk': self.object.pk})
+
 
 
 @permission_required('permissions.add_credential')

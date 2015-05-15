@@ -1,16 +1,19 @@
 import netaddr
 
-from django.contrib.auth.models import User
+from django.conf import settings
 from django.db import models
+from django.utils.timezone import now
 from django.utils.translation import ugettext as _
+from django.utils.encoding import python_2_unicode_compatible
+from model_utils.models import TimeStampedModel
 from userena.models import UserenaBaseProfile
 from uuidfield import UUIDField
-from django.utils.timezone import now
 
 
 class AuthProfile(UserenaBaseProfile):
     user = models.OneToOneField(
-        User, unique=True, verbose_name=_('user'), related_name='auth_profile')
+        settings.AUTH_USER_MODEL, unique=True, verbose_name=_('user'),
+        related_name='auth_profile')
 
 
 class CIDRManager(models.Manager):
@@ -48,7 +51,7 @@ class CredentialManager(models.Manager):
 class Credential(models.Model):
     access_key = UUIDField(verbose_name='Access key', help_text='The access key', auto=True, db_index=True)
     secret_key = UUIDField(verbose_name='Secret key', help_text='The secret key', auto=True, db_index=True)
-    creator = models.ForeignKey(User)
+    creator = models.ForeignKey(settings.AUTH_USER_MODEL)
     created = models.DateTimeField(default=now)
     deactivated = models.DateTimeField(blank=True, null=True)
     comment = models.CharField(max_length=255, blank=True, null=True, default='',
@@ -64,3 +67,26 @@ class Credential(models.Model):
         permissions = (
             ("view_credential", "Can view credential"),
         )
+
+
+@python_2_unicode_compatible
+class Team(TimeStampedModel):
+    name = models.CharField(max_length=200)
+    description = models.CharField(max_length=500, blank=True)
+    users = models.ManyToManyField(
+        settings.AUTH_USER_MODEL, through='TeamMember')
+
+    def __str__(self):
+        return self.name
+
+    def owners(self):
+        return [member.user for member in self.members.filter(role='owner')]
+
+
+class TeamMember(TimeStampedModel):
+    team = models.ForeignKey(Team, related_name='members')
+    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    role = models.CharField(max_length=100, choices=[
+        ('owner', _("Owner")),
+        ('developer', _("Developer")),
+    ])
