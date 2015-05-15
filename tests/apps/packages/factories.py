@@ -3,8 +3,18 @@ import factory
 from localshop.apps.packages import models
 
 
+class RepositoryFactory(factory.DjangoModelFactory):
+    name = 'Default'
+    slug = 'default'
+
+    class Meta:
+        model = models.Repository
+        django_get_or_create = ('slug',)
+
+
 class PackageFactory(factory.DjangoModelFactory):
     name = 'test-package'
+    repository = factory.SubFactory(RepositoryFactory)
 
     class Meta:
         model = models.Package

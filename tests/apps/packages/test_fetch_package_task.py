@@ -3,14 +3,16 @@ import pytest
 from localshop.apps.packages.tasks import fetch_package
 from localshop.apps.packages.models import Package
 
-from tests.apps.packages.factories import ReleaseFactory, PackageFactory
+from tests.apps.packages.factories import (
+    RepositoryFactory, ReleaseFactory, PackageFactory)
 
 
 @pytest.mark.django_db
 def test_fetch_package(pypi_stub):
-    fetch_package('minibar')
+    repository = RepositoryFactory()
+    fetch_package(repository.pk, 'minibar')
 
-    package = Package.objects.filter(name='minibar').first()
+    package = repository.packages.filter(name='minibar').first()
 
     assert package
     assert package.name == 'minibar'
@@ -71,34 +73,38 @@ def test_fetch_package(pypi_stub):
 
 @pytest.mark.django_db
 def test_fetch_package_with_wrong_case(pypi_stub):
-    fetch_package('Minibar')
+    repository = RepositoryFactory()
+    fetch_package(repository.pk, 'Minibar')
 
-    assert Package.objects.filter(name='minibar').first()
+    assert repository.packages.filter(name='minibar').first()
 
 
 @pytest.mark.django_db
 def test_fetch_package_with_wrong_separator(pypi_stub):
-    fetch_package('pyramid-debugtoolbar')
+    repository = RepositoryFactory()
+    fetch_package(repository.pk, 'pyramid-debugtoolbar')
 
-    assert Package.objects.filter(name='pyramid_debugtoolbar').first()
+    assert repository.packages.filter(name='pyramid_debugtoolbar').first()
 
 
 @pytest.mark.django_db
 def test_fetch_package_with_inexistent_package(pypi_stub):
-    fetch_package('arcoiro')
+    repository = RepositoryFactory()
+    fetch_package(repository.pk, 'arcoiro')
 
-    assert not Package.objects.filter(name='arcoiro').first()
+    assert not repository.packages.filter(name='arcoiro').first()
 
 
 @pytest.mark.django_db
 def test_fetch_package_should_update_existing_package(pypi_stub):
-    package = PackageFactory(name='minibar')
+    repository = RepositoryFactory()
+    package = PackageFactory(repository=repository, name='minibar')
     ReleaseFactory(package=package, version='0.1')
     ReleaseFactory(package=package, version='0.2')
 
-    fetch_package('minibar')
+    fetch_package(repository.pk, 'minibar')
 
-    package = Package.objects.filter(name='minibar').first()
+    package = repository.packages.filter(name='minibar').first()
 
     assert package
     assert package.name == 'minibar'

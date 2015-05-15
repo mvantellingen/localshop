@@ -53,7 +53,7 @@ class SimpleIndex(RepositoryMixin, ListView):
     def dispatch(self, request, *args, **kwargs):
         return super(SimpleIndex, self).dispatch(request, *args, **kwargs)
 
-    def post(self, request):
+    def post(self, request, repo):
         parse_distutils_request(request)
 
         # XXX: Auth is currently a bit of a hack
@@ -73,7 +73,7 @@ class SimpleIndex(RepositoryMixin, ListView):
         handler = actions.get(request.POST.get(':action'))
         if not handler:
             return HttpResponseNotFound('Unknown action')
-        return handler(request.POST, request.FILES, user)
+        return handler(request.POST, request.FILES, user, self.repository)
 
     def get_queryset(self):
         return self.repository.packages.all()
@@ -106,8 +106,10 @@ class SimpleDetail(RepositoryMixin, DetailView):
 
         # Redirect if slug is not an exact match
         if slug != package.name:
-            url = reverse('packages-simple:simple_detail',
-                          kwargs={'repo': repo.slug, 'slug': package.name})
+            url = reverse('packages-simple:simple_detail', kwargs={
+                'repo': self.repository.slug,
+                'slug': package.name
+            })
             return redirect(url)
 
         self.object = package
@@ -188,7 +190,7 @@ def download_file(request, name, pk, filename):
     return response
 
 
-def handle_register_or_upload(post_data, files, user):
+def handle_register_or_upload(post_data, files, user, repository):
     """Process a `register` or `upload` comment issued via distutils.
 
     This method is called with the authenticated user.
@@ -216,7 +218,7 @@ def handle_register_or_upload(post_data, files, user):
         for search_name in get_search_names(name):
             condition |= Q(name__iexact=search_name)
 
-        package = models.Package.objects.get(condition)
+        package = repository.packages.get(condition)
 
         # Error out when we try to override a mirror'ed package for now
         # not sure what the best thing is
@@ -246,7 +248,8 @@ def handle_register_or_upload(post_data, files, user):
         return HttpResponseBadRequest(reason=form.errors.values()[0][0])
 
     if not package:
-        pkg_form = forms.PackageForm(post_data, user=user)
+        pkg_form = forms.PackageForm(
+            post_data, user=user, repository=repository)
         if not pkg_form.is_valid():
             return HttpResponseBadRequest(reason=pkg_form.errors.values()[0][0])
         package = pkg_form.save()

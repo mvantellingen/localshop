@@ -1,10 +1,11 @@
 import pytest
-
 from django.core.urlresolvers import reverse
 
 from localshop.apps.permissions.models import CIDR
-from tests.apps.packages.factories import ReleaseFileFactory
 from localshop.apps.packages.tasks import fetch_package
+
+from tests.apps.packages.factories import (
+    RepositoryFactory, ReleaseFileFactory)
 
 
 @pytest.mark.django_db
@@ -12,8 +13,11 @@ def test_success(client, admin_user, pypi_stub):
     CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
     release_file = ReleaseFileFactory()
 
-    response = client.get(reverse('packages-simple:simple_detail',
-                                  kwargs={'slug': release_file.release.package.name}))
+    response = client.get(
+        reverse('packages-simple:simple_detail', kwargs={
+            'slug': release_file.release.package.name,
+            'repo': release_file.release.package.repository.slug
+        }))
 
     assert response.status_code == 200
     assert 'Links for test-package' in response.content
@@ -25,11 +29,15 @@ def test_success(client, admin_user, pypi_stub):
 @pytest.mark.django_db
 def test_missing_package_local_package(client, admin_user, pypi_stub):
     CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
+    repository = RepositoryFactory()
 
-    fetch_package.run('minibar')
+    fetch_package.run(repository.pk, 'minibar')
 
-    response = client.get(reverse('packages-simple:simple_detail',
-                                  kwargs={'slug': 'minibar'}))
+    response = client.get(
+        reverse('packages-simple:simple_detail', kwargs={
+            'slug': 'minibar',
+            'repo': repository.slug,
+        }))
 
     assert response.status_code == 200
     assert 'Links for minibar' in response.content
@@ -41,9 +49,13 @@ def test_missing_package_local_package(client, admin_user, pypi_stub):
 @pytest.mark.django_db
 def test_nonexistent_package(client, admin_user, pypi_stub):
     CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
+    repository = RepositoryFactory()
 
-    response = client.get(reverse('packages-simple:simple_detail',
-                                  kwargs={'slug': 'nonexistent'}))
+    response = client.get(
+        reverse('packages-simple:simple_detail', kwargs={
+            'slug': 'nonexistent',
+            'repo': repository.slug,
+        }))
 
     assert response.url == 'https://pypi.python.org/simple/nonexistent'
     assert response.status_code == 302
@@ -54,8 +66,11 @@ def test_wrong_package_name_case(client, admin_user, pypi_stub):
     CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
     ReleaseFileFactory(release__package__name='minibar')
 
-    response = client.get(reverse('packages-simple:simple_detail',
-                                  kwargs={'slug': 'Minibar'}))
+    response = client.get(
+        reverse('packages-simple:simple_detail', kwargs={
+            'slug': 'Minibar',
+            'repo': 'default'
+        }))
 
     assert response.status_code == 302
-    assert response.url == 'http://testserver/simple/minibar/'
+    assert response.url == 'http://testserver/repo/default/minibar/'

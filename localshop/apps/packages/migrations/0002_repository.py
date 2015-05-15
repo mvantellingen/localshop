@@ -20,7 +20,7 @@ class Migration(migrations.Migration):
                 ('created', model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, verbose_name='created', editable=False)),
                 ('modified', model_utils.fields.AutoLastModifiedField(default=django.utils.timezone.now, verbose_name='modified', editable=False)),
                 ('name', models.CharField(max_length=250)),
-                ('slug', models.CharField(max_length=200)),
+                ('slug', models.CharField(max_length=200, unique=True)),
             ],
             options={
                 'abstract': False,
