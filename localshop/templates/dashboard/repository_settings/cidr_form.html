@@ -12,7 +12,7 @@
 
     <div class="form-actions">
         <button type="submit" class="btn btn-primary"><span class="icon-ok icon-white"></span> Save</button>
-        <a href="{% url 'permissions:cidr_index' %}" class="btn">Cancel</a>
+        <a href="{% url 'dashboard:repo_settings:cidr_index' repo=view.repository.slug %}" class="btn">Cancel</a>
     </div>
     {% csrf_token %}
 </form>

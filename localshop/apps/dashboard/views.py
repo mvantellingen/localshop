@@ -2,6 +2,7 @@ from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
 from django.views import generic
 
+from localshop.apps.dashboard import forms
 from localshop.apps.packages import models
 from localshop.views import LoginRequiredMixin, PermissionRequiredMixin
 
@@ -85,6 +86,17 @@ class RepositoryMixin(object):
             models.Repository.objects, slug=kwargs['repo'])
         return super(RepositoryMixin, self).dispatch(request, *args, **kwargs)
 
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super(RepositoryMixin, self).get_form_kwargs(*args, **kwargs)
+        kwargs['repository'] = self.repository
+        return kwargs
+
+
+class RepositorySettingsMixin(RepositoryMixin, LoginRequiredMixin,
+                              PermissionRequiredMixin):
+    pass
+
+
 
 class PackageDetail(RepositoryMixin, LoginRequiredMixin,
                     PermissionRequiredMixin, generic.DetailView):
@@ -101,3 +113,55 @@ class PackageDetail(RepositoryMixin, LoginRequiredMixin,
         context = super(PackageDetail, self).get_context_data(*args, **kwargs)
         context['release'] = self.object.last_release
         return context
+
+
+
+class CidrListView(RepositorySettingsMixin, generic.ListView):
+    object_context_name = 'cidrs'
+    permission_required = 'permissions.view_cidr'
+    template_name = 'dashboard/repository_settings/cidr_list.html'
+
+    def get_queryset(self):
+        return self.repository.cidr_list.all()
+
+
+class CidrCreateView(RepositorySettingsMixin, generic.CreateView):
+    permission_required = 'permissions.add_cidr'
+    form_class = forms.AccessControlForm
+    template_name = 'dashboard/repository_settings/cidr_form.html'
+
+    def get_success_url(self):
+        return reverse('dashboard:repo_settings_cidr_index', kwargs={
+            'repo': self.repository.slug,
+        })
+
+    def get_queryset(self):
+        return self.repository.cidr_list.all()
+
+
+class CidrUpdateView(RepositorySettingsMixin, generic.UpdateView):
+    permission_required = 'permissions.change_cidr'
+    form_class = forms.AccessControlForm
+    template_name = 'dashboard/repository_settings/cidr_form.html'
+
+    def get_success_url(self):
+        return reverse('dashboard:repo_settings_cidr_index', kwargs={
+            'repo': self.repository.slug,
+        })
+
+    def get_queryset(self):
+        return self.repository.cidr_list.all()
+
+
+class CidrDeleteView(RepositorySettingsMixin, generic.DeleteView):
+    permission_required = 'permissions.delete_cidr'
+    form_class = forms.AccessControlForm
+    template_name = 'dashboard/repository_settings/cidr_confirm_delete.html'
+
+    def get_success_url(self):
+        return reverse('dashboard:repo_settings_cidr_index', kwargs={
+            'repo': self.repository.slug,
+        })
+
+    def get_queryset(self):
+        return self.repository.cidr_list.all()

@@ -14,34 +14,7 @@ from localshop.views import LoginRequiredMixin, PermissionRequiredMixin
 from localshop.apps.permissions import models
 
 
-class CidrListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
-    model = models.CIDR
-    object_context_name = 'cidrs'
-    permission_required = 'permissions.view_cidr'
 
-
-class CidrCreateView(LoginRequiredMixin, PermissionRequiredMixin, CreateView):
-    model = models.CIDR
-    permission_required = 'permissions.add_cidr'
-
-    def get_success_url(self):
-        return reverse('permissions:cidr_index')
-
-
-class CidrUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
-    model = models.CIDR
-    permission_required = 'permissions.change_cidr'
-
-    def get_success_url(self):
-        return reverse('permissions:cidr_index')
-
-
-class CidrDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
-    model = models.CIDR
-    permission_required = 'permissions.delete_cidr'
-
-    def get_success_url(self):
-        return reverse('permissions:cidr_index')
 
 
 class CredentialListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
