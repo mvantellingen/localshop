@@ -15,12 +15,21 @@ from django.core.urlresolvers import reverse
 from django.utils.functional import LazyObject
 from django.utils.html import escape
 from model_utils import Choices
+from model_utils.models import TimeStampedModel
 from model_utils.fields import AutoCreatedField, AutoLastModifiedField
 
 from localshop.apps.packages.utils import delete_files
 
 
 logger = logging.getLogger(__name__)
+
+
+class Repository(TimeStampedModel):
+    name = models.CharField(max_length=250)
+    slug = models.CharField(max_length=200)
+
+    def __str__(self):
+        return self.name
 
 
 class Classifier(models.Model):
@@ -35,7 +44,9 @@ class Package(models.Model):
 
     modified = AutoLastModifiedField()
 
-    name = models.SlugField(max_length=200, unique=True)
+    repository = models.ForeignKey(Repository, related_name='packages')
+
+    name = models.SlugField(max_length=200)
 
     #: Indicate if this package is local (a private package)
     is_local = models.BooleanField(default=False)
@@ -47,6 +58,9 @@ class Package(models.Model):
 
     class Meta:
         ordering = ['name']
+        unique_together = [
+            ('repository', 'name')
+        ]
         permissions = (
             ("view_package", "Can view package"),
         )

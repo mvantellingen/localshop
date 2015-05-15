@@ -9,7 +9,7 @@ from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFound
 from django.http import HttpResponseForbidden
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 from django.views.generic.detail import DetailView
@@ -31,19 +31,25 @@ logger = logging.getLogger(__name__)
 Version.set_supported_version_schemes((Simple3VersionScheme, Simple4VersionScheme, Pep440VersionScheme,))
 
 
-class SimpleIndex(ListView):
+class RepositoryMixin(object):
+    def dispatch(self, request, *args, **kwargs):
+        self.repository = get_object_or_404(
+            models.Repository.objects, slug=kwargs['repo'])
+        return super(RepositoryMixin, self).dispatch(request, *args, **kwargs)
+
+
+class SimpleIndex(RepositoryMixin, ListView):
     """Index view with all available packages used by /simple url
 
     This page is used by pip/easy_install to find packages.
 
     """
-    queryset = models.Package.objects.values('name')
     context_object_name = 'packages'
     http_method_names = ['get', 'post']
     template_name = 'packages/simple_package_list.html'
 
     @method_decorator(csrf_exempt)
-    @method_decorator(credentials_required)
+    #@method_decorator(credentials_required)
     def dispatch(self, request, *args, **kwargs):
         return super(SimpleIndex, self).dispatch(request, *args, **kwargs)
 
@@ -69,8 +75,11 @@ class SimpleIndex(ListView):
             return HttpResponseNotFound('Unknown action')
         return handler(request.POST, request.FILES, user)
 
+    def get_queryset(self):
+        return self.repository.packages.all()
 
-class SimpleDetail(DetailView):
+
+class SimpleDetail(RepositoryMixin, DetailView):
     """List all available files for a specific package.
 
     This page is used by pip/easy_install to find the files.
@@ -83,21 +92,22 @@ class SimpleDetail(DetailView):
     def dispatch(self, request, *args, **kwargs):
         return super(SimpleDetail, self).dispatch(request, *args, **kwargs)
 
-    def get(self, request, slug):
+    def get(self, request, repo, slug):
         condition = Q()
         for name in get_search_names(slug):
             condition |= Q(name__iexact=name)
 
         try:
-            package = models.Package.objects.get(condition)
+            package = self.repository.packages.get(condition)
         except ObjectDoesNotExist:
-            enqueue(fetch_package, slug)
+            #enqueue(fetch_package, slug)
+            fetch_package(self.repository.pk, slug)
             return redirect('https://pypi.python.org/simple/{}'.format(slug))
 
         # Redirect if slug is not an exact match
         if slug != package.name:
             url = reverse('packages-simple:simple_detail',
-                          kwargs={'slug': package.name})
+                          kwargs={'repo': repo.slug, 'slug': package.name})
             return redirect(url)
 
         self.object = package

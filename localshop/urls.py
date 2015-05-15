@@ -6,7 +6,6 @@ from django.contrib import admin
 from django.views.generic.base import RedirectView
 
 from localshop.apps.packages.xmlrpc import handle_request
-from localshop.apps.packages import views as pkg_views
 
 admin.autodiscover()
 
@@ -23,12 +22,8 @@ urlpatterns = [
     url(r'^packages/',
         include('localshop.apps.packages.urls', namespace='packages')),
 
-    url(r'^simple/', include('localshop.apps.packages.urls_simple',
+    url(r'^repo/', include('localshop.apps.packages.urls_simple',
         namespace='packages-simple')),
-
-    # We add a separate route for simple without the trailing slash so that
-    # POST requests to /simple/ and /simple both work
-    url(r'^simple$', pkg_views.SimpleIndex.as_view()),
 
     url(r'^permissions/',
         include('localshop.apps.permissions.urls', namespace='permissions')),

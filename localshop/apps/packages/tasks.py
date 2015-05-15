@@ -15,9 +15,10 @@ from localshop.utils import no_duplicates, enqueue
 
 @task(bind=True)
 @no_duplicates
-def fetch_package(self, slug):
+def fetch_package(self, repository_pk, slug):
     """
     """
+    repository = models.Repository.objects.get(pk=repository_pk)
     logging.info('start fetch_package: %s', slug)
 
     response = requests.get(settings.LOCALSHOP_PYPI_URL + '/{}/json'.format(slug))
@@ -32,21 +33,16 @@ def fetch_package(self, slug):
     name = package_data['info']['name']
 
     try:
-        package = models.Package.objects.get(name=name)
+        package = repository.packages.get(name=name)
         releases = package.get_all_releases()
     except models.Package.DoesNotExist:
-        package = models.Package(name=name)
+        package = repository.packages.create(name=name)
         releases = {}
-
-    # Save the package if it is new
-    if not package.pk:
-        package.save()
 
     for version, release_list in package_data['releases'].items():
         release, files = releases.get(version, (None, {}))
         if not release:
-            release = models.Release(package=package, version=version)
-            release.save()
+            release = package.releases.create(version=version)
 
         release_data = {
             'author': package_data['info']['author'],
