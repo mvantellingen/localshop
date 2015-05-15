@@ -25,6 +25,9 @@ class CIDRManager(models.Manager):
 
 
 class CIDR(models.Model):
+    """Allow access based on the IP address of the client."""
+    repository = models.ForeignKey(
+        'packages.Repository', related_name='cidr_list')
     cidr = models.CharField('CIDR', max_length=128, unique=True,
         help_text='IP addresses and/or subnet')
     label = models.CharField('label', max_length=128, blank=True, null=True,

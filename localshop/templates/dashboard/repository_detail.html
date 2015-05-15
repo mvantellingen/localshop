@@ -1,0 +1,33 @@
+{% extends "layout.main.html" %}
+
+{% block content %}
+<h1>Repository: {{ repository.name }}</h1>
+<p>
+    URL: {{ simple_index_url }}
+</p>
+
+<a href="{% url 'dashboard:repository_edit' slug=repository.slug %}">edit</a>
+
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Type</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for package in repository.packages.all %}
+        <tr>
+            <td><a href="{% url 'dashboard:package_detail' repo=repository.slug name=package.name %}">{{ package.name }}</a></td>
+            <td>
+                {% if package.is_local %}
+                local package
+                {% else %}
+                pypi package
+                {% endif %}
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}

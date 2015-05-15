@@ -1,0 +1,31 @@
+{% extends "layout.main.html" %}
+
+{% block content %}
+<h1>Repositories</h1>
+
+<a href="{% url 'dashboard:repository_create' %}">create</a>
+<table class="table table-striped">
+    <thead>
+        <tr>
+            <th>Name</th>
+            <th>Description</th>
+            <th>Actions</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for repository in repositories %}
+        <tr>
+            <td><a href="{% url 'dashboard:repository_detail' slug=repository.slug %}">{{ repository.name }}</a></td>
+            <td>{{ repository.description }}</td>
+            <td>
+                <a href="{% url 'dashboard:repository_edit' slug=repository.slug %}">edit</a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% endblock %}
+
+
+
+

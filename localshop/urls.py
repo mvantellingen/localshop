@@ -14,6 +14,8 @@ static_prefix = re.escape(settings.STATIC_URL.lstrip('/'))
 
 urlpatterns = [
     url(r'^$', 'localshop.views.index', name='index'),
+    url(r'^dashboard/',
+        include('localshop.apps.dashboard.urls', namespace='dashboard')),
 
     # Default path for xmlrpc calls
     url(r'^RPC2$', handle_request),

@@ -7,10 +7,10 @@
 <div class="navbar navbar-fixed-top">
     <div class="navbar-inner">
         <div class="container-fluid">
-            <a class="brand" href="{% url 'index' %}">localshop</a>
+            <a class="brand" href="{% url 'dashboard:index' %}">localshop</a>
             <div class="nav-collapse">
                 <ul class="nav">
-                    <li><a href="{% url 'packages:index' %}">Packages</a></li>
+                    <li><a href="{% url 'dashboard:repository_list' %}">Repositories</a></li>
                     <li class="dropdown">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown">Permissions <span class="caret"></span></a>
                         <ul class="dropdown-menu">

@@ -27,9 +27,16 @@ logger = logging.getLogger(__name__)
 class Repository(TimeStampedModel):
     name = models.CharField(max_length=250)
     slug = models.CharField(max_length=200, unique=True)
+    description = models.CharField(max_length=500, blank=True)
 
     def __str__(self):
         return self.name
+
+    @property
+    def simple_index_url(self):
+        return reverse('packages-simple:simple_index', kwargs={
+            'repo': self.slug
+        })
 
 
 class Classifier(models.Model):
@@ -68,9 +75,10 @@ class Package(models.Model):
     def __unicode__(self):
         return self.name
 
-    @models.permalink
     def get_absolute_url(self):
-        return ('packages:detail', None, {'name': self.name})
+        return reverse('dashboard:package_detail', kwargs={
+            'repo': self.repository.slug, 'name': self.name
+        })
 
     def get_all_releases(self):
         result = {}

@@ -62,7 +62,7 @@ class SimpleIndex(RepositoryMixin, ListView):
             return HttpResponseUnauthorized(content='Missing auth header')
 
         user = authenticate_user(request)
-        if not user:
+        if not user:
             return HttpResponse('Invalid username/password', status=401)
 
         actions = {
@@ -117,31 +117,6 @@ class SimpleDetail(RepositoryMixin, DetailView):
             object=self.object,
             releases=list(package.releases.all()))
         return self.render_to_response(context)
-
-
-class Index(LoginRequiredMixin, PermissionRequiredMixin, ListView):
-    model = models.Package
-    context_object_name = 'packages'
-    permission_required = 'packages.view_package'
-
-
-class Detail(LoginRequiredMixin, PermissionRequiredMixin, DetailView):
-    model = models.Package
-    context_object_name = 'package'
-    slug_url_kwarg = 'name'
-    slug_field = 'name'
-    permission_required = 'packages.view_package'
-
-    def get_object(self, queryset=None):
-        # Could be dropped when we use django 1.4
-        self.kwargs['slug'] = self.kwargs.get(self.slug_url_kwarg, None)
-        return super(Detail, self).get_object(queryset)
-
-    def get_context_data(self, *args, **kwargs):
-        context = super(Detail, self).get_context_data(*args, **kwargs)
-        context['release'] = self.object.last_release
-        context['pypi_url'] = settings.LOCALSHOP_PYPI_URL
-        return context
 
 
 @permission_required('packages.change_package')

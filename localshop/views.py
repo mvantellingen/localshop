@@ -3,6 +3,7 @@ from django.conf import settings
 from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import ImproperlyConfigured
 from django.template.response import TemplateResponse
+from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
 
@@ -14,26 +15,7 @@ from localshop.apps.packages import xmlrpc
 def index(request):
     if request.method == 'POST':
         return xmlrpc.handle_request(request)
-    return frontpage(request)
-
-
-@login_required
-def frontpage(request):
-    recent_local = (Release.objects
-        .filter(package__is_local=True)
-        .order_by('-created')
-        .all()[:5])
-
-    recent_mirror = (ReleaseFile.objects
-        .filter(release__package__is_local=False)
-        .exclude(distribution='')
-        .order_by('-modified')
-        .all()[:10])
-
-    return TemplateResponse(request, 'frontpage.html', {
-        'recent_local': recent_local,
-        'recent_mirror': recent_mirror,
-    })
+    return redirect('dashboard:index')
 
 
 class LoginRequiredMixin(object):

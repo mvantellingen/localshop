@@ -181,6 +181,7 @@ class Base(Settings):
         'guardian',
 
         'localshop',
+        'localshop.apps.dashboard',
         'localshop.apps.packages',
         'localshop.apps.permissions',
     ]
