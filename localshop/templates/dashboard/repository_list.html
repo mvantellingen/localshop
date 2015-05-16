@@ -1,4 +1,13 @@
 {% extends "layout.main.html" %}
+{% load i18n %}
+
+{% block breadcrumbs %}
+<ul class="breadcrumb">
+    <li><a href="#">localshop</a> <span class="divider">/</span></li>
+    <li class="active">{% trans "repository overview" %}</li>
+</ul>
+{% endblock %}
+
 
 {% block content %}
 <h1>Repositories</h1>

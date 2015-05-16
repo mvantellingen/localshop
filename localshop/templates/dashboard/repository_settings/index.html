@@ -1,4 +1,14 @@
 {% extends "layout.main.html" %}
+{% load i18n %}
+
+{% block breadcrumbs %}
+<ul class="breadcrumb">
+    <li><a href="#">localshop</a> <span class="divider">/</span></li>
+    <li><a href="{% url 'dashboard:repository_list' %}">{% trans "repository overview" %}</a> <span class="divider">/</span></li>
+    <li><a href="{% url 'dashboard:repository_detail' slug=view.repository.slug %}">{{ view.repository.name }}</a> <span class="divider">/</span></li>
+    <li class="active">settings</li>
+</ul>
+{% endblock %}
 
 {% block content %}
     <ul>

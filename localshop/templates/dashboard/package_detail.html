@@ -1,4 +1,15 @@
 {% extends "layout.main.html" %}
+{% load i18n %}
+
+{% block breadcrumbs %}
+<ul class="breadcrumb">
+    <li><a href="#">localshop</a> <span class="divider">/</span></li>
+    <li><a href="{% url 'dashboard:repository_list' %}">{% trans "repository overview" %}</a> <span class="divider">/</span></li>
+    <li><a href="{% url 'dashboard:repository_detail' slug=view.repository.slug %}">{{ view.repository.name }}</a> <span class="divider">/</span></li>
+    <li class="active">{{ package.name }}</li>
+</ul>
+{% endblock %}
+
 
 {% block content %}
 <div class="tabbable">
@@ -68,7 +79,7 @@
                         <li><a href="http://crate.io/packages/{{ package.name }}">crate.io</a></li>
                     </ul>
 
-                    <a href="{% url 'packages:refresh' name=package.name %}" class="btn"><span class="icon-refresh"></span> Refresh</a>
+                    <a href="{% url 'packages:refresh' repo=view.repository.slug name=package.name %}" class="btn"><span class="icon-refresh"></span> Refresh</a>
                     {% endif %}
                 </div>
             </div>

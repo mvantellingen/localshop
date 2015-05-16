@@ -1,4 +1,21 @@
 {% extends "layout.main.html" %}
+{% load i18n %}
+
+
+{% block breadcrumbs %}
+<ul class="breadcrumb">
+    <li><a href="#">localshop</a> <span class="divider">/</span></li>
+    <li><a href="{% url 'dashboard:repository_list' %}">{% trans "repository overview" %}</a> <span class="divider">/</span></li>
+    {% if repository.pk %}
+    <li><a href="{% url 'dashboard:repository_detail' slug=repository.slug %}">{{ repository.name }}</a> <span class="divider">/</span></li>
+    <li><a href="{% url 'dashboard:repo_settings:index' repo=repository.slug %}">settings</a> <span class="divider">/</span></li>
+    <li class="active">{% trans "edit" %}</li>
+    {% else %}
+    <li class="active">{% trans "new repository" %}</li>
+    {% endif %}
+</ul>
+{% endblock %}
+
 
 {% block content %}
 <h1>Create repository</h1>
