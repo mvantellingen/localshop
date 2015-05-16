@@ -1,13 +1,13 @@
 from django.core.urlresolvers import reverse
 from django.shortcuts import get_object_or_404
 from django.views import generic
+from braces.views import LoginRequiredMixin, PermissionRequiredMixin
 
 from localshop.apps.dashboard import forms
 from localshop.apps.packages import models
-from localshop.views import LoginRequiredMixin, PermissionRequiredMixin
 
 
-class IndexView(generic.TemplateView):
+class IndexView(LoginRequiredMixin, generic.TemplateView):
     template_name = 'dashboard/index.html'
 
     def get_context_data(self):

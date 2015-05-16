@@ -36,7 +36,7 @@ class Repository(TimeStampedModel):
 
     @property
     def simple_index_url(self):
-        return reverse('packages-simple:simple_index', kwargs={
+        return reverse('packages:simple_index', kwargs={
             'repo': self.slug
         })
 
@@ -201,6 +201,7 @@ class ReleaseFile(models.Model):
 
     def get_absolute_url(self):
         url = reverse('packages:download', kwargs={
+            'repo': self.release.package.repository.slug,
             'name': self.release.package.name,
             'pk': self.pk, 'filename': self.filename
         })

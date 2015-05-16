@@ -1,44 +1,36 @@
 import logging
-import os
 from wsgiref.util import FileWrapper
 
+from braces.views import CsrfExemptMixin
 from django.conf import settings
-from django.contrib.auth.decorators import login_required, permission_required
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFound
 from django.http import HttpResponseForbidden
-from django.shortcuts import redirect, get_object_or_404
+from django.shortcuts import redirect
 from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt
-from django.views.generic.detail import DetailView
-from django.views.generic.list import ListView
+from django.views import generic
 from versio.version import Version
 from versio.version_scheme import Pep440VersionScheme, Simple3VersionScheme, Simple4VersionScheme, PerlVersionScheme
 
 from localshop.utils import enqueue
 from localshop.apps.packages import forms, models
 from localshop.apps.packages.tasks import fetch_package
+from localshop.apps.packages.mixins import RepositoryMixin
 from localshop.apps.packages.pypi import get_search_names
 from localshop.apps.packages.utils import parse_distutils_request, get_versio_versioning_scheme
+from localshop.apps.permissions.mixins import RepositoryAccessMixin
 from localshop.apps.permissions.utils import credentials_required
 from localshop.apps.permissions.utils import split_auth, authenticate_user
 from localshop.http import HttpResponseUnauthorized
-from localshop.views import LoginRequiredMixin, PermissionRequiredMixin
 
 logger = logging.getLogger(__name__)
 Version.set_supported_version_schemes((Simple3VersionScheme, Simple4VersionScheme, Pep440VersionScheme,))
 
 
-class RepositoryMixin(object):
-    def dispatch(self, request, *args, **kwargs):
-        self.repository = get_object_or_404(
-            models.Repository.objects, slug=kwargs['repo'])
-        return super(RepositoryMixin, self).dispatch(request, *args, **kwargs)
-
-
-class SimpleIndex(RepositoryMixin, ListView):
+class SimpleIndex(CsrfExemptMixin, RepositoryMixin, RepositoryAccessMixin,
+                  generic.ListView):
     """Index view with all available packages used by /simple url
 
     This page is used by pip/easy_install to find packages.
@@ -48,8 +40,7 @@ class SimpleIndex(RepositoryMixin, ListView):
     http_method_names = ['get', 'post']
     template_name = 'packages/simple_package_list.html'
 
-    @method_decorator(csrf_exempt)
-    #@method_decorator(credentials_required)
+    @method_decorator(credentials_required)
     def dispatch(self, request, *args, **kwargs):
         return super(SimpleIndex, self).dispatch(request, *args, **kwargs)
 
@@ -62,7 +53,7 @@ class SimpleIndex(RepositoryMixin, ListView):
             return HttpResponseUnauthorized(content='Missing auth header')
 
         user = authenticate_user(request)
-        if not user:
+        if not user:
             return HttpResponse('Invalid username/password', status=401)
 
         actions = {
@@ -79,7 +70,7 @@ class SimpleIndex(RepositoryMixin, ListView):
         return self.repository.packages.all()
 
 
-class SimpleDetail(RepositoryMixin, DetailView):
+class SimpleDetail(RepositoryMixin, RepositoryAccessMixin, generic.DetailView):
     """List all available files for a specific package.
 
     This page is used by pip/easy_install to find the files.
@@ -87,10 +78,6 @@ class SimpleDetail(RepositoryMixin, DetailView):
     model = models.Package
     context_object_name = 'package'
     template_name = 'packages/simple_package_detail.html'
-
-    @method_decorator(credentials_required)
-    def dispatch(self, request, *args, **kwargs):
-        return super(SimpleDetail, self).dispatch(request, *args, **kwargs)
 
     def get(self, request, repo, slug):
         condition = Q()
@@ -106,7 +93,7 @@ class SimpleDetail(RepositoryMixin, DetailView):
 
         # Redirect if slug is not an exact match
         if slug != package.name:
-            url = reverse('packages-simple:simple_detail', kwargs={
+            url = reverse('packages:simple_detail', kwargs={
                 'repo': self.repository.slug,
                 'slug': package.name
             })
@@ -119,19 +106,18 @@ class SimpleDetail(RepositoryMixin, DetailView):
         return self.render_to_response(context)
 
 
-@permission_required('packages.change_package')
-@login_required
-def refresh(request, name):
-    try:
-        package = models.Package.objects.get(name__iexact=name)
-    except ObjectDoesNotExist:
-        package = None
-        enqueue(fetch_package, name)
-    return redirect(package)
+class PackageRefreshView(generic.View):
+    def get(self, name):
+        try:
+            package = models.Package.objects.get(name__iexact=name)
+        except ObjectDoesNotExist:
+            package = None
+            enqueue(fetch_package, name)
+        return redirect(package)
 
 
-@credentials_required
-def download_file(request, name, pk, filename):
+class DownloadReleaseFile(RepositoryMixin, RepositoryAccessMixin,
+                          generic.View):
     """
     If the requested file is not already cached locally from a previous
     download it will be fetched from PyPi for local storage and the client will
@@ -140,29 +126,30 @@ def download_file(request, name, pk, filename):
     downloaded.
     """
 
-    release_file = models.ReleaseFile.objects.get(pk=pk)
-    if not release_file.file_is_available:
-        logger.info("Queueing %s for mirroring", release_file.url)
-        release_file.download()
-        if not settings.LOCALSHOP_ISOLATED:
-            logger.debug("Redirecting user to pypi")
-            return redirect(release_file.url)
-        else:
-            release_file = models.ReleaseFile.objects.get(pk=pk)
+    def get(self, request, repo, name, pk, filename):
+        release_file = models.ReleaseFile.objects.get(pk=pk)
+        if not release_file.file_is_available:
+            logger.info("Queueing %s for mirroring", release_file.url)
+            release_file.download()
+            if not settings.LOCALSHOP_ISOLATED:
+                logger.debug("Redirecting user to pypi")
+                return redirect(release_file.url)
+            else:
+                release_file = models.ReleaseFile.objects.get(pk=pk)
 
-    if settings.MEDIA_URL:
-        return redirect(release_file.distribution.url)
+        if settings.MEDIA_URL:
+            return redirect(release_file.distribution.url)
 
-    # TODO: Use sendfile if enabled
-    response = HttpResponse(
-        FileWrapper(release_file.distribution.file),
-        content_type='application/force-download')
-    response['Content-Disposition'] = 'attachment; filename=%s' % (
-        release_file.filename)
-    size = release_file.distribution.file.size
-    if size:
-        response["Content-Length"] = size
-    return response
+        # TODO: Use sendfile if enabled
+        response = HttpResponse(
+            FileWrapper(release_file.distribution.file),
+            content_type='application/force-download')
+        response['Content-Disposition'] = 'attachment; filename=%s' % (
+            release_file.filename)
+        size = release_file.distribution.file.size
+        if size:
+            response["Content-Length"] = size
+        return response
 
 
 def handle_register_or_upload(post_data, files, user, repository):

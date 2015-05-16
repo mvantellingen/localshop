@@ -21,11 +21,8 @@ urlpatterns = [
     url(r'^RPC2$', handle_request),
     url(r'^pypi$', handle_request),
 
-    url(r'^packages/',
+    url(r'^repo/',
         include('localshop.apps.packages.urls', namespace='packages')),
-
-    url(r'^repo/', include('localshop.apps.packages.urls_simple',
-        namespace='packages-simple')),
 
     url(r'^permissions/',
         include('localshop.apps.permissions.urls', namespace='permissions')),
