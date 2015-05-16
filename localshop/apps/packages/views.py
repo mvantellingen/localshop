@@ -21,9 +21,6 @@ from localshop.apps.packages.mixins import RepositoryMixin
 from localshop.apps.packages.pypi import get_search_names
 from localshop.apps.packages.utils import parse_distutils_request, get_versio_versioning_scheme
 from localshop.apps.permissions.mixins import RepositoryAccessMixin
-from localshop.apps.permissions.utils import credentials_required
-from localshop.apps.permissions.utils import split_auth, authenticate_user
-from localshop.http import HttpResponseUnauthorized
 
 logger = logging.getLogger(__name__)
 Version.set_supported_version_schemes((Simple3VersionScheme, Simple4VersionScheme, Pep440VersionScheme,))
@@ -40,21 +37,8 @@ class SimpleIndex(CsrfExemptMixin, RepositoryMixin, RepositoryAccessMixin,
     http_method_names = ['get', 'post']
     template_name = 'packages/simple_package_list.html'
 
-    @method_decorator(credentials_required)
-    def dispatch(self, request, *args, **kwargs):
-        return super(SimpleIndex, self).dispatch(request, *args, **kwargs)
-
     def post(self, request, repo):
         parse_distutils_request(request)
-
-        # XXX: Auth is currently a bit of a hack
-        method, identity = split_auth(request)
-        if not method:
-            return HttpResponseUnauthorized(content='Missing auth header')
-
-        user = authenticate_user(request)
-        if not user:
-            return HttpResponse('Invalid username/password', status=401)
 
         actions = {
             'submit': handle_register_or_upload,
@@ -64,7 +48,14 @@ class SimpleIndex(CsrfExemptMixin, RepositoryMixin, RepositoryAccessMixin,
         handler = actions.get(request.POST.get(':action'))
         if not handler:
             return HttpResponseNotFound('Unknown action')
-        return handler(request.POST, request.FILES, user, self.repository)
+
+        # Both actions currently are upload actions, so check is simple
+        if request.credentials and not request.credentials.allow_upload:
+            return HttpResponseForbidden(
+                "Upload is not allowed with the provided credentials")
+
+        return handler(
+            request.POST, request.FILES, request.user, self.repository)
 
     def get_queryset(self):
         return self.repository.packages.all()
@@ -125,6 +116,7 @@ class DownloadReleaseFile(RepositoryMixin, RepositoryAccessMixin,
     True, in which case the file will be served to the client after it is
     downloaded.
     """
+    require_upload_permission = True
 
     def get(self, request, repo, name, pk, filename):
         release_file = models.ReleaseFile.objects.get(pk=pk)
@@ -188,14 +180,6 @@ def handle_register_or_upload(post_data, files, user, repository):
             return HttpResponseBadRequest(
                 '%s is a pypi package!' % package.name)
 
-        # Ensure that the user is one of the owners
-        if not package.owners.filter(pk=user.pk).exists():
-            if not user.is_superuser:
-                return HttpResponseForbidden('No permission for this package')
-
-            # User is a superuser, add him to the owners
-            package.owners.add(user)
-
         try:
             release = package.releases.get(version=version)
         except ObjectDoesNotExist:
@@ -210,15 +194,13 @@ def handle_register_or_upload(post_data, files, user, repository):
         return HttpResponseBadRequest(reason=form.errors.values()[0][0])
 
     if not package:
-        pkg_form = forms.PackageForm(
-            post_data, user=user, repository=repository)
+        pkg_form = forms.PackageForm(post_data, repository=repository)
         if not pkg_form.is_valid():
             return HttpResponseBadRequest(reason=pkg_form.errors.values()[0][0])
         package = pkg_form.save()
 
     release = form.save(commit=False)
     release.package = package
-    release.user = user
     release.save()
 
     # If this is an upload action then process the uploaded file
@@ -231,14 +213,13 @@ def handle_register_or_upload(post_data, files, user, repository):
                 return HttpResponseBadRequest(message)
         except ObjectDoesNotExist:
             release_file = models.ReleaseFile(
-                release=release, filename=filename, user=user)
+                release=release, filename=filename)
 
         form_file = forms.ReleaseFileForm(
             post_data, files, instance=release_file)
         if not form_file.is_valid():
             return HttpResponseBadRequest('ERRORS %s' % form_file.errors)
         release_file = form_file.save(commit=False)
-        release_file.user = user
         release_file.save()
 
     return HttpResponse()

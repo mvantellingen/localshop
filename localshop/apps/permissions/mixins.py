@@ -4,15 +4,17 @@ from django.conf import settings
 from django.contrib.auth import login
 from django.http import HttpResponseForbidden
 
-from localshop.apps.permissions.utils import authenticate_user
+from localshop.apps.permissions.utils import authenticate_user, get_credentials
 from localshop.http import HttpResponseUnauthorized
 
 logger = logging.getLogger(__name__)
 
 
 class RepositoryAccessMixin(object):
+    require_upload_permission = False
 
     def dispatch(self, request, *args, **kwargs):
+        request.credentials = None
 
         # TODO: Should be handled in middleware
         if settings.LOCALSHOP_USE_PROXIED_IP:
@@ -38,6 +40,14 @@ class RepositoryAccessMixin(object):
 
         # Just return the original view because already logged in
         if request.user.is_authenticated():
+            return super(RepositoryAccessMixin, self).dispatch(
+                request, *args, **kwargs)
+
+        # Check repository based credentials
+        key, secret = get_credentials(request)
+        credential = self.repository.credentials.authenticate(key, secret)
+        if credential:
+            request.credentials = credential
             return super(RepositoryAccessMixin, self).dispatch(
                 request, *args, **kwargs)
 

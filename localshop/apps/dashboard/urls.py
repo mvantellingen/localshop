@@ -22,6 +22,17 @@ urlpatterns = [
             url(r'^cidr/(?P<pk>\d+)/edit', views.CidrUpdateView.as_view(), name='cidr_edit'),
             url(r'^cidr/(?P<pk>\d+)/delete', views.CidrDeleteView.as_view(), name='cidr_delete'),
 
+            url(r'^credentials/$', views.CredentialListView.as_view(),
+                name='credential_index'),
+            url(r'^credentials/create$', views.CredentialCreateView.as_view(),
+                name='credential_create'),
+            url(r'^credentials/(?P<access_key>[a-f0-9]+)/secret', views.CredentialSecretKeyView.as_view(),
+                name='credential_secret'),
+            url(r'^credentials/(?P<access_key>[a-f0-9]+)/edit', views.CredentialUpdateView.as_view(),
+                name='credential_edit'),
+            url(r'^credentials/(?P<access_key>[a-f0-9]+)/delete', views.CredentialDeleteView.as_view(),
+                name='credential_delete'),
+
             url(r'^teams/$', views.TeamAccessView.as_view(), name='team_access'),
 
         ], namespace='repo_settings')),

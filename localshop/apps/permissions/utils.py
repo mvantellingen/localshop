@@ -24,10 +24,16 @@ def split_auth(request):
     return method, identity
 
 
-def authenticate_user(request):
+def get_credentials(request):
     method, identity = split_auth(request)
     if method is not None and method.lower() == 'basic':
-        key, secret = decode_credentials(identity)
+        return decode_credentials(identity)
+    return None, None
+
+
+def authenticate_user(request):
+    key, secret = get_credentials(request)
+    if key and secret:
         try:
             user = authenticate(access_key=key, secret_key=secret)
         except (DatabaseError, DataError):
@@ -51,8 +57,8 @@ def credentials_required(view_func):
             except KeyError:
                 return HttpResponseForbidden('No permission')
             else:
-                # HTTP_X_FORWARDED_FOR can be a comma-separated list of IPs. The
-                # client's IP will be the first one.
+                # HTTP_X_FORWARDED_FOR can be a comma-separated list of IPs.
+                # The client's IP will be the first one.
                 ip_addr = ip_addr.split(",")[0].strip()
         else:
             ip_addr = request.META['REMOTE_ADDR']

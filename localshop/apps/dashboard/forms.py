@@ -1,6 +1,7 @@
 from django import forms
+from django.utils import timezone
 
-from localshop.apps.permissions.models import CIDR, Team
+from localshop.apps.permissions.models import Credential, CIDR, Team
 
 
 class RepositoryFormMixin(object):
@@ -40,3 +41,23 @@ class RepositoryTeamForm(RepositoryFormMixin, forms.Form):
             self.repository.teams.remove(self.cleaned_data['team'])
         else:
             self.repository.teams.add(self.cleaned_data['team'])
+
+
+class CredentialModelForm(RepositoryFormMixin, forms.ModelForm):
+    deactivated = forms.BooleanField(required=False)
+
+    class Meta:
+        model = Credential
+        fields = ('comment', 'allow_upload', 'deactivated')
+
+    def clean_deactivated(self):
+        value = self.cleaned_data['deactivated']
+        return timezone.now() if value else None
+
+    def save(self, commit=True):
+        instance = super(CredentialModelForm, self).save(commit=False)
+
+        if commit:
+            instance.repository = self.repository
+            instance.save()
+        return instance

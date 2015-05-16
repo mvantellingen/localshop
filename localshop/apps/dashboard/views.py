@@ -1,4 +1,7 @@
+from django.contrib.sites.models import Site
+from django.core.exceptions import SuspiciousOperation
 from django.core.urlresolvers import reverse
+from django.http import HttpResponse, Http404
 from django.shortcuts import get_object_or_404
 from django.views import generic
 from braces.views import LoginRequiredMixin, PermissionRequiredMixin
@@ -97,7 +100,6 @@ class RepositorySettingsMixin(RepositoryMixin, LoginRequiredMixin,
     permission_required = 'packages.view_package'
 
 
-
 class PackageDetail(RepositoryMixin, LoginRequiredMixin,
                     PermissionRequiredMixin, generic.DetailView):
     context_object_name = 'package'
@@ -169,6 +171,70 @@ class CidrDeleteView(RepositorySettingsMixin, generic.DeleteView):
 
     def get_queryset(self):
         return self.repository.cidr_list.all()
+
+
+class CredentialListView(RepositorySettingsMixin, generic.ListView):
+    object_context_name = 'credentials'
+    permission_required = 'permissions.view_credential'
+    template_name = 'dashboard/repository_settings/credential_list.html'
+
+    def get_queryset(self):
+        return self.repository.credentials.all()
+
+    def get_context_data(self, **kwargs):
+        context = super(CredentialListView, self).get_context_data(**kwargs)
+        context['current_url'] = Site.objects.get_current()
+        return context
+
+
+class CredentialCreateView(RepositorySettingsMixin, generic.CreateView):
+    form_class = forms.CredentialModelForm
+    template_name = 'dashboard/repository_settings/credential_form.html'
+
+    def get_queryset(self):
+        return self.repository.credentials.all()
+
+    def get_success_url(self):
+        return reverse('dashboard:repo_settings:credential_index', kwargs={
+            'repo': self.repository.slug,
+        })
+
+
+class CredentialSecretKeyView(RepositorySettingsMixin, generic.View):
+
+    def get(self, request, repo, access_key):
+        if not request.is_ajax():
+            raise SuspiciousOperation
+        credential = get_object_or_404(
+            self.repository.credentials, access_key=access_key)
+        return HttpResponse(credential.secret_key)
+
+
+class CredentialUpdateView(RepositorySettingsMixin, generic.UpdateView):
+    form_class = forms.CredentialModelForm
+    slug_field = 'access_key'
+    slug_url_kwarg = 'access_key'
+    permission_required = 'permissions.change_credential'
+    template_name = 'dashboard/repository_settings/credential_form.html'
+
+    def get_queryset(self):
+        return self.repository.credentials.all()
+
+    def get_success_url(self):
+        return reverse('dashboard:repo_settings:credential_index', kwargs={
+            'repo': self.repository.slug,
+        })
+
+
+class CredentialDeleteView(RepositorySettingsMixin, generic.DeleteView):
+    slug_field = 'access_key'
+    slug_url_kwarg = 'access_key'
+    permission_required = 'permissions.delete_credential'
+
+    def get_success_url(self):
+        return reverse('dashboard:repo_settings:credential_index', kwargs={
+            'repo': self.repository.slug,
+        })
 
 
 class TeamAccessView(RepositorySettingsMixin, generic.FormView):

@@ -18,7 +18,9 @@ class CidrAdmin(admin.ModelAdmin):
 
 
 class CredentialAdmin(admin.ModelAdmin):
-    list_display = ['creator', 'access_key', 'created', 'comment']
+    list_display = [
+        'repository', 'access_key', 'created', 'comment', 'allow_upload']
+    list_filter = ['repository', 'allow_upload']
 
 
 admin.site.register(models.Team, TeamAdmin)

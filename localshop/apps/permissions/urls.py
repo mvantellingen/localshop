@@ -5,22 +5,6 @@ from localshop.apps.permissions import views
 
 urlpatterns = [
 
-
-    url(r'^credentials/$', views.CredentialListView.as_view(),
-        name='credential_index'),
-    url(r'^credentials/create$', views.create_credential,
-        name='credential_create'),
-    url(r'^credentials/(?P<access_key>[a-f0-9]+)/activate', views.activate_credential,
-        name='credential_activate'),
-    url(r'^credentials/(?P<access_key>[a-f0-9]+)/deactivate', views.deactivate_credential,
-        name='credential_deactivate'),
-    url(r'^credentials/(?P<access_key>[a-f0-9]+)/secret', views.secret_key,
-        name='credential_secret'),
-    url(r'^credentials/(?P<access_key>[a-f0-9]+)/edit', views.CredentialUpdateView.as_view(),
-        name='credential_edit'),
-    url(r'^credentials/(?P<access_key>[a-f0-9]+)/delete', views.CredentialDeleteView.as_view(),
-        name='credential_delete'),
-
     url('^teams/$', views.TeamListView.as_view(), name='team_list'),
     url('^teams/create$', views.TeamCreateView.as_view(), name='team_create'),
     url('^teams/(?P<pk>\d+)/$', views.TeamDetailView.as_view(), name='team_detail'),

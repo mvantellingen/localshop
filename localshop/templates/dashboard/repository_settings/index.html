@@ -15,6 +15,12 @@
             </p>
         </li>
         <li>
+            <a href="{% url 'dashboard:repo_settings:credential_index' repo=view.repository.slug %}">Credentials</a>
+            <p>
+                Manage credentials for accessing the repository
+            </p>
+        </li>
+        <li>
             <a href="{% url 'dashboard:repo_settings:team_access' repo=view.repository.slug %}">Teams</a>
             <p>
                 Manage which teams have access to this repository

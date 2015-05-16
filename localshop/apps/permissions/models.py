@@ -6,6 +6,7 @@ from django.utils.timezone import now
 from django.utils.translation import ugettext as _
 from django.utils.encoding import python_2_unicode_compatible
 from model_utils.models import TimeStampedModel
+from model_utils.fields import AutoCreatedField
 from userena.models import UserenaBaseProfile
 from uuidfield import UUIDField
 
@@ -54,15 +55,25 @@ class CredentialManager(models.Manager):
     def active(self):
         return self.filter(deactivated__isnull=True)
 
+    def authenticate(self, key, secret):
+        return self.active().filter(access_key=key, secret_key=secret).first()
+
 
 class Credential(models.Model):
+    """Credentials are repository bound"""
+    created = AutoCreatedField()
+
+    repository = models.ForeignKey('packages.Repository', related_name='credentials')
     access_key = UUIDField(verbose_name='Access key', help_text='The access key', auto=True, db_index=True)
     secret_key = UUIDField(verbose_name='Secret key', help_text='The secret key', auto=True, db_index=True)
-    creator = models.ForeignKey(settings.AUTH_USER_MODEL)
-    created = models.DateTimeField(default=now)
-    deactivated = models.DateTimeField(blank=True, null=True)
-    comment = models.CharField(max_length=255, blank=True, null=True, default='',
+    comment = models.CharField(
+        max_length=255, blank=True, null=True, default='',
         help_text="A comment about this credential, e.g. where it's being used")
+
+    allow_upload = models.BooleanField(
+        default=True,
+        help_text=_("Indicate if these credentials allow uploading new files"))
+    deactivated = models.DateTimeField(blank=True, null=True)
 
     objects = CredentialManager()
 

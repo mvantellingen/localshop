@@ -20,7 +20,6 @@ class PackageForm(forms.ModelForm):
         ]
 
     def __init__(self, *args, **kwargs):
-        self._user = kwargs.pop('user')
         self._repository = kwargs.pop('repository')
         super(PackageForm, self).__init__(*args, **kwargs)
         self.base_fields['name'].error_messages.update({
@@ -32,8 +31,6 @@ class PackageForm(forms.ModelForm):
         obj.is_local = True
         obj.repository = self._repository
         obj.save()
-
-        obj.owners.add(self._user)
         return obj
 
 
