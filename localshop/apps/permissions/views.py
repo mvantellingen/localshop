@@ -7,14 +7,13 @@ from django.forms import ModelForm
 from django.http import HttpResponse, Http404
 from django.shortcuts import redirect, get_object_or_404
 from django.views import generic
-from django.views.generic import ListView, CreateView
-from django.views.generic import UpdateView, DeleteView
 from django.utils.timezone import now
 
 from localshop.apps.permissions import models
 
 
-class CredentialListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
+class CredentialListView(LoginRequiredMixin, PermissionRequiredMixin,
+                         generic.ListView):
     object_context_name = 'credentials'
     permission_required = 'permissions.view_credential'
 
@@ -27,7 +26,8 @@ class CredentialListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
         return context
 
 
-class CredentialUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateView):
+class CredentialUpdateView(LoginRequiredMixin, PermissionRequiredMixin,
+                           generic.UpdateView):
 
     class CredentialModelForm(ModelForm):
         class Meta:
@@ -50,7 +50,8 @@ class CredentialUpdateView(LoginRequiredMixin, PermissionRequiredMixin, UpdateVi
         return reverse('permissions:credential_index')
 
 
-class CredentialDeleteView(LoginRequiredMixin, PermissionRequiredMixin, DeleteView):
+class CredentialDeleteView(LoginRequiredMixin, PermissionRequiredMixin,
+                           generic.DeleteView):
     model = models.Credential
     slug_field = 'access_key'
     slug_url_kwarg = 'access_key'
