@@ -1,3 +1,4 @@
+from braces.views import LoginRequiredMixin, PermissionRequiredMixin
 from django.contrib.auth.decorators import login_required, permission_required
 from django.contrib.sites.models import Site
 from django.core.exceptions import SuspiciousOperation
@@ -10,11 +11,7 @@ from django.views.generic import ListView, CreateView
 from django.views.generic import UpdateView, DeleteView
 from django.utils.timezone import now
 
-from localshop.views import LoginRequiredMixin, PermissionRequiredMixin
 from localshop.apps.permissions import models
-
-
-
 
 
 class CredentialListView(LoginRequiredMixin, PermissionRequiredMixin, ListView):
