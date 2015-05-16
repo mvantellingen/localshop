@@ -34,6 +34,8 @@ def FileSettings(path):
         return Holder
 
     for name, value in uppercase_attributes(mod).items():
+        if name == 'LOCALSHOP_DISTRIBUTION_STORAGE':
+            name = 'DEFAULT_FILE_STORAGE'
         setattr(Holder, name, value)
 
     return Holder
@@ -231,7 +233,7 @@ class Base(Settings):
 
     LOCALSHOP_DELETE_FILES = False
 
-    LOCALSHOP_DISTRIBUTION_STORAGE = 'storages.backends.overwrite.OverwriteStorage'
+    DEFAULT_FILE_STORAGE = 'storages.backends.overwrite.OverwriteStorage'
 
     LOCALSHOP_PYPI_URL = 'https://pypi.python.org/pypi'
 

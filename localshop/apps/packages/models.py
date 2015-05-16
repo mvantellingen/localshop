@@ -10,9 +10,7 @@ from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import post_delete
 from django.core.files import File
-from django.core.files.storage import get_storage_class
 from django.core.urlresolvers import reverse
-from django.utils.functional import LazyObject
 from django.utils.html import escape
 from model_utils import Choices
 from model_utils.fields import AutoCreatedField, AutoLastModifiedField
@@ -127,12 +125,6 @@ def release_file_upload_to(instance, filename):
         filename)
 
 
-class DistributionStorage(LazyObject):
-    def _setup(self):
-        self._wrapped = get_storage_class(
-            settings.LOCALSHOP_DISTRIBUTION_STORAGE)()
-
-
 class ReleaseFile(models.Model):
 
     TYPES = Choices(
@@ -156,8 +148,7 @@ class ReleaseFile(models.Model):
 
     filetype = models.CharField(max_length=25, choices=TYPES)
 
-    distribution = models.FileField(upload_to=release_file_upload_to,
-        storage=DistributionStorage(), max_length=512)
+    distribution = models.FileField(upload_to=release_file_upload_to, max_length=512)
 
     filename = models.CharField(max_length=200, blank=True, null=True)
 
