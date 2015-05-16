@@ -97,10 +97,10 @@ class SimpleDetail(RepositoryMixin, RepositoryAccessMixin, generic.DetailView):
         return self.render_to_response(context)
 
 
-class PackageRefreshView(generic.View):
-    def get(self, name):
+class PackageRefreshView(RepositoryMixin, RepositoryAccessMixin, generic.View):
+    def get(self, request, repo, name):
         try:
-            package = models.Package.objects.get(name__iexact=name)
+            package = self.repository.packages.get(name__iexact=name)
         except ObjectDoesNotExist:
             package = None
             enqueue(fetch_package, name)
