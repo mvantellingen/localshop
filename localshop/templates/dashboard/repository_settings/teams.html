@@ -1,0 +1,26 @@
+{% extends "layout.main.html" %}
+
+{% block content %}
+    <table>
+    {% for team in view.repository.teams.all %}
+    <tr>
+        <td>
+            {{ team }}
+        </td>
+        <td>
+            <form method="post">
+                <input type="hidden" name="team" value="{{ team.pk }}">
+                <input type="hidden" name="delete" value="true">
+                <input type="submit" value="X">
+                {% csrf_token %}
+            </form>
+        </td>
+    </tr>
+    {% endfor %}
+    </table>
+    <form method="post">
+        {{ form.as_p }}
+        {% csrf_token %}
+        <input type="submit">
+    </form>
+{% endblock %}

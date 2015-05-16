@@ -18,7 +18,7 @@
             <td><a href="{% url 'dashboard:repository_detail' slug=repository.slug %}">{{ repository.name }}</a></td>
             <td>{{ repository.description }}</td>
             <td>
-                <a href="{% url 'dashboard:repository_edit' slug=repository.slug %}">edit</a>
+                <a href="{% url 'dashboard:repo_settings:index' repo=repository.slug %}">settings</a>
             </td>
         </tr>
         {% endfor %}

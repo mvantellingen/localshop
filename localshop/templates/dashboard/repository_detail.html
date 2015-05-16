@@ -6,7 +6,7 @@
     URL: {{ simple_index_url }}
 </p>
 
-<a href="{% url 'dashboard:repository_edit' slug=repository.slug %}">edit</a>
+<a href="{% url 'dashboard:repo_settings:index' repo=repository.slug %}">settings</a>
 
 <table class="table table-striped">
     <thead>

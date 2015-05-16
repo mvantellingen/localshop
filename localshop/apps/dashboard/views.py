@@ -69,7 +69,7 @@ class RepositoryUpdateView(LoginRequiredMixin, generic.UpdateView):
 
     def get_success_url(self):
         return reverse(
-            'dashboard:repository_detail', kwargs={'slug': self.object.slug})
+            'dashboard:repo_settings:index', kwargs={'repo': self.object.slug})
 
 
 class RepositoryDeleteView(LoginRequiredMixin, generic.DeleteView):
@@ -94,7 +94,7 @@ class RepositoryMixin(object):
 
 class RepositorySettingsMixin(RepositoryMixin, LoginRequiredMixin,
                               PermissionRequiredMixin):
-    pass
+    permission_required = 'packages.view_package'
 
 
 
@@ -115,6 +115,10 @@ class PackageDetail(RepositoryMixin, LoginRequiredMixin,
         return context
 
 
+class SettingsOverview(RepositorySettingsMixin, generic.TemplateView):
+    template_name = 'dashboard/repository_settings/index.html'
+    permission_required = 'permissions.view_cidr'
+
 
 class CidrListView(RepositorySettingsMixin, generic.ListView):
     object_context_name = 'cidrs'
@@ -131,7 +135,7 @@ class CidrCreateView(RepositorySettingsMixin, generic.CreateView):
     template_name = 'dashboard/repository_settings/cidr_form.html'
 
     def get_success_url(self):
-        return reverse('dashboard:repo_settings_cidr_index', kwargs={
+        return reverse('dashboard:repo_settings:cidr_index', kwargs={
             'repo': self.repository.slug,
         })
 
@@ -145,7 +149,7 @@ class CidrUpdateView(RepositorySettingsMixin, generic.UpdateView):
     template_name = 'dashboard/repository_settings/cidr_form.html'
 
     def get_success_url(self):
-        return reverse('dashboard:repo_settings_cidr_index', kwargs={
+        return reverse('dashboard:repo_settings:cidr_index', kwargs={
             'repo': self.repository.slug,
         })
 
@@ -159,9 +163,23 @@ class CidrDeleteView(RepositorySettingsMixin, generic.DeleteView):
     template_name = 'dashboard/repository_settings/cidr_confirm_delete.html'
 
     def get_success_url(self):
-        return reverse('dashboard:repo_settings_cidr_index', kwargs={
+        return reverse('dashboard:repo_settings:cidr_index', kwargs={
             'repo': self.repository.slug,
         })
 
     def get_queryset(self):
         return self.repository.cidr_list.all()
+
+
+class TeamAccessView(RepositorySettingsMixin, generic.FormView):
+    form_class = forms.RepositoryTeamForm
+    template_name = 'dashboard/repository_settings/teams.html'
+
+    def get_success_url(self):
+        return reverse('dashboard:repo_settings:team_access', kwargs={
+            'repo': self.repository.slug,
+        })
+
+    def form_valid(self, form):
+        form.save()
+        return super(TeamAccessView, self).form_valid(form)

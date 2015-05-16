@@ -1,0 +1,26 @@
+{% extends "layout.main.html" %}
+
+{% block content %}
+    <ul>
+        <li>
+            <a href="{% url 'dashboard:repository_edit' slug=view.repository.slug %}">edit</a>
+            <p>
+                Edit repository settings
+            </p>
+        </li>
+        <li>
+            <a href="{% url 'dashboard:repo_settings:cidr_index' repo=view.repository.slug %}">Access control list</a>
+            <p>
+                Manage which networks have access to this repository
+            </p>
+        </li>
+        <li>
+            <a href="{% url 'dashboard:repo_settings:team_access' repo=view.repository.slug %}">Teams</a>
+            <p>
+                Manage which teams have access to this repository
+            </p>
+        </li>
+    </ul>
+
+{% endblock %}
+

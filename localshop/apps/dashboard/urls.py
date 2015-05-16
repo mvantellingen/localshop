@@ -16,10 +16,14 @@ urlpatterns = [
 
     url(r'^repositories/(?P<repo>[^/]+)/settings/',
         include([
+            url(r'^$', views.SettingsOverview.as_view(), name='index'),
             url(r'^cidr/$', views.CidrListView.as_view(), name='cidr_index'),
             url(r'^cidr/create$', views.CidrCreateView.as_view(), name='cidr_create'),
             url(r'^cidr/(?P<pk>\d+)/edit', views.CidrUpdateView.as_view(), name='cidr_edit'),
             url(r'^cidr/(?P<pk>\d+)/delete', views.CidrDeleteView.as_view(), name='cidr_delete'),
+
+            url(r'^teams/$', views.TeamAccessView.as_view(), name='team_access'),
+
         ], namespace='repo_settings')),
 
 
