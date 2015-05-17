@@ -7,12 +7,11 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('permissions', '0006_auto_20150516_1923'),
+        ('permissions', '0001_initial'),
     ]
 
     operations = [
-        migrations.AlterUniqueTogether(
-            name='teammember',
-            unique_together=set([('team', 'user')]),
+        migrations.DeleteModel(
+            name='AuthProfile',
         ),
     ]

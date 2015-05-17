@@ -70,7 +70,7 @@
         </div>
         {% endif %}
 
-        <input type="text" name="identification" class="input-block-level error" placeholder="{% trans "Username" %}" value="{{ form.identification.value|default:"" }}">
+        <input type="text" name="username" class="input-block-level error" placeholder="{% trans "Username" %}" value="{{ form.username.value|default:"" }}">
 
         <input type="password" name="password" class="input-block-level" placeholder="{% trans "Password" %}">
         <label class="checkbox">
@@ -79,7 +79,7 @@
         </label>
 
         <input type="submit" class="btn btn-primary" value="{% trans "Signin" %}" />
-        <p class="forgot-password pull-right"><a href="{% url 'userena_password_reset' %}" title="{% trans 'Forgot your password?' %}">{% trans "Forgot your password?" %}</a></p>
+        <p class="forgot-password pull-right"><a href="{% url 'password_reset' %}" title="{% trans 'Forgot your password?' %}">{% trans "Forgot your password?" %}</a></p>
         {% if next %}<input type="hidden" name="next" value="{{ next }}" />{% endif %}
         {% csrf_token %}
     </form>

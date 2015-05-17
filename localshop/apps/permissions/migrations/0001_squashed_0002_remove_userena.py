@@ -9,26 +9,13 @@ import uuidfield.fields
 
 class Migration(migrations.Migration):
 
+    replaces = [(b'permissions', '0001_initial'), (b'permissions', '0002_remove_userena')]
+
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
     ]
 
     operations = [
-        migrations.CreateModel(
-            name='AuthProfile',
-            fields=[
-                ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                #('mugshot', easy_thumbnails.fields.ThumbnailerImageField(help_text='A personal image displayed in your profile.', upload_to=userena.models.upload_to_mugshot, verbose_name='mugshot', blank=True)),
-                #('privacy', models.CharField(default=b'registered', help_text='Designates who can view your profile.', max_length=15, verbose_name='privacy', choices=[(b'open', 'Open'), (b'registered', 'Registered'), (b'closed', 'Closed')])),
-                #('user', models.OneToOneField(related_name='auth_profile', verbose_name='user', to=settings.AUTH_USER_MODEL)),
-            ],
-            options={
-                'abstract': False,
-                'permissions': (('view_profile', 'Can view profile'),),
-            },
-            bases=(models.Model,),
-        ),
-
         migrations.CreateModel(
             name='CIDR',
             fields=[

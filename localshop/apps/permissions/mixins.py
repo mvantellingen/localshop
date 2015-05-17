@@ -48,7 +48,6 @@ class RepositoryAccessMixin(object):
                     return HttpResponseUnauthorized()
 
         if self._allow_request(request, ip_addr):
-            print ' i allow'
             return super(RepositoryAccessMixin, self).dispatch(
                 request, *args, **kwargs)
 

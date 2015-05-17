@@ -3,7 +3,6 @@ import re
 from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import admin
-from django.views.generic.base import RedirectView
 
 from localshop.apps.packages.xmlrpc import handle_request
 
@@ -23,14 +22,10 @@ urlpatterns = [
 
     url(r'^repo/',
         include('localshop.apps.packages.urls', namespace='packages')),
-
     url(r'^permissions/',
         include('localshop.apps.permissions.urls', namespace='permissions')),
 
-    url(r'^accounts/signup/', RedirectView.as_view(url="/")),
-
-    url(r'^accounts/', include('userena.urls')),
-
+    url(r'^accounts/', include('django.contrib.auth.urls')),
     url(r'^admin/', include(admin.site.urls)),
 
     url(r'^%s(?P<path>.*)$' % static_prefix,

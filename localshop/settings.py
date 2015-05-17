@@ -175,8 +175,6 @@ class Base(Settings):
         'kombu.transport.django',
         'djcelery',
         'gunicorn',
-        'userena',
-        'guardian',
 
         'localshop',
         'localshop.apps.dashboard',
@@ -186,19 +184,12 @@ class Base(Settings):
 
     # Auth settings
     AUTHENTICATION_BACKENDS = (
-        'userena.backends.UserenaAuthenticationBackend',
-        'guardian.backends.ObjectPermissionBackend',
         'localshop.apps.permissions.backend.CredentialBackend',
         'django.contrib.auth.backends.ModelBackend',
     )
-
-    AUTH_PROFILE_MODULE = 'permissions.AuthProfile'
-    LOGIN_URL = '/accounts/signin/'
-    LOGIN_REDIRECT_URL = '/accounts/%(username)s/'
-    LOGOUT_URL = '/accounts/signout'
-    USERENA_MUGSHOT_GRAVATAR = True
-    USERENA_MUGSHOT_SIZE = 20
-    ANONYMOUS_USER_ID = -1
+    LOGIN_URL = '/accounts/login'
+    LOGIN_REDIRECT_URL = '/dashboard/'
+    LOGOUT_URL = '/accounts/logout'
 
     # A sample logging configuration. The only tangible logging
     # performed by this configuration is to send an email to

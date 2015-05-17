@@ -10,8 +10,9 @@ import model_utils.fields
 class Migration(migrations.Migration):
 
     dependencies = [
+        ('packages', '0004_auto_20150517_1612'),
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),
-        ('permissions', '0001_initial'),
+        ('permissions', '0002_remove_userena'),
     ]
 
     operations = [
@@ -40,14 +41,55 @@ class Migration(migrations.Migration):
                 ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
             ],
             options={
-                'abstract': False,
             },
             bases=(models.Model,),
+        ),
+        migrations.AlterUniqueTogether(
+            name='teammember',
+            unique_together=set([('team', 'user')]),
         ),
         migrations.AddField(
             model_name='team',
             name='users',
             field=models.ManyToManyField(to=settings.AUTH_USER_MODEL, through='permissions.TeamMember'),
             preserve_default=True,
+        ),
+        migrations.RemoveField(
+            model_name='credential',
+            name='creator',
+        ),
+        migrations.AddField(
+            model_name='cidr',
+            name='repository',
+            field=models.ForeignKey(related_name='cidr_list', default=1, to='packages.Repository'),
+            preserve_default=False,
+        ),
+        migrations.AddField(
+            model_name='credential',
+            name='allow_upload',
+            field=models.BooleanField(default=True, help_text='Indicate if these credentials allow uploading new files'),
+            preserve_default=True,
+        ),
+        migrations.AddField(
+            model_name='credential',
+            name='repository',
+            field=models.ForeignKey(related_name='credentials', default=1, to='packages.Repository'),
+            preserve_default=False,
+        ),
+        migrations.AlterField(
+            model_name='cidr',
+            name='cidr',
+            field=models.CharField(help_text=b'IP addresses and/or subnet', max_length=128, verbose_name=b'CIDR'),
+            preserve_default=True,
+        ),
+        migrations.AlterField(
+            model_name='credential',
+            name='created',
+            field=model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, editable=False),
+            preserve_default=True,
+        ),
+        migrations.AlterUniqueTogether(
+            name='cidr',
+            unique_together=set([('repository', 'cidr')]),
         ),
     ]

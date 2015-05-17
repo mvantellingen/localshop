@@ -7,14 +7,7 @@ from django.utils.translation import ugettext as _
 from django.utils.encoding import python_2_unicode_compatible
 from model_utils.models import TimeStampedModel
 from model_utils.fields import AutoCreatedField
-from userena.models import UserenaBaseProfile
 from uuidfield import UUIDField
-
-
-class AuthProfile(UserenaBaseProfile):
-    user = models.OneToOneField(
-        settings.AUTH_USER_MODEL, unique=True, verbose_name=_('user'),
-        related_name='auth_profile')
 
 
 class CIDRManager(models.Manager):

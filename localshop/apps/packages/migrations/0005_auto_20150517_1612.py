@@ -7,15 +7,16 @@ from django.db import models, migrations
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('packages', '0003_default_repo'),
+        ('packages', '0004_auto_20150517_1612'),
+        ('permissions', '0003_teams_and_repos'),
     ]
 
     operations = [
         migrations.AddField(
-            model_name='package',
-            name='repository',
-            field=models.ForeignKey(related_name='packages', default=1, to='packages.Repository'),
-            preserve_default=False,
+            model_name='repository',
+            name='teams',
+            field=models.ManyToManyField(related_name='repositories', to='permissions.Team', blank=True),
+            preserve_default=True,
         ),
         migrations.AlterField(
             model_name='package',
