@@ -132,8 +132,6 @@ class Base(Settings):
         'django.core.context_processors.media',
         'django.core.context_processors.static',
         'django.contrib.messages.context_processors.messages',
-
-        'localshop.apps.packages.context_processors.sidebar',
     ]
 
     MIDDLEWARE_CLASSES = (
