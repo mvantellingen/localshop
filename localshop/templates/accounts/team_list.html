@@ -13,7 +13,7 @@
 <div class="row">
     <div class="span12">
         <h1>Teams overview</h1>
-        <a href="{% url 'permissions:team_create' %}" class="btn btn-primary"> <span class="icon-plus icon-white"></span> Create</a>
+        <a href="{% url 'accounts:team_create' %}" class="btn btn-primary"> <span class="icon-plus icon-white"></span> Create</a>
 
         <table class="table table-striped">
             <thead>
@@ -26,7 +26,7 @@
             <tbody>
                 {% for team in team_list %}
                 <tr>
-                    <td><a href="{% url 'permissions:team_detail' pk=team.pk %}">{{ team.name }}</a></td>
+                    <td><a href="{% url 'accounts:team_detail' pk=team.pk %}">{{ team.name }}</a></td>
                     <td>{{ team.members.count }}</td>
                     <td>{{ team.owners|join:', ' }}</td>
                 </tr>

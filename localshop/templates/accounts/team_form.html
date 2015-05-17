@@ -4,9 +4,9 @@
 {% block breadcrumbs %}
 <ul class="breadcrumb">
     <li><a href="#">localshop</a> <span class="divider">/</span></li>
-    <li><a href="{% url 'permissions:team_list' %}">{% trans "teams" %}</a> <span class="divider">/</span></li>
+    <li><a href="{% url 'accounts:team_list' %}">{% trans "teams" %}</a> <span class="divider">/</span></li>
     {% if team.pk %}
-    <li><a href="{% url 'permissions:team_detail' pk=team.pk %}">{{ team.name }}</a> <span class="divider">/</span></li>
+    <li><a href="{% url 'accounts:team_detail' pk=team.pk %}">{{ team.name }}</a> <span class="divider">/</span></li>
     <li class="active">{% trans "edit" %}</li>
     {% else %}
     <li class="active">{% trans "new team" %}</li>
@@ -25,7 +25,7 @@
 
     <div class="form-actions">
         <button type="submit" class="btn btn-primary"><span class="icon-ok icon-white"></span> Save</button>
-        <a href="{% url 'permissions:team_list' %}" class="btn">Cancel</a>
+        <a href="{% url 'accounts:team_list' %}" class="btn">Cancel</a>
     </div>
     {% csrf_token %}
 </form>

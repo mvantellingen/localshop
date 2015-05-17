@@ -3,7 +3,7 @@ from django.shortcuts import get_object_or_404, redirect
 from django.core.urlresolvers import reverse
 from django.views import generic
 
-from localshop.apps.permissions import forms, models
+from localshop.apps.accounts import forms, models
 
 
 class TeamListView(LoginRequiredMixin, generic.ListView):
@@ -13,7 +13,7 @@ class TeamListView(LoginRequiredMixin, generic.ListView):
 class TeamCreateView(LoginRequiredMixin, generic.CreateView):
     model = models.Team
     fields = ['description', 'name']
-    template_name = 'permissions/team_form.html'
+    template_name = 'accounts/team_form.html'
 
     def form_valid(self, form):
         team = form.save()
@@ -22,7 +22,7 @@ class TeamCreateView(LoginRequiredMixin, generic.CreateView):
 
     def get_success_url(self):
         return reverse(
-            'permissions:team_detail', kwargs={'pk': self.object.pk})
+            'accounts:team_detail', kwargs={'pk': self.object.pk})
 
 
 class TeamDetailView(LoginRequiredMixin, generic.DetailView):
@@ -39,18 +39,18 @@ class TeamDetailView(LoginRequiredMixin, generic.DetailView):
 class TeamUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = models.Team
     fields = ['description', 'name']
-    template_name = 'permissions/team_form.html'
+    template_name = 'accounts/team_form.html'
 
     def get_success_url(self):
         return reverse(
-            'permissions:team_detail', kwargs={'pk': self.object.pk})
+            'accounts:team_detail', kwargs={'pk': self.object.pk})
 
 
 class TeamDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = models.Team
 
     def get_success_url(self):
-        return reverse('permissions:team_list')
+        return reverse('accounts:team_list')
 
 
 class TeamMixin(object):
@@ -70,10 +70,10 @@ class TeamMemberAddView(LoginRequiredMixin, TeamMixin, generic.FormView):
 
     def form_valid(self, form):
         form.save()
-        return redirect('permissions:team_detail', pk=self.team.pk)
+        return redirect('accounts:team_detail', pk=self.team.pk)
 
     def form_invalid(self, form):
-        return redirect('permissions:team_detail', pk=self.team.pk)
+        return redirect('accounts:team_detail', pk=self.team.pk)
 
 
 class TeamMemberRemoveView(LoginRequiredMixin, TeamMixin, generic.FormView):
@@ -82,7 +82,7 @@ class TeamMemberRemoveView(LoginRequiredMixin, TeamMixin, generic.FormView):
 
     def form_valid(self, form):
         form.cleaned_data['member_obj'].delete()
-        return redirect('permissions:team_detail', pk=self.team.pk)
+        return redirect('accounts:team_detail', pk=self.team.pk)
 
     def form_invalid(self, form):
-        return redirect('permissions:team_detail', pk=self.team.pk)
+        return redirect('accounts:team_detail', pk=self.team.pk)

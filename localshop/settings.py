@@ -177,6 +177,7 @@ class Base(Settings):
         'gunicorn',
 
         'localshop',
+        'localshop.apps.accounts',
         'localshop.apps.dashboard',
         'localshop.apps.packages',
         'localshop.apps.permissions',

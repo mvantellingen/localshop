@@ -2,7 +2,7 @@ import factory
 
 from localshop.apps.packages.models import (
     Repository, Package, Release, ReleaseFile)
-from localshop.apps.permissions.models import CIDR, Team
+from localshop.apps.permissions.models import CIDR
 
 
 class RepositoryFactory(factory.DjangoModelFactory):

@@ -29,7 +29,7 @@ class Repository(TimeStampedModel):
     slug = models.CharField(max_length=200, unique=True)
     description = models.CharField(max_length=500, blank=True)
     teams = models.ManyToManyField(
-        'permissions.Team', related_name='repositories', blank=True)
+        'accounts.Team', related_name='repositories', blank=True)
 
     def __str__(self):
         return self.name

@@ -1,7 +1,8 @@
 from django import forms
 from django.utils import timezone
 
-from localshop.apps.permissions.models import Credential, CIDR, Team
+from localshop.apps.accounts.models import Team
+from localshop.apps.permissions.models import Credential, CIDR
 
 
 class RepositoryFormMixin(object):

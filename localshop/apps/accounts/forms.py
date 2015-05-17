@@ -1,6 +1,6 @@
 from django import forms
 
-from localshop.apps.permissions import models
+from localshop.apps.accounts import models
 
 
 class TeamFormMixin(object):
