@@ -1,3 +1,5 @@
+from __future__ import unicode_literals
+
 import pytest
 from django.core.urlresolvers import reverse
 
@@ -17,7 +19,7 @@ def test_success(app, admin_user, repository, pypi_stub):
         }))
 
     assert response.status_code == 200
-    assert 'Links for test-package' in response.content
+    assert 'Links for test-package' in response.unicode_body
 
     a_elms = response.html.select('a')
     assert len(a_elms) == 1
@@ -39,10 +41,10 @@ def test_missing_package_local_package(app, admin_user, repository,
         }))
 
     assert response.status_code == 200
-    assert 'Links for minibar' in response.content
-    assert 'minibar-0.4.0-py2.py3-none-any.whl#md5=0bbdf41e028a4e6c75dfbd59660b6328' in response.content
-    assert 'minibar-0.4.0.tar.gz#md5=a3768a7f948871d8e47b146053265100' in response.content
-    assert 'minibar-0.1.tar.gz#md5=c935bfa49cb49e4f97fb8e24371105d7' in response.content
+    assert 'Links for minibar' in response.unicode_body
+    assert 'minibar-0.4.0-py2.py3-none-any.whl#md5=0bbdf41e028a4e6c75dfbd59660b6328' in response.unicode_body
+    assert 'minibar-0.4.0.tar.gz#md5=a3768a7f948871d8e47b146053265100' in response.unicode_body
+    assert 'minibar-0.1.tar.gz#md5=c935bfa49cb49e4f97fb8e24371105d7' in response.unicode_body
 
 
 @pytest.mark.django_db

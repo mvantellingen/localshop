@@ -1,3 +1,4 @@
+from base64 import b64decode
 from functools import wraps
 
 from django.conf import settings
@@ -11,7 +12,7 @@ from localshop.http import HttpResponseUnauthorized
 
 
 def decode_credentials(auth):
-    auth = auth.strip().decode('base64')
+    auth = b64decode(auth.strip()).decode('utf-8')
     return auth.split(':', 1)
 
 

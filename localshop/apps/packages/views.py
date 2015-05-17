@@ -9,6 +9,7 @@ from django.db.models import Q
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFound
 from django.http import HttpResponseForbidden
 from django.shortcuts import redirect
+from django.utils import six
 from django.views import generic
 from versio.version import Version
 from versio.version_scheme import Pep440VersionScheme, Simple3VersionScheme, Simple4VersionScheme, PerlVersionScheme
@@ -43,10 +44,11 @@ class SimpleIndex(CsrfExemptMixin, RepositoryMixin, RepositoryAccessMixin,
             'submit': handle_register_or_upload,
             'file_upload': handle_register_or_upload,
         }
+        action = request.POST.get(':action')
 
-        handler = actions.get(request.POST.get(':action'))
+        handler = actions.get(action)
         if not handler:
-            return HttpResponseNotFound('Unknown action')
+            return HttpResponseNotFound('Unknown action: %s' % action)
 
         if not request.user.is_authenticated() and not request.credentials:
             return HttpResponseForbidden(
@@ -160,7 +162,7 @@ def handle_register_or_upload(post_data, files, user, repository):
             Version(version, scheme=scheme)
         except AttributeError:
             response = HttpResponseBadRequest(
-                reason='Invalid version supplied {!r} for {!r} scheme.'.format(
+                reason="Invalid version supplied '{!s}' for '{!s}' scheme.".format(
                     version, settings.LOCALSHOP_VERSIONING_TYPE))
             return response
 
@@ -197,7 +199,8 @@ def handle_register_or_upload(post_data, files, user, repository):
     if not package:
         pkg_form = forms.PackageForm(post_data, repository=repository)
         if not pkg_form.is_valid():
-            return HttpResponseBadRequest(reason=pkg_form.errors.values()[0][0])
+            return HttpResponseBadRequest(
+                reason=six.next(six.itervalues(pkg_form.errors))[0])
         package = pkg_form.save()
 
     release = form.save(commit=False)

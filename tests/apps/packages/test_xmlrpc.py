@@ -1,5 +1,11 @@
 import pytest
-import xmlrpclib
+
+from django.utils import six
+
+if six.PY2:
+    import xmlrpclib
+else:
+    import xmlrpc.client as xmlrpclib
 
 from tests.factories import ReleaseFactory
 

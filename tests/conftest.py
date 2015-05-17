@@ -12,7 +12,7 @@ from tests.factories import CIDRFactory, RepositoryFactory
 from tests.utils import pypi_app
 
 
-@pytest.yield_fixture(scope='module')
+@pytest.yield_fixture(scope='session')
 def pypi_stub():
     server = make_server('', 12946, pypi_app)  # Same port as LOCALSHOP_PYPI_URL
 

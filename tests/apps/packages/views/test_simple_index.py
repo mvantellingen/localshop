@@ -1,11 +1,25 @@
+from __future__ import unicode_literals
+
 from base64 import standard_b64encode
 
 import pytest
+from django.utils import six
 
 from localshop.apps.packages.models import Package
 
 from tests.factories import ReleaseFileFactory
 from tests.utils import NamedStringIO
+
+
+def basic_auth_header(username, password):
+    auth_str = b':'.join((username.encode('utf-8'), password.encode('utf-8')))
+
+    string = 'Basic %s' % standard_b64encode(auth_str).decode('utf-8')
+    return tostr(string)
+
+
+def tostr(value):
+    return str(value)
 
 
 REGISTER_POST = '\n'.join([
@@ -142,8 +156,8 @@ def test_package_upload(app, admin_user, repository, separator):
         ''])
 
     headers = {
-        'Content-type': 'multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-        'Authorization': 'Basic ' + standard_b64encode('admin:password')
+        'Content-type': tostr('multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254'),
+        'Authorization': basic_auth_header('admin', 'password'),
     }
 
     response = app.post(
@@ -176,13 +190,13 @@ def test_package_upload(app, admin_user, repository, separator):
     assert release_file.python_version == 'source'
     assert release_file.filetype == 'sdist'
     assert release_file.md5_digest == '06ffe94789d7bd9efba1109f40e935cf'
-    assert release_file.distribution.read() == 'binary-test-data-here'
+    assert release_file.distribution.read() == six.b('binary-test-data-here')
 
 
 def test_package_register(app, repository, admin_user):
     headers = {
-        'Content-type': 'multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-        'Authorization': 'Basic ' + standard_b64encode('admin:password')
+        'Content-type': tostr('multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254'),
+        'Authorization': basic_auth_header('admin', 'password'),
     }
 
     response = app.post(
@@ -211,7 +225,7 @@ def test_package_register(app, repository, admin_user):
 
 def test_missing_auth(app, repository, admin_user):
     headers = {
-        'Content-type': 'multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
+        'Content-type': tostr('multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254'),
     }
 
     app.post(
@@ -221,8 +235,8 @@ def test_missing_auth(app, repository, admin_user):
 
 def test_invalid_auth(app, repository, admin_user):
     headers = {
-        'Content-type': 'multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-        'Authorization': 'Basic ' + standard_b64encode('moises:arcoiro')
+        'Content-type': tostr('multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254'),
+        'Authorization': basic_auth_header('admin', 'invalid'),
     }
 
     app.post(
@@ -232,7 +246,7 @@ def test_invalid_auth(app, repository, admin_user):
 
 def test_invalid_action(app, repository, admin_user):
     headers = {
-        'Authorization': 'Basic ' + standard_b64encode('admin:password')
+        'Authorization': basic_auth_header('admin', 'password'),
     }
 
     data = {
@@ -243,15 +257,15 @@ def test_invalid_action(app, repository, admin_user):
 
     response = app.post(
         '/repo/%s/' % repository.slug, params=data,
-        upload_files=[('content', 'file.tgz', 'Hi')],
+        upload_files=[('content', 'file.tgz', b'Hi')],
         headers=headers, status=404)
 
-    assert response.content == 'Unknown action'
+    assert response.unicode_body == 'Unknown action: invalid'
 
 
 def test_missing_name(app, repository, admin_user):
     headers = {
-        'Authorization': 'Basic ' + standard_b64encode('admin:password')
+        'Authorization': basic_auth_header('admin', 'password'),
     }
 
     data = {
@@ -261,15 +275,15 @@ def test_missing_name(app, repository, admin_user):
 
     response = app.post(
         '/repo/%s/' % repository.slug, params=data,
-        upload_files=[('content', 'file.tgz', 'Hi')],
+        upload_files=[('content', 'file.tgz', b'Hi')],
         headers=headers, status=400)
 
-    assert response.content == 'No name or version given'
+    assert response.unicode_body == 'No name or version given'
 
 
 def test_missing_version(app, repository, admin_user):
     headers = {
-        'Authorization': 'Basic ' + standard_b64encode('admin:password')
+        'Authorization': basic_auth_header('admin', 'password'),
     }
 
     data = {
@@ -279,10 +293,10 @@ def test_missing_version(app, repository, admin_user):
 
     response = app.post(
         '/repo/%s/' % repository.slug, params=data,
-        upload_files=[('content', 'file.tgz', 'Hi')],
+        upload_files=[('content', 'file.tgz', b'Hi')],
         headers=headers, status=400)
 
-    assert response.content == 'No name or version given'
+    assert response.unicode_body == 'No name or version given'
 
 
 def test_upload_should_not_overwrite_pypi_package(app, repository, admin_user):
@@ -291,20 +305,20 @@ def test_upload_should_not_overwrite_pypi_package(app, repository, admin_user):
         release__package__name='localshop')
 
     headers = {
-        'Content-type': 'multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-        'Authorization': 'Basic ' + standard_b64encode('admin:password')
+        'Content-type': tostr('multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254'),
+        'Authorization': basic_auth_header('admin', 'password'),
     }
 
     response = app.post(
         '/repo/%s/' % repository.slug, REGISTER_POST, headers=headers,
         status=400)
 
-    assert response.content == 'localshop is a pypi package!'
+    assert response.unicode_body == 'localshop is a pypi package!'
 
 
 def test_package_name_with_whitespace(app, repository, admin_user):
     headers = {
-        'Authorization': 'Basic ' + standard_b64encode('admin:password')
+        'Authorization': basic_auth_header('admin', 'password'),
     }
 
     data = {
@@ -318,7 +332,7 @@ def test_package_name_with_whitespace(app, repository, admin_user):
 
     response = app.post(
         '/repo/%s/' % repository.slug, params=data,
-        upload_files=[('content', 'file.tgz', 'Hi')],
+        upload_files=[('content', 'file.tgz', b'Hi')],
         headers=headers, status=400)
 
     assert response.status == (
@@ -328,7 +342,7 @@ def test_package_name_with_whitespace(app, repository, admin_user):
 def test_package_name_with_hyphen_instead_underscore(app, repository,
                                                      admin_user):
     headers = {
-        'Authorization': 'Basic ' + standard_b64encode('admin:password')
+        'Authorization': basic_auth_header('admin', 'password'),
     }
 
     data = {
@@ -342,7 +356,7 @@ def test_package_name_with_hyphen_instead_underscore(app, repository,
 
     response = app.post(
         '/repo/%s/' % repository.slug, params=data,
-        upload_files=[('content', 'file.tgz', 'Hi')],
+        upload_files=[('content', 'file.tgz', b'Hi')],
         headers=headers)
 
     assert response.status_code == 200
@@ -351,7 +365,7 @@ def test_package_name_with_hyphen_instead_underscore(app, repository,
     data['version'] = '2.0'
     response = app.post(
         '/repo/%s/' % repository.slug, params=data,
-        upload_files=[('content', 'file.tgz', 'Hi')],
+        upload_files=[('content', 'file.tgz', b'Hi')],
         headers=headers)
 
     assert response.status_code == 200
@@ -369,7 +383,7 @@ def test_invalid_version_upload(client, settings, repository, admin_user):
     settings.LOCALSHOP_VERSIONING_TYPE = 'versio.version_scheme.Simple3VersionScheme'
 
     auth = {
-        'HTTP_AUTHORIZATION': 'Basic ' + standard_b64encode('admin:password')
+        'HTTP_AUTHORIZATION': basic_auth_header('admin', 'password'),
     }
 
     data = {
@@ -379,14 +393,14 @@ def test_invalid_version_upload(client, settings, repository, admin_user):
         'metadata_version': '1.0',
         'md5_digest': '06ffe94789d7bd9efba1109f40e935cf',
         'filetype': 'sdist',
-        'content': NamedStringIO(u'Hi', name='blabla')
+        'content': NamedStringIO(b'Hi', name='blabla'),
     }
 
     response = client.post(
         '/repo/%s/' % repository.slug, data=data, **auth)
 
     assert response.status_code == 400
-    assert "Invalid version supplied u'01.0' for 'versio.version_scheme.Simple3VersionScheme' scheme." == response.reason_phrase
+    assert "Invalid version supplied '01.0' for 'versio.version_scheme.Simple3VersionScheme' scheme." == response.reason_phrase
 
 
 @pytest.mark.django_db
@@ -395,7 +409,7 @@ def test_valid_version_upload(client, settings, repository, admin_user):
     settings.LOCALSHOP_VERSIONING_TYPE = 'versio.version_scheme.Simple3VersionScheme'
 
     auth = {
-        'HTTP_AUTHORIZATION': 'Basic ' + standard_b64encode('admin:password')
+        'HTTP_AUTHORIZATION': basic_auth_header('admin', 'password'),
     }
 
     data = {
@@ -405,7 +419,7 @@ def test_valid_version_upload(client, settings, repository, admin_user):
         'metadata_version': '1.0',
         'md5_digest': '06ffe94789d7bd9efba1109f40e935cf',
         'filetype': 'sdist',
-        'content': NamedStringIO(u'Hi', name='blabla')
+        'content': NamedStringIO(b'Hi', name='blabla'),
     }
 
     response = client.post(

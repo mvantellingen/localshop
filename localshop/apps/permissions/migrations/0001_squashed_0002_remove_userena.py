@@ -9,7 +9,10 @@ import uuidfield.fields
 
 class Migration(migrations.Migration):
 
-    replaces = [(b'permissions', '0001_initial'), (b'permissions', '0002_remove_userena')]
+    replaces = [
+        ('permissions', '0001_initial'),
+        ('permissions', '0002_remove_userena')
+    ]
 
     dependencies = [
         migrations.swappable_dependency(settings.AUTH_USER_MODEL),

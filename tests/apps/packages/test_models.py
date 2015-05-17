@@ -1,7 +1,7 @@
 import os.path
-from cStringIO import StringIO
 
 from django.test import TestCase
+from django.utils import six
 from storages.backends.overwrite import OverwriteStorage
 
 from localshop.apps.packages import models
@@ -22,7 +22,7 @@ class TestReleaseFile(TemporaryMediaRootMixin, TestCase):
     def test_save_contents(self):
         release_file = factories.ReleaseFileFactory()
 
-        dummy_fh = StringIO("release-file-contents")
+        dummy_fh = six.BytesIO(six.b("release-file-contents"))
         release_file.save_filecontent('dummy.txt', dummy_fh)
 
         self.assertEqual(
@@ -32,7 +32,7 @@ class TestReleaseFile(TemporaryMediaRootMixin, TestCase):
     def test_delete_file(self):
         release_file = factories.ReleaseFileFactory()
 
-        dummy_fh = StringIO("release-file-contents")
+        dummy_fh = six.BytesIO(six.b("release-file-contents"))
         release_file.save_filecontent('dummy.txt', dummy_fh)
 
         self.assertTrue(os.path.exists(release_file.distribution.path))
@@ -43,7 +43,7 @@ class TestReleaseFile(TemporaryMediaRootMixin, TestCase):
     def test_delete_file_twice_referenced(self):
         release_file = factories.ReleaseFileFactory()
 
-        dummy_fh = StringIO("release-file-contents")
+        dummy_fh = six.BytesIO(six.b("release-file-contents"))
         release_file.save_filecontent('dummy.txt', dummy_fh)
 
         release_file = factories.ReleaseFileFactory(

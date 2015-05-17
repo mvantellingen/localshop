@@ -8,6 +8,7 @@ tests_require = [
     'pytest>=2.6.0',
     'pytest-cov>=1.7.0',
     'pytest-django>=2.8.0',
+    'pytest-cache==1.0',
     'django-webtest==1.7.8',
     'factory-boy==2.5.2',
     'mock==1.0.1',
