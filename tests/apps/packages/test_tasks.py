@@ -4,7 +4,8 @@ import mock
 import pytest
 
 from localshop.apps.packages import tasks, models
-from tests.apps.packages.factories import ReleaseFileFactory, PackageFactory
+
+from tests.factories import ReleaseFileFactory, PackageFactory
 
 
 @mock.patch('requests.get')

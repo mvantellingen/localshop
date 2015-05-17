@@ -1,8 +1,7 @@
 import pytest
 import xmlrpclib
 
-from localshop.apps.permissions.models import CIDR
-from tests.apps.packages.factories import ReleaseFactory
+from tests.factories import ReleaseFactory
 
 
 @pytest.fixture(params=['/RPC2', '/pypi'])
@@ -11,10 +10,11 @@ def rpc_endpoint(request):
 
 
 @pytest.mark.django_db
-def test_search_package_name(client, admin_user, live_server, rpc_endpoint):
-    CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
-    ReleaseFactory(package__name='my-package',
-                   summary='Test summary')
+def test_search_package_name(client, admin_user, live_server, repository,
+                             rpc_endpoint):
+    ReleaseFactory(
+        package__name='my-package', package__repository=repository,
+        summary='Test summary')
 
     client = xmlrpclib.ServerProxy(live_server + rpc_endpoint)
     response = client.search({'name': 'my-package'})
@@ -27,10 +27,11 @@ def test_search_package_name(client, admin_user, live_server, rpc_endpoint):
 
 
 @pytest.mark.django_db
-def test_search_package_summary(client, admin_user, live_server, rpc_endpoint):
-    CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
-    ReleaseFactory(package__name='my-package',
-                   summary='Test summary')
+def test_search_package_summary(client, admin_user, live_server, repository,
+                                rpc_endpoint):
+    ReleaseFactory(
+        package__name='my-package', package__repository=repository,
+        summary='Test summary')
 
     client = xmlrpclib.ServerProxy(live_server + rpc_endpoint)
     response = client.search({'summary': ['Test summary']})
@@ -43,15 +44,18 @@ def test_search_package_summary(client, admin_user, live_server, rpc_endpoint):
 
 
 @pytest.mark.django_db
-def test_search_operator_and(client, admin_user, live_server, rpc_endpoint):
-    CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
+def test_search_operator_and(client, admin_user, live_server, repository,
+                             rpc_endpoint):
     ReleaseFactory(package__name='my-package-1',
+                   package__repository=repository,
                    summary='Test summary')
 
     ReleaseFactory(package__name='arcoiro',
+                   package__repository=repository,
                    summary='Test summary')
 
     ReleaseFactory(package__name='my-package-2',
+                   package__repository=repository,
                    summary='arcoiro')
 
     client = xmlrpclib.ServerProxy(live_server + rpc_endpoint)
@@ -66,15 +70,18 @@ def test_search_operator_and(client, admin_user, live_server, rpc_endpoint):
 
 
 @pytest.mark.django_db
-def test_search_operator_or(client, admin_user, live_server, rpc_endpoint):
-    CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
+def test_search_operator_or(client, admin_user, live_server, repository,
+                            rpc_endpoint):
     ReleaseFactory(package__name='my-package-1',
+                   package__repository=repository,
                    summary='Test summary')
 
     ReleaseFactory(package__name='arcoiro',
+                   package__repository=repository,
                    summary='Test summary')
 
     ReleaseFactory(package__name='my-package-2',
+                   package__repository=repository,
                    summary='arcoiro')
 
     client = xmlrpclib.ServerProxy(live_server + rpc_endpoint)
@@ -102,9 +109,11 @@ def test_search_operator_or(client, admin_user, live_server, rpc_endpoint):
 
 
 @pytest.mark.django_db
-def test_search_invalid_fields_are_ignores(client, admin_user, live_server, rpc_endpoint):
-    CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
+def test_search_invalid_fields_are_ignores(client, admin_user, live_server,
+                                           repository, rpc_endpoint):
+
     ReleaseFactory(package__name='my-package',
+                   package__repository=repository,
                    summary='Test summary')
 
     client = xmlrpclib.ServerProxy(live_server + rpc_endpoint)

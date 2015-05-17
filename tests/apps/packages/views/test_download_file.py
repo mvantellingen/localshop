@@ -1,30 +1,30 @@
-from md5 import md5
 import os
+from md5 import md5
 
-from django.core.urlresolvers import reverse
-from mock import Mock
 import mock
 import pytest
+from django.core.urlresolvers import reverse
+from mock import Mock
 
-from localshop.apps.packages.views import download_file
-from localshop.apps.permissions.models import CIDR
+from localshop.apps.packages import views
 
-from tests.apps.packages.factories import ReleaseFileFactory
+from tests.factories import ReleaseFileFactory
 
 
 @mock.patch('localshop.apps.packages.tasks.download_file')
 @pytest.mark.django_db
-def test_download_pypi_release(download_file_mock, rf):
-    CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
-    release_file = ReleaseFileFactory(distribution=None)
+def test_download_pypi_release(download_file_mock, repository, rf):
+    release_file = ReleaseFileFactory(
+        release__package__repository=repository, distribution=None)
 
-    args = (release_file.release.package.name,
-            release_file.pk,
-            release_file.filename)
-
-    request = rf.get(reverse('packages:download', args=args))
-
-    response = download_file(request, *args)
+    url_kwargs = {
+        'repo': repository.slug,
+        'name': release_file.release.package.name,
+        'pk': release_file.pk,
+        'filename': release_file.filename
+    }
+    request = rf.get(reverse('packages:download', kwargs=url_kwargs))
+    response = views.DownloadReleaseFile.as_view()(request, **url_kwargs)
 
     # The request is redirected to PyPI
     assert response.status_code == 302
@@ -37,29 +37,34 @@ def test_download_pypi_release(download_file_mock, rf):
 
 @mock.patch('requests.get')
 @pytest.mark.django_db
-def test_download_pypi_release_when_isolated_is_on(requests_mock, rf, settings):
+def test_download_pypi_release_when_isolated_is_on(requests_mock, rf,
+                                                   repository, settings):
     file_data = 'Hello from PyPI'
     md5_digest = md5(file_data).hexdigest()
 
     settings.LOCALSHOP_ISOLATED = True
 
-    CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
-    release_file = ReleaseFileFactory(distribution=None, md5_digest=md5_digest)
+    release_file = ReleaseFileFactory(
+        release__package__repository=repository,
+        distribution=None, md5_digest=md5_digest)
 
-    args = (release_file.release.package.name,
-            release_file.pk,
-            release_file.filename)
+    url_kwargs = {
+        'repo': repository.slug,
+        'name': release_file.release.package.name,
+        'pk': release_file.pk,
+        'filename': release_file.filename
+    }
 
     requests_mock.return_value = Mock(**{
-            'headers': {
-                'content-length': len(file_data),
-                'content-type': 'application/octet-stream',
-            },
-            'content': file_data,
-        })
+        'headers': {
+            'content-length': len(file_data),
+            'content-type': 'application/octet-stream',
+        },
+        'content': file_data,
+    })
 
-    request = rf.get(reverse('packages:download', args=args))
-    response = download_file(request, *args)
+    request = rf.get(reverse('packages:download', kwargs=url_kwargs))
+    response = views.DownloadReleaseFile.as_view()(request, **url_kwargs)
 
     assert response.status_code == 200
     assert response.content == file_data
@@ -70,19 +75,21 @@ def test_download_pypi_release_when_isolated_is_on(requests_mock, rf, settings):
 
 @pytest.mark.parametrize('isolated', [True, False])
 @pytest.mark.django_db
-def test_download_local_release(rf, isolated, settings):
+def test_download_local_release(rf, isolated, repository, settings):
     settings.LOCALSHOP_ISOLATED = isolated
 
-    CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
-    release_file = ReleaseFileFactory()
+    release_file = ReleaseFileFactory(
+        release__package__repository=repository)
 
-    args = (release_file.release.package.name,
-            release_file.pk,
-            release_file.filename)
+    url_kwargs = {
+        'repo': repository.slug,
+        'name': release_file.release.package.name,
+        'pk': release_file.pk,
+        'filename': release_file.filename
+    }
 
-    request = rf.get(reverse('packages:download', args=args))
-
-    response = download_file(request, *args)
+    request = rf.get(reverse('packages:download', kwargs=url_kwargs))
+    response = views.DownloadReleaseFile.as_view()(request, **url_kwargs)
 
     # Localshop must return the release file
     assert response.status_code == 200
@@ -93,22 +100,24 @@ def test_download_local_release(rf, isolated, settings):
 
 @mock.patch('localshop.apps.packages.tasks.download_file')
 @pytest.mark.django_db
-def test_release_with_a_missing_file(download_file_mock, rf):
+def test_release_with_a_missing_file(download_file_mock, repository, rf):
     """
     If a local ReleaseFile had a missing file we must set local as False,
     redirect to the PyPI, requeue the download_file task.
     """
-    CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
-    release_file = ReleaseFileFactory()
+    release_file = ReleaseFileFactory(
+        release__package__repository=repository)
     os.remove(release_file.distribution.path)
 
-    args = (release_file.release.package.name,
-            release_file.pk,
-            release_file.filename)
+    url_kwargs = {
+        'repo': repository.slug,
+        'name': release_file.release.package.name,
+        'pk': release_file.pk,
+        'filename': release_file.filename
+    }
 
-    request = rf.get(reverse('packages:download', args=args))
-
-    response = download_file(request, *args)
+    request = rf.get(reverse('packages:download', kwargs=url_kwargs))
+    response = views.DownloadReleaseFile.as_view()(request, **url_kwargs)
 
     # The request is redirected to PyPI
     assert response.status_code == 302

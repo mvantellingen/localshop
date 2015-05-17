@@ -1,8 +1,6 @@
-from mock import Mock
-
 from django.test import TestCase
 from django.utils.datastructures import MultiValueDict
-
+from mock import Mock
 from versio.version_scheme import VersionScheme
 
 from localshop.apps.packages.utils import parse_distutils_request, get_versio_versioning_scheme

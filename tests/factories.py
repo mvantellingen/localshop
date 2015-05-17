@@ -1,6 +1,8 @@
 import factory
 
-from localshop.apps.packages import models
+from localshop.apps.packages.models import (
+    Repository, Package, Release, ReleaseFile)
+from localshop.apps.permissions.models import CIDR, Team
 
 
 class RepositoryFactory(factory.DjangoModelFactory):
@@ -8,7 +10,7 @@ class RepositoryFactory(factory.DjangoModelFactory):
     slug = 'default'
 
     class Meta:
-        model = models.Repository
+        model = Repository
         django_get_or_create = ('slug',)
 
 
@@ -17,7 +19,7 @@ class PackageFactory(factory.DjangoModelFactory):
     repository = factory.SubFactory(RepositoryFactory)
 
     class Meta:
-        model = models.Package
+        model = Package
 
 
 class ReleaseFactory(factory.DjangoModelFactory):
@@ -33,7 +35,7 @@ class ReleaseFactory(factory.DjangoModelFactory):
     version = '1.0.0'
 
     class Meta:
-        model = models.Release
+        model = Release
 
 
 class ReleaseFileFactory(factory.DjangoModelFactory):
@@ -50,4 +52,13 @@ class ReleaseFileFactory(factory.DjangoModelFactory):
         'http://www.example.org/download/%s' % a.filename))
 
     class Meta:
-        model = models.ReleaseFile
+        model = ReleaseFile
+
+
+class CIDRFactory(factory.DjangoModelFactory):
+    repository = factory.SubFactory(RepositoryFactory)
+    cidr = '0/0'
+    require_credentials = False
+
+    class Meta:
+        model = CIDR

@@ -9,7 +9,6 @@ from django.db.models import Q
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFound
 from django.http import HttpResponseForbidden
 from django.shortcuts import redirect
-from django.utils.decorators import method_decorator
 from django.views import generic
 from versio.version import Version
 from versio.version_scheme import Pep440VersionScheme, Simple3VersionScheme, Simple4VersionScheme, PerlVersionScheme
@@ -48,6 +47,10 @@ class SimpleIndex(CsrfExemptMixin, RepositoryMixin, RepositoryAccessMixin,
         handler = actions.get(request.POST.get(':action'))
         if not handler:
             return HttpResponseNotFound('Unknown action')
+
+        if not request.user.is_authenticated() and not request.credentials:
+            return HttpResponseForbidden(
+                "You need to be authenticated to upload packages")
 
         # Both actions currently are upload actions, so check is simple
         if request.credentials and not request.credentials.allow_upload:
@@ -116,8 +119,6 @@ class DownloadReleaseFile(RepositoryMixin, RepositoryAccessMixin,
     True, in which case the file will be served to the client after it is
     downloaded.
     """
-    require_upload_permission = True
-
     def get(self, request, repo, name, pk, filename):
         release_file = models.ReleaseFile.objects.get(pk=pk)
         if not release_file.file_is_available:

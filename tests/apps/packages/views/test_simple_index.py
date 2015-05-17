@@ -1,14 +1,10 @@
 from base64 import standard_b64encode
 
-from django.core.urlresolvers import reverse
 import pytest
-import requests
 
 from localshop.apps.packages.models import Package
-from localshop.apps.permissions.models import CIDR
 
-from tests.apps.packages.factories import (
-    RepositoryFactory, ReleaseFileFactory)
+from tests.factories import ReleaseFileFactory
 from tests.utils import NamedStringIO
 
 
@@ -67,10 +63,7 @@ REGISTER_POST = '\n'.join([
 
 
 @pytest.mark.parametrize('separator', ['\n', '\r\n'])
-def test_package_upload(live_server, admin_user, separator):
-    repository = RepositoryFactory()
-    CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
-
+def test_package_upload(app, admin_user, repository, separator):
     post_data = separator.join([
         '',
         '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
@@ -153,9 +146,8 @@ def test_package_upload(live_server, admin_user, separator):
         'Authorization': 'Basic ' + standard_b64encode('admin:password')
     }
 
-    response = requests.post(
-        '%s/repo/%s/' % (live_server.url, repository.slug),
-        post_data, headers=headers)
+    response = app.post(
+        '/repo/%s/' % repository.slug, post_data, headers=headers, user=admin_user)
 
     assert response.status_code == 200
 
@@ -175,7 +167,6 @@ def test_package_upload(live_server, admin_user, separator):
     assert release.license == 'BSD'
     assert release.metadata_version == '1.0'
     assert release.summary == 'A private pypi server including auto-mirroring of pypi.'
-    assert release.user == admin_user
     assert release.version == '0.1'
     assert release.files.count() == 1
 
@@ -188,18 +179,14 @@ def test_package_upload(live_server, admin_user, separator):
     assert release_file.distribution.read() == 'binary-test-data-here'
 
 
-def test_package_register(live_server, admin_user):
-    CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
-    repository = RepositoryFactory()
-
+def test_package_register(app, repository, admin_user):
     headers = {
         'Content-type': 'multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
         'Authorization': 'Basic ' + standard_b64encode('admin:password')
     }
 
-    response = requests.post(
-        '%s/repo/%s/' % (live_server.url, repository.slug),
-        REGISTER_POST, headers=headers)
+    response = app.post(
+        '/repo/%s/' % repository.slug, REGISTER_POST, headers=headers)
 
     assert response.status_code == 200
 
@@ -219,47 +206,31 @@ def test_package_register(live_server, admin_user):
     assert release.license == 'BSD'
     assert release.metadata_version == '1.0'
     assert release.summary == 'A private pypi server including auto-mirroring of pypi.'
-    assert release.user == admin_user
     assert release.version == '0.1'
 
 
-def test_missing_auth(live_server, admin_user):
-    repository = RepositoryFactory()
-    CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
-
+def test_missing_auth(app, repository, admin_user):
     headers = {
         'Content-type': 'multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
     }
 
-    response = requests.post(
-        '%s/repo/%s/' % (live_server.url, repository.slug),
-        REGISTER_POST, headers=headers)
-
-    assert response.status_code == 401
-    assert response.content == 'Missing auth header'
+    app.post(
+        '/repo/%s/' % repository.slug, REGISTER_POST, headers=headers,
+        status=403)
 
 
-def test_invalid_auth(live_server, admin_user):
-    repository = RepositoryFactory()
-    CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
-
+def test_invalid_auth(app, repository, admin_user):
     headers = {
         'Content-type': 'multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
         'Authorization': 'Basic ' + standard_b64encode('moises:arcoiro')
     }
 
-    response = requests.post(
-        '%s/repo/%s/' % (live_server.url, repository.slug),
-        REGISTER_POST, headers=headers)
-
-    assert response.status_code == 401
-    assert response.content == 'Invalid username/password'
+    app.post(
+        '/repo/%s/' % repository.slug, REGISTER_POST, headers=headers,
+        status=401)
 
 
-def test_invalid_action(live_server, admin_user):
-    repository = RepositoryFactory()
-    CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
-
+def test_invalid_action(app, repository, admin_user):
     headers = {
         'Authorization': 'Basic ' + standard_b64encode('admin:password')
     }
@@ -270,19 +241,15 @@ def test_invalid_action(live_server, admin_user):
         'version': '1.0',
     }
 
-    response = requests.post(
-        '%s/repo/%s/' % (live_server.url, repository.slug),
-        data=data, files={'content': 'Hi'}, headers=headers)
+    response = app.post(
+        '/repo/%s/' % repository.slug, params=data,
+        upload_files=[('content', 'file.tgz', 'Hi')],
+        headers=headers, status=404)
 
-
-    assert response.status_code == 404
     assert response.content == 'Unknown action'
 
 
-def test_missing_name(live_server, admin_user):
-    repository = RepositoryFactory()
-    CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
-
+def test_missing_name(app, repository, admin_user):
     headers = {
         'Authorization': 'Basic ' + standard_b64encode('admin:password')
     }
@@ -292,18 +259,15 @@ def test_missing_name(live_server, admin_user):
         'version': '1.0',
     }
 
-    response = requests.post(
-        '%s/repo/%s/' % (live_server.url, repository.slug),
-        data=data, files={'content': 'Hi'}, headers=headers)
+    response = app.post(
+        '/repo/%s/' % repository.slug, params=data,
+        upload_files=[('content', 'file.tgz', 'Hi')],
+        headers=headers, status=400)
 
-    assert response.status_code == 400
     assert response.content == 'No name or version given'
 
 
-def test_missing_version(live_server, admin_user):
-    repository = RepositoryFactory()
-    CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
-
+def test_missing_version(app, repository, admin_user):
     headers = {
         'Authorization': 'Basic ' + standard_b64encode('admin:password')
     }
@@ -313,17 +277,15 @@ def test_missing_version(live_server, admin_user):
         'name': 'test',
     }
 
-    response = requests.post(
-        '%s/repo/%s/' % (live_server.url, repository.slug),
-        data=data, files={'content': 'Hi'}, headers=headers)
+    response = app.post(
+        '/repo/%s/' % repository.slug, params=data,
+        upload_files=[('content', 'file.tgz', 'Hi')],
+        headers=headers, status=400)
 
-    assert response.status_code == 400
     assert response.content == 'No name or version given'
 
 
-def test_upload_should_not_overwrite_pypi_package(live_server, admin_user):
-    repository = RepositoryFactory()
-    CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
+def test_upload_should_not_overwrite_pypi_package(app, repository, admin_user):
     ReleaseFileFactory(
         release__package__repository=repository,
         release__package__name='localshop')
@@ -333,18 +295,14 @@ def test_upload_should_not_overwrite_pypi_package(live_server, admin_user):
         'Authorization': 'Basic ' + standard_b64encode('admin:password')
     }
 
-    response = requests.post(
-        '%s/repo/%s/' % (live_server.url, repository.slug),
-        REGISTER_POST, headers=headers)
+    response = app.post(
+        '/repo/%s/' % repository.slug, REGISTER_POST, headers=headers,
+        status=400)
 
-    assert response.status_code == 400
     assert response.content == 'localshop is a pypi package!'
 
 
-def test_package_name_with_whitespace(live_server, admin_user):
-    repository = RepositoryFactory()
-    CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
-
+def test_package_name_with_whitespace(app, repository, admin_user):
     headers = {
         'Authorization': 'Basic ' + standard_b64encode('admin:password')
     }
@@ -358,19 +316,17 @@ def test_package_name_with_whitespace(live_server, admin_user):
     }
     data["name"] = "invalid name"
 
-    response = requests.post(
-        '%s/repo/%s/' % (live_server.url, repository.slug),
-        data=data, files={'content': 'Hi'}, headers=headers)
+    response = app.post(
+        '/repo/%s/' % repository.slug, params=data,
+        upload_files=[('content', 'file.tgz', 'Hi')],
+        headers=headers, status=400)
+
+    assert response.status == (
+        '400 Enter a valid name consisting of letters, numbers, underscores or hyphens')
 
 
-    assert response.status_code == 400
-    assert response.reason == 'Enter a valid name consisting of letters, numbers, underscores or hyphens'
-
-
-def test_package_name_with_hyphen_instead_underscore(live_server, admin_user):
-    repository = RepositoryFactory()
-    CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
-
+def test_package_name_with_hyphen_instead_underscore(app, repository,
+                                                     admin_user):
     headers = {
         'Authorization': 'Basic ' + standard_b64encode('admin:password')
     }
@@ -384,17 +340,19 @@ def test_package_name_with_hyphen_instead_underscore(live_server, admin_user):
         'md5_digest': '06ffe94789d7bd9efba1109f40e935cf',
     }
 
-    response = requests.post(
-        '%s/repo/%s/' % (live_server.url, repository.slug),
-        data=data, files={'content': 'Hi'}, headers=headers)
+    response = app.post(
+        '/repo/%s/' % repository.slug, params=data,
+        upload_files=[('content', 'file.tgz', 'Hi')],
+        headers=headers)
 
     assert response.status_code == 200
 
     data['name'] = 'package_name'
     data['version'] = '2.0'
-    response = requests.post(
-        '%s/repo/%s/' % (live_server.url, repository.slug),
-        data=data, files={'content': 'Hi'}, headers=headers)
+    response = app.post(
+        '/repo/%s/' % repository.slug, params=data,
+        upload_files=[('content', 'file.tgz', 'Hi')],
+        headers=headers)
 
     assert response.status_code == 200
 
@@ -407,10 +365,8 @@ def test_package_name_with_hyphen_instead_underscore(live_server, admin_user):
 
 
 @pytest.mark.django_db
-def test_invalid_version_upload(client, settings, admin_user):
-    repository = RepositoryFactory()
+def test_invalid_version_upload(client, settings, repository, admin_user):
     settings.LOCALSHOP_VERSIONING_TYPE = 'versio.version_scheme.Simple3VersionScheme'
-    CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
 
     auth = {
         'HTTP_AUTHORIZATION': 'Basic ' + standard_b64encode('admin:password')
@@ -434,12 +390,9 @@ def test_invalid_version_upload(client, settings, admin_user):
 
 
 @pytest.mark.django_db
-def test_valid_version_upload(client, settings, admin_user):
+def test_valid_version_upload(client, settings, repository, admin_user):
     """Test a valid version upload when enforcement is activated"""
-
-    repository = RepositoryFactory()
     settings.LOCALSHOP_VERSIONING_TYPE = 'versio.version_scheme.Simple3VersionScheme'
-    CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
 
     auth = {
         'HTTP_AUTHORIZATION': 'Basic ' + standard_b64encode('admin:password')
@@ -457,6 +410,5 @@ def test_valid_version_upload(client, settings, admin_user):
 
     response = client.post(
         '/repo/%s/' % repository.slug, data=data, **auth)
-
 
     assert response.status_code == 200

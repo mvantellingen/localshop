@@ -23,7 +23,7 @@ class PackageForm(forms.ModelForm):
         self._repository = kwargs.pop('repository')
         super(PackageForm, self).__init__(*args, **kwargs)
         self.base_fields['name'].error_messages.update({
-            'invalid': 'Enter a valid name consisting of letters, numbers, underscores or hyphens '
+            'invalid': 'Enter a valid name consisting of letters, numbers, underscores or hyphens'
         })
 
     def save(self):

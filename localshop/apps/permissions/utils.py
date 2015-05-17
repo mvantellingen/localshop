@@ -24,7 +24,7 @@ def split_auth(request):
     return method, identity
 
 
-def get_credentials(request):
+def get_basic_auth_data(request):
     method, identity = split_auth(request)
     if method is not None and method.lower() == 'basic':
         return decode_credentials(identity)
@@ -32,7 +32,7 @@ def get_credentials(request):
 
 
 def authenticate_user(request):
-    key, secret = get_credentials(request)
+    key, secret = get_basic_auth_data(request)
     if key and secret:
         try:
             user = authenticate(access_key=key, secret_key=secret)

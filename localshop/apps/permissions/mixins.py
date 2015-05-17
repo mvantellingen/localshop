@@ -4,18 +4,15 @@ from django.conf import settings
 from django.contrib.auth import login
 from django.http import HttpResponseForbidden
 
-from localshop.apps.permissions.utils import authenticate_user, get_credentials
+from localshop.apps.permissions.utils import authenticate_user, get_basic_auth_data
 from localshop.http import HttpResponseUnauthorized
 
 logger = logging.getLogger(__name__)
 
 
 class RepositoryAccessMixin(object):
-    require_upload_permission = False
 
     def dispatch(self, request, *args, **kwargs):
-        request.credentials = None
-
         # TODO: Should be handled in middleware
         if settings.LOCALSHOP_USE_PROXIED_IP:
             try:
@@ -31,30 +28,44 @@ class RepositoryAccessMixin(object):
 
         logger.info("Package request from %s", ip_addr)
 
-        if self.repository.cidr_list.has_access(ip_addr, with_credentials=False):
+        # Check repository based credentials, move to middleware ?
+        request.credentials = None
+        key, secret = get_basic_auth_data(request)
+        if key and secret:
+            credential = self.repository.credentials.authenticate(key, secret)
+            if credential:
+                request.credentials = credential
+
+            else:
+
+                # Might be a regular django user, this should be deprecated as
+                # it is just not secure enough. We need to start using user
+                # credentials for this.
+                user = authenticate_user(request)
+                if user:
+                    login(request, user)
+                else:
+                    return HttpResponseUnauthorized()
+
+        if self._allow_request(request, ip_addr):
+            print ' i allow'
             return super(RepositoryAccessMixin, self).dispatch(
                 request, *args, **kwargs)
 
-        if not self.repository.cidr_list.has_access(ip_addr, with_credentials=True):
-            return HttpResponseForbidden('No permission')
+        return HttpResponseUnauthorized("No permission")
 
-        # Just return the original view because already logged in
+
+    def _allow_request(self, request, ip_addr):
+        # If the user is already logged in then continue
         if request.user.is_authenticated():
-            return super(RepositoryAccessMixin, self).dispatch(
-                request, *args, **kwargs)
+            return True
 
-        # Check repository based credentials
-        key, secret = get_credentials(request)
-        credential = self.repository.credentials.authenticate(key, secret)
-        if credential:
-            request.credentials = credential
-            return super(RepositoryAccessMixin, self).dispatch(
-                request, *args, **kwargs)
+        # If this view doesn't require upload permissions then we allow access
+        # purely based on the cidr. Otherwise credentials are required
+        if self.repository.cidr_list.has_access(ip_addr, with_credentials=False):
+            return True
 
-        user = authenticate_user(request)
-        if user is not None:
-            login(request, user)
-            return super(RepositoryAccessMixin, self).dispatch(
-                request, *args, **kwargs)
+        elif self.repository.cidr_list.has_access(ip_addr, with_credentials=True):
+            return bool(request.credentials)
 
-        return HttpResponseUnauthorized(content='Authorization Required')
+        return False

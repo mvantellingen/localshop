@@ -1,40 +1,39 @@
 import pytest
 from django.core.urlresolvers import reverse
 
-from localshop.apps.permissions.models import CIDR
 from localshop.apps.packages.tasks import fetch_package
 
-from tests.apps.packages.factories import (
-    RepositoryFactory, ReleaseFileFactory)
+from tests.factories import ReleaseFileFactory
 
 
 @pytest.mark.django_db
-def test_success(client, admin_user, pypi_stub):
-    CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
-    release_file = ReleaseFileFactory()
+def test_success(app, admin_user, repository, pypi_stub):
+    release_file = ReleaseFileFactory(release__package__repository=repository)
 
-    response = client.get(
-        reverse('packages-simple:simple_detail', kwargs={
+    response = app.get(
+        reverse('packages:simple_detail', kwargs={
             'slug': release_file.release.package.name,
             'repo': release_file.release.package.repository.slug
         }))
 
     assert response.status_code == 200
     assert 'Links for test-package' in response.content
-    assert ('<a href="/packages/test-package/download/1/test-1.0.0-sdist.zip'
-            '#md5=62ecd3ee980023db87945470aa2b347b" rel="package">'
-            'test-1.0.0-sdist.zip</a>') in response.content
+
+    a_elms = response.html.select('a')
+    assert len(a_elms) == 1
+    assert a_elms[0]['href'] == (
+        '/repo/default/download/test-package/1/test-1.0.0-sdist.zip' +
+        '#md5=62ecd3ee980023db87945470aa2b347b')
+    assert a_elms[0]['rel'][0] == 'package'
 
 
 @pytest.mark.django_db
-def test_missing_package_local_package(client, admin_user, pypi_stub):
-    CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
-    repository = RepositoryFactory()
-
+def test_missing_package_local_package(app, admin_user, repository,
+                                       pypi_stub):
     fetch_package.run(repository.pk, 'minibar')
 
-    response = client.get(
-        reverse('packages-simple:simple_detail', kwargs={
+    response = app.get(
+        reverse('packages:simple_detail', kwargs={
             'slug': 'minibar',
             'repo': repository.slug,
         }))
@@ -47,12 +46,9 @@ def test_missing_package_local_package(client, admin_user, pypi_stub):
 
 
 @pytest.mark.django_db
-def test_nonexistent_package(client, admin_user, pypi_stub):
-    CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
-    repository = RepositoryFactory()
-
-    response = client.get(
-        reverse('packages-simple:simple_detail', kwargs={
+def test_nonexistent_package(app, admin_user, repository, pypi_stub):
+    response = app.get(
+        reverse('packages:simple_detail', kwargs={
             'slug': 'nonexistent',
             'repo': repository.slug,
         }))
@@ -62,12 +58,13 @@ def test_nonexistent_package(client, admin_user, pypi_stub):
 
 
 @pytest.mark.django_db
-def test_wrong_package_name_case(client, admin_user, pypi_stub):
-    CIDR.objects.create(cidr='0.0.0.0/0', require_credentials=False)
-    ReleaseFileFactory(release__package__name='minibar')
+def test_wrong_package_name_case(app, admin_user, repository, pypi_stub):
+    ReleaseFileFactory(
+        release__package__repository=repository,
+        release__package__name='minibar')
 
-    response = client.get(
-        reverse('packages-simple:simple_detail', kwargs={
+    response = app.get(
+        reverse('packages:simple_detail', kwargs={
             'slug': 'Minibar',
             'repo': 'default'
         }))
