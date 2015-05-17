@@ -108,3 +108,8 @@ class TeamMember(TimeStampedModel):
         ('owner', _("Owner")),
         ('developer', _("Developer")),
     ])
+
+    class Meta:
+        unique_together = [
+            ('team', 'user'),
+        ]

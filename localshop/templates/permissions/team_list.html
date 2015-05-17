@@ -1,18 +1,26 @@
 {% extends "layout.main.html" %}
+{% load i18n %}
+
+{% block breadcrumbs %}
+<ul class="breadcrumb">
+    <li><a href="#">localshop</a> <span class="divider">/</span></li>
+    <li class="active">{% trans "teams" %}</li>
+</ul>
+{% endblock %}
+
 
 {% block content %}
 <div class="row">
-    <div class="span6">
+    <div class="span12">
         <h1>Teams overview</h1>
         <a href="{% url 'permissions:team_create' %}" class="btn btn-primary"> <span class="icon-plus icon-white"></span> Create</a>
 
-        <table class="table table-striped table-bordered">
+        <table class="table table-striped">
             <thead>
                 <tr>
                     <th>Name</th>
                     <th># Members</th>
                     <th>Owners</th>
-                    <th>Actions</th>
                 </tr>
             </thead>
             <tbody>
@@ -21,10 +29,6 @@
                     <td><a href="{% url 'permissions:team_detail' pk=team.pk %}">{{ team.name }}</a></td>
                     <td>{{ team.members.count }}</td>
                     <td>{{ team.owners|join:', ' }}</td>
-                    <td>
-                        <a href="{% url 'permissions:team_edit' pk=team.pk %}"><span class="icon-edit"></span> edit</a> |
-                        <a href="{% url 'permissions:team_delete' pk=team.pk %}"><span class="icon-trash"></span> delete</a>
-                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
