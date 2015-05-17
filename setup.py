@@ -1,38 +1,17 @@
-import os
-import sys
-import re
-from setuptools import setup, find_packages, Command
-
-
-def parse_requirements(file_name):
-    requirements = []
-    for line in open(file_name, 'r').read().split('\n'):
-        if re.match(r'(\s*#)|(\s*$)', line):
-            continue
-        if re.match(r'\s*-e\s+', line):
-            # TODO support version numbers
-            requirements.append(re.sub(r'\s*-e\s+.*#egg=(.*)$', r'\1', line))
-        elif re.match(r'\s*-f\s+', line):
-            pass
-        elif re.match(r'\s*-r\s+', line):
-            pass
-        else:
-            requirements.append(line)
-
-    return requirements
-
-
-def parse_dependency_links(file_name):
-    dependency_links = []
-    for line in open(file_name, 'r').read().split('\n'):
-        if re.match(r'\s*-[ef]\s+', line):
-            dependency_links.append(re.sub(r'\s*-[ef]\s+', '', line))
-    return dependency_links
-
+from setuptools import setup, find_packages
 
 readme = []
 with open('README.rst', 'r') as fh:
     readme = fh.readlines()
+
+tests_require = [
+    'pytest>=2.6.0',
+    'pytest-cov>=1.7.0',
+    'pytest-django>=2.8.0',
+    'django-webtest==1.7.8',
+    'factory-boy==2.5.2',
+    'mock==1.0.1',
+]
 
 
 setup(
@@ -45,7 +24,26 @@ setup(
     long_description='\n'.join(readme),
     packages=find_packages(),
     zip_safe=False,
-    install_requires=parse_requirements('requirements.txt'),
+    install_requires=[
+        'Django==1.7.8',
+        'Pillow==2.6.1',
+        'celery==3.1.17',
+        'kombu==3.0.24',
+        'django-braces==1.8.0',
+        'django-celery==3.1.16',
+        'django-model-utils==2.2.0',
+        'django-uuidfield==0.5.0',
+        'django-storages==1.1.8',
+        'django-configurations==0.8',
+        'django-environ==0.3.0',
+        'docutils==0.11',
+        'gunicorn==19.1.1',
+        'netaddr==0.7.12',
+        'requests==2.5.1',
+        'Versio==0.2.1',
+    ],
+    tests_require=tests_require,
+    extras_require={'test': tests_require},
     license='BSD',
     include_package_data=True,
     entry_points={
