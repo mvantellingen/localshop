@@ -1,7 +1,7 @@
 from django.contrib.sites.models import Site
 from django.core.exceptions import SuspiciousOperation
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse, Http404
+from django.http import HttpResponse
 from django.shortcuts import get_object_or_404
 from django.views import generic
 from braces.views import LoginRequiredMixin, PermissionRequiredMixin
@@ -47,7 +47,7 @@ class RepositoryCreateView(LoginRequiredMixin, generic.CreateView):
 
     def get_success_url(self):
         return reverse(
-            'dashboard:repository_detail', kwargs={'pk': self.object.pk})
+            'dashboard:repository_detail', kwargs={'slug': self.object.slug})
 
 
 class RepositoryDetailView(LoginRequiredMixin, generic.DetailView):
@@ -77,10 +77,10 @@ class RepositoryUpdateView(LoginRequiredMixin, generic.UpdateView):
 
 class RepositoryDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = models.Repository
+    template_name = 'dashboard/repository_confirm_delete.html'
 
     def get_success_url(self):
-        return reverse(
-            'dashboard:repository_detail', kwargs={'slug': self.object.slug})
+        return reverse('dashboard:repository_list')
 
 
 class RepositoryMixin(object):

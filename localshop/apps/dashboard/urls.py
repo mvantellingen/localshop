@@ -37,6 +37,4 @@ urlpatterns = [
 
         ], namespace='repo_settings')),
 
-
-
 ]

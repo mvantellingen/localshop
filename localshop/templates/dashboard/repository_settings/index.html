@@ -36,6 +36,12 @@
                 Manage which teams have access to this repository
             </p>
         </li>
+        <li>
+            <a href="{% url 'dashboard:repository_delete' slug=view.repository.slug %}">Delete</a>
+            <p>
+                Delete the repository and associated packages
+            </p>
+        </li>
     </ul>
 
 {% endblock %}

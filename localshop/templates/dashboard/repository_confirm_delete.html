@@ -1,0 +1,19 @@
+{% extends "layout.main.html" %}
+
+{% block content %}
+<h1>Credential deletion</h1>
+
+<form method="post" action="" class="form-horizontal">
+    <p>
+        Delete the {{ repository }} repository?
+        <strong>This will also delete all associated packages!</strong>
+
+    </p>
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary"><span class="icon-trash icon-white"></span> Delete</button>
+        <a href="{% url 'dashboard:repo_settings:index' repo=repository.slug %}" class="btn">Cancel</a>
+    </div>
+    {% csrf_token %}
+</form>
+{% endblock %}
