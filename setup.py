@@ -36,7 +36,7 @@ setup(
         'django-uuidfield==0.5.0',
         'django-storages==1.1.8',
         'django-configurations==0.8',
-        'django-environ==0.3.0',
+        'dj-database-url==0.3.0',
         'docutils==0.11',
         'gunicorn==19.1.1',
         'netaddr==0.7.12',
