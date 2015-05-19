@@ -1,15 +1,22 @@
-{% extends "layout.main.html" %}
+{% extends "accounts/base.html" %}
+{% load i18n %}
 
-{% block content %}
-<h1>Access key deletion</h1>
+{% block content_panel %}
 
-<form method="post" action="" class="form-horizontal">
-    <p>Delete the access key {{ access_key.comment }}?</p>
+    <div class="panel panel-default">
+        <div class="panel-heading">Access keys</div>
+        <div class="panel-body">
 
-    <div class="form-actions">
-        <button type="submit" class="btn btn-primary"><span class="icon-trash icon-white"></span> Delete</button>
-        <a href="{% url 'accounts:access_key_list' %}" class="btn">Cancel</a>
+            <form method="post" action="" class="form-stacked">
+                <p>Delete the access key ?</p>
+
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary"><span class="icon-ok icon-white"></span> Save</button>
+                    <a href="{% url 'accounts:access_key_list' %}" class="btn">Cancel</a>
+                </div>
+                {% csrf_token %}
+            </form>
+        </div>
     </div>
-    {% csrf_token %}
-</form>
 {% endblock %}
+

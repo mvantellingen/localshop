@@ -2,26 +2,34 @@
 {% load i18n %}
 
 {% block content_panel %}
-    <table>
-    {% for team in view.repository.teams.all %}
-    <tr>
-        <td>
-            {{ team }}
-        </td>
-        <td>
-            <form method="post">
-                <input type="hidden" name="team" value="{{ team.pk }}">
-                <input type="hidden" name="delete" value="true">
-                <input type="submit" value="X">
+
+    <div class="panel panel-default">
+        <div class="panel-heading">Teams</div>
+        <table class="table table-striped table-condensed">
+            <tbody>
+                {% for team in view.repository.teams.all %}
+                <tr>
+                    <td>
+                        {{ team }}
+                    </td>
+                    <td>
+                        <form method="post">
+                            <input type="hidden" name="team" value="{{ team.pk }}">
+                            <input type="hidden" name="delete" value="true">
+                            <button type="submit" class="btn btn-danger">Remove</button>
+                            {% csrf_token %}
+                        </form>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <div class="panel-foot">
+            <form method="post" class="form-inline">
+                {% include "partial/_form_fields.html" with style='horizontal' %}
                 {% csrf_token %}
+                <input type="submit" class="btn btn-primary">
             </form>
-        </td>
-    </tr>
-    {% endfor %}
-    </table>
-    <form method="post">
-        {{ form.as_p }}
-        {% csrf_token %}
-        <input type="submit">
-    </form>
+        </div>
+    </div>
 {% endblock %}

@@ -15,18 +15,18 @@
 {% endblock %}
 
 {% block content %}
-<h1>Create team</h1>
+    <div class="panel panel-default">
+        <div class="panel-heading">Update team</div>
+        <div class="panel-body">
+            <form method="post" action="" class="form-stacked">
+                {% include "partial/_form_fields.html" %}
 
-<form method="post" action="" class="form-horizontal">
-    <fieldset>
-        {% include "partial/_form_field.html" with field=form.name %}
-        {% include "partial/_form_field.html" with field=form.description %}
-    </fieldset>
-
-    <div class="form-actions">
-        <button type="submit" class="btn btn-primary"><span class="icon-ok icon-white"></span> Save</button>
-        <a href="{% url 'accounts:team_list' %}" class="btn">Cancel</a>
+                <div class="form-actions">
+                    <button type="submit" class="btn btn-primary"><span class="icon-ok icon-white"></span> Save</button>
+                    <a href="{% url 'accounts:team_list' %}" class="btn">Cancel</a>
+                </div>
+                {% csrf_token %}
+            </form>
+        </div>
     </div>
-    {% csrf_token %}
-</form>
 {% endblock %}

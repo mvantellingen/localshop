@@ -4,7 +4,7 @@
 
 {% block content %}
 <div class="row">
-    <div class="offset2 span10 page-header">
+    <div class="col-md-offset-2 col-md-10 page-header">
         <h1>{% block title %}{{ view.repository.simple_index_url }}<small> ({{ view.repository.name }})</small>{% endblock %}</h1>
         <p>
             {% block description %}{{ view.repository.description }}{% endblock %}
@@ -12,21 +12,23 @@
     </div>
 </div>
 <div class="row">
-    <div class="span2">
-        <ul class="nav nav-list">
-            <li class="nav-header">Overview</li>
-            <li><a href="{% url 'dashboard:repository_detail' slug=view.repository.slug %}">{% trans "Packages" %}</a></li>
-            <li class="nav-header">Settings</li>
-            <li><a href="{% url 'dashboard:repository_edit' slug=view.repository.slug %}">{% trans "Edit information" %}</a></li>
-            <li><a href="{% url 'dashboard:repo_settings:cidr_index' repo=view.repository.slug %}">{% trans "Access control list" %}</a></li>
-            <li><a href="{% url 'dashboard:repo_settings:credential_index' repo=view.repository.slug %}">{% trans "System credentials" %}</a></li>
-            <li><a href="{% url 'dashboard:repo_settings:team_access' repo=view.repository.slug %}">{% trans "Team access" %}</a></li>
-            <li class="divider"></li>
-            <li><a href="{% url 'dashboard:repository_delete' slug=view.repository.slug %}">{% trans "Delete" %}</a></li>
-        </ul>
+    <div class="col-md-2">
 
+        <div class="panel panel-default">
+            <div class="panel-heading">Overview</div>
+            <ul class="list-group">
+                <li class="list-group-item"><a href="{% url 'dashboard:repository_detail' slug=view.repository.slug %}">{% trans "Packages" %}</a></li>
+            </ul>
+            <div class="panel-heading">Settings</div>
+            <ul class="list-group">
+                <li class="list-group-item"><a href="{% url 'dashboard:repository_edit' slug=view.repository.slug %}">{% trans "Edit information" %}</a></li>
+                <li class="list-group-item"><a href="{% url 'dashboard:repo_settings:cidr_index' repo=view.repository.slug %}">{% trans "Access control list" %}</a></li>
+                <li class="list-group-item"><a href="{% url 'dashboard:repo_settings:credential_index' repo=view.repository.slug %}">{% trans "System credentials" %}</a></li>
+                <li class="list-group-item"><a href="{% url 'dashboard:repo_settings:team_access' repo=view.repository.slug %}">{% trans "Team access" %}</a></li>
+            </ul>
+        </div>
     </div>
-    <div class="span10">
+    <div class="col-md-10">
         {% block content_panel %}
         {% endblock %}
     </div>
