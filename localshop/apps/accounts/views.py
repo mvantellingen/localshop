@@ -1,6 +1,7 @@
-from braces.views import LoginRequiredMixin
-from django.shortcuts import get_object_or_404, redirect
+from braces.views import LoginRequiredMixin, UserFormKwargsMixin
 from django.core.urlresolvers import reverse
+from django.http import HttpResponse
+from django.shortcuts import get_object_or_404, redirect
 from django.views import generic
 
 from localshop.apps.accounts import forms, models
@@ -86,3 +87,67 @@ class TeamMemberRemoveView(LoginRequiredMixin, TeamMixin, generic.FormView):
 
     def form_invalid(self, form):
         return redirect('accounts:team_detail', pk=self.team.pk)
+
+
+class AccessKeyListView(LoginRequiredMixin, generic.ListView):
+    context_object_name = 'access_keys'
+
+    def get_queryset(self):
+        return self.request.user.access_keys.all()
+
+
+class AccessKeyCreateView(LoginRequiredMixin, UserFormKwargsMixin,
+                          generic.CreateView):
+    template_name = 'accounts/accesskey_form.html'
+    form_class = forms.AccessKeyForm
+
+
+    def form_valid(self, form):
+        form.save()
+        return super(AccessKeyCreateView, self).form_valid(form)
+
+    def get_queryset(self):
+        return self.request.user.access_keys.all()
+
+    def get_success_url(self):
+        return reverse('accounts:access_key_list')
+
+
+class AccessKeySecretView(LoginRequiredMixin, generic.DetailView):
+
+    def get_queryset(self):
+        return self.request.user.access_keys.all()
+
+    def get(self, request, pk):
+        if not request.is_ajax():
+            raise SuspiciousOperation
+        key = get_object_or_404(self.request.user.access_keys, pk=pk)
+        return HttpResponse(key.secret_key)
+
+
+class AccessKeyUpdateView(LoginRequiredMixin, UserFormKwargsMixin,
+                          generic.UpdateView):
+    template_name = 'accounts/accesskey_form.html'
+    form_class = forms.AccessKeyForm
+
+
+    def form_valid(self, form):
+        form.save()
+        return super(AccessKeyUpdateView, self).form_valid(form)
+
+    def get_queryset(self):
+        return self.request.user.access_keys.all()
+
+    def get_success_url(self):
+        return reverse('accounts:access_key_list')
+
+
+class AccessKeyDeleteView(LoginRequiredMixin, generic.DeleteView):
+    template_name = 'accounts/accesskey_confirm_delete.html'
+    context_object_name = 'access_key'
+
+    def get_queryset(self):
+        return self.request.user.access_keys.all()
+
+    def get_success_url(self):
+        return reverse('accounts:access_key_list')

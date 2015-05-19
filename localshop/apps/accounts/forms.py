@@ -1,6 +1,18 @@
+from braces.forms import UserKwargModelFormMixin
 from django import forms
 
 from localshop.apps.accounts import models
+
+
+class AccessKeyForm(UserKwargModelFormMixin, forms.ModelForm):
+
+    class Meta:
+        model = models.AccessKey
+        fields = ['comment']
+
+    def save(self):
+        self.instance.user = self.user
+        return super(AccessKeyForm, self).save(commit=True)
 
 
 class TeamFormMixin(object):

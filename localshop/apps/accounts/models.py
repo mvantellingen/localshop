@@ -2,7 +2,31 @@ from django.conf import settings
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext as _
+from model_utils.fields import AutoCreatedField
 from model_utils.models import TimeStampedModel
+from uuidfield import UUIDField
+
+
+class AccessKey(models.Model):
+    created = AutoCreatedField()
+
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, related_name='access_keys')
+
+    access_key = UUIDField(
+        verbose_name='Access key', help_text='The access key', auto=True,
+        db_index=True)
+    secret_key = UUIDField(
+        verbose_name='Secret key', help_text='The secret key', auto=True,
+        db_index=True)
+    comment = models.CharField(
+        max_length=255, blank=True, null=True, default='',
+        help_text=_(
+            "A comment about this credential, e.g. where it's being used"))
+    last_usage = models.DateTimeField(null=True, blank=True)
+
+    class Meta:
+        ordering = ['-created']
 
 
 @python_2_unicode_compatible

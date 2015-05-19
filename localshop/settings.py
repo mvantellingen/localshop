@@ -180,7 +180,7 @@ class Base(Settings):
 
     # Auth settings
     AUTHENTICATION_BACKENDS = (
-        'localshop.apps.permissions.backend.CredentialBackend',
+        'localshop.apps.accounts.backend.AccessKeyBackend',
         'django.contrib.auth.backends.ModelBackend',
     )
     LOGIN_URL = '/accounts/login'

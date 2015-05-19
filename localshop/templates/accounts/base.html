@@ -1,0 +1,20 @@
+{% extends "layout.main.html" %}
+{% load i18n %}
+
+
+{% block content %}
+<div class="row">
+    <div class="span2">
+        <ul class="nav nav-list">
+            <li><a href="{% url 'accounts:profile' %}">{% trans "Profile" %}</a></li>
+            <li><a href="{% url 'password_change' %}">{% trans "Change password" %}</a></li>
+            <li><a href="{% url 'accounts:access_key_list' %}">{% trans "Access keys" %}</a></li>
+        </ul>
+    </div>
+    <div class="span10">
+        {% block content_panel %}
+        {% endblock %}
+    </div>
+</div>
+{% endblock %}
+

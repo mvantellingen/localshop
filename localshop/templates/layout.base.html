@@ -27,9 +27,9 @@
         $(document).ready(function() {
           $('.toggle-secret-key').click(function(event) {
             event.preventDefault();
-            var access_key = $(this).attr('access_key');
+            var access_key = $(this).data('access-key');
             var secret_url = $(this).attr('href');
-            $('#secret_key_' + access_key).load(secret_url);
+            $('[data-secret-key=' + access_key +']').load(secret_url);
           })
         });
         </script>

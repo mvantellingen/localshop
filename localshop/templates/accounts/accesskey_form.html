@@ -1,0 +1,21 @@
+{% extends "layout.main.html" %}
+
+{% block content %}
+<h1>Update credential comment</h1>
+
+<form method="post" action="" class="form-horizontal">
+    <p>Here you can add or update the comment for the credential {{ credential }}.</p>
+
+    {% include "partial/_form_field.html" with field=form.comment %}
+    {% include "partial/_form_field.html" with field=form.allow_upload %}
+    {% include "partial/_form_field.html" with field=form.deactivated %}
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary"><span class="icon-ok icon-white"></span> Save</button>
+        <a href="{% url 'accounts:access_key_list' %}" class="btn">Cancel</a>
+    </div>
+    {% csrf_token %}
+</form>
+{% endblock %}
+
+

@@ -1,0 +1,15 @@
+{% extends "layout.main.html" %}
+
+{% block content %}
+<h1>Access key deletion</h1>
+
+<form method="post" action="" class="form-horizontal">
+    <p>Delete the access key {{ access_key.comment }}?</p>
+
+    <div class="form-actions">
+        <button type="submit" class="btn btn-primary"><span class="icon-trash icon-white"></span> Delete</button>
+        <a href="{% url 'accounts:access_key_list' %}" class="btn">Cancel</a>
+    </div>
+    {% csrf_token %}
+</form>
+{% endblock %}
