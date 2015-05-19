@@ -89,6 +89,23 @@ class TeamMemberRemoveView(LoginRequiredMixin, TeamMixin, generic.FormView):
         return redirect('accounts:team_detail', pk=self.team.pk)
 
 
+class ProfileView(LoginRequiredMixin, generic.FormView):
+    form_class = forms.ProfileForm
+    template_name = 'accounts/profile.html'
+
+    def form_valid(self, form):
+        form.save()
+        return super(ProfileView, self).form_valid(form)
+
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super(ProfileView, self).get_form_kwargs(*args, **kwargs)
+        kwargs['instance'] = self.request.user
+        return kwargs
+
+    def get_success_url(self):
+        return reverse('accounts:profile')
+
+
 class AccessKeyListView(LoginRequiredMixin, generic.ListView):
     context_object_name = 'access_keys'
 

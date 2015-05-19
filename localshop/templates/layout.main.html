@@ -22,6 +22,7 @@
                             <span class="caret"></span>
                         </a>
                         <ul class="dropdown-menu" role="menu">
+                            <li><a href="{% url 'accounts:profile' %}">{% trans "Profile" %}</a></li>
                             <li><a href="{% url 'password_change' %}">{% trans "Change password" %}</a></li>
                             {% if user.is_staff %}
                                     <li class="divider"></li>
@@ -41,8 +42,6 @@
 <div class="container-fluid">
     <div class="row">
         <div class="span12">
-            {% block breadcrumbs %}
-            {% endblock %}
             {% block content %}
             {% endblock %}
         </div>

@@ -1,0 +1,23 @@
+{% extends "accounts/base.html" %}
+{% load i18n %}
+
+
+
+
+{% block content_panel %}
+<div>
+    <h1>Profile</h1>
+    <form method="post" action="" class="form-horizontal">
+        {% include "partial/_form_field.html" with field=form.first_name %}
+        {% include "partial/_form_field.html" with field=form.last_name %}
+        {% include "partial/_form_field.html" with field=form.email %}
+        {% include "partial/_form_field.html" with field=form.username %}
+        {% csrf_token %}
+        <div class="form-actions">
+            <button type="submit" class="btn btn-primary"><span class="icon-ok icon-white"></span> Save</button>
+        </div>
+    </form>
+
+</div>
+{% endblock %}
+
