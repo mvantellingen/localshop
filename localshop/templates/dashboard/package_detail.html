@@ -1,20 +1,17 @@
-{% extends "layout.main.html" %}
+{% extends "dashboard/repository_settings/base.html" %}
 {% load i18n %}
 
-{% block breadcrumbs %}
-<ul class="breadcrumb">
-    <li><a href="#">localshop</a> <span class="divider">/</span></li>
-    <li><a href="{% url 'dashboard:repository_list' %}">{% trans "repository overview" %}</a> <span class="divider">/</span></li>
-    <li><a href="{% url 'dashboard:repository_detail' slug=view.repository.slug %}">{{ view.repository.name }}</a> <span class="divider">/</span></li>
-    <li class="active">{{ package.name }}</li>
-</ul>
+{% block title %}
+<a href="{% url 'dashboard:repository_detail' slug=package.repository.slug %}">{{ package.repository.simple_index_url }}</a>/{{ package.name }}
 {% endblock %}
 
 
-{% block content %}
+{% block description %}
+{{ release.summary }}
+{% endblock %}
+
+{% block content_panel %}
 <div class="tabbable">
-    <h1>{{ package.name }}</h1>
-    <p>{{ release.summary }}</p>
     <ul class="nav nav-tabs" id="package-tabs">
         <li class="active">
             <a href="#information" data-toggle="tab">Metadata</a>

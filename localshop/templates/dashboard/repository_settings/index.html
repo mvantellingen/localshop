@@ -1,48 +1,11 @@
-{% extends "layout.main.html" %}
+{% extends "dashboard/repository_settings/base.html" %}
 {% load i18n %}
 
-{% block breadcrumbs %}
-<ul class="breadcrumb">
-    <li><a href="#">localshop</a> <span class="divider">/</span></li>
-    <li><a href="{% url 'dashboard:repository_list' %}">{% trans "repository overview" %}</a> <span class="divider">/</span></li>
-    <li><a href="{% url 'dashboard:repository_detail' slug=view.repository.slug %}">{{ view.repository.name }}</a> <span class="divider">/</span></li>
-    <li class="active">settings</li>
-</ul>
-{% endblock %}
-
-{% block content %}
-    <ul>
-        <li>
-            <a href="{% url 'dashboard:repository_edit' slug=view.repository.slug %}">edit</a>
-            <p>
-                Edit repository settings
-            </p>
-        </li>
-        <li>
-            <a href="{% url 'dashboard:repo_settings:cidr_index' repo=view.repository.slug %}">Access control list</a>
-            <p>
-                Manage which networks have access to this repository
-            </p>
-        </li>
-        <li>
-            <a href="{% url 'dashboard:repo_settings:credential_index' repo=view.repository.slug %}">Credentials</a>
-            <p>
-                Manage credentials for accessing the repository
-            </p>
-        </li>
-        <li>
-            <a href="{% url 'dashboard:repo_settings:team_access' repo=view.repository.slug %}">Teams</a>
-            <p>
-                Manage which teams have access to this repository
-            </p>
-        </li>
-        <li>
-            <a href="{% url 'dashboard:repository_delete' slug=view.repository.slug %}">Delete</a>
-            <p>
-                Delete the repository and associated packages
-            </p>
-        </li>
-    </ul>
-
+{% block content_panel %}
+<div class="row">
+    <div class="span9">
+        something
+    </div>
+</div>
 {% endblock %}
 

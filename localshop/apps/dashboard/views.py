@@ -64,23 +64,36 @@ class RepositoryDetailView(LoginRequiredMixin, generic.DetailView):
         })
         return ctx
 
+    @property
+    def repository(self):
+        return self.object
+
 
 class RepositoryUpdateView(LoginRequiredMixin, generic.UpdateView):
     model = models.Repository
+    context_object_name = 'repository'
     fields = ['name', 'slug', 'description']
-    template_name = 'dashboard/repository_form.html'
+    template_name = 'dashboard/repository_settings/edit.html'
 
     def get_success_url(self):
         return reverse(
             'dashboard:repo_settings:index', kwargs={'repo': self.object.slug})
 
+    @property
+    def repository(self):
+        return self.object
+
 
 class RepositoryDeleteView(LoginRequiredMixin, generic.DeleteView):
     model = models.Repository
-    template_name = 'dashboard/repository_confirm_delete.html'
+    template_name = 'dashboard/repository_settings/delete.html'
 
     def get_success_url(self):
         return reverse('dashboard:repository_list')
+
+    @property
+    def repository(self):
+        return self.object
 
 
 class RepositoryMixin(object):

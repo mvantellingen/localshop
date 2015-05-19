@@ -1,23 +1,7 @@
-{% extends "layout.main.html" %}
+{% extends "dashboard/repository_settings/base.html" %}
 {% load i18n %}
 
-{% block breadcrumbs %}
-<ul class="breadcrumb">
-    <li><a href="#">localshop</a> <span class="divider">/</span></li>
-    <li><a href="{% url 'dashboard:repository_list' %}">{% trans "repository overview" %}</a> <span class="divider">/</span></li>
-    <li class="active">{{ repository.name }}</li>
-</ul>
-{% endblock %}
-
-
-{% block content %}
-<h1>Repository: {{ repository.name }}</h1>
-<p>
-    URL: {{ simple_index_url }}
-</p>
-
-<a href="{% url 'dashboard:repo_settings:index' repo=repository.slug %}">settings</a>
-
+{% block content_panel %}
 <table class="table table-striped">
     <thead>
         <tr>

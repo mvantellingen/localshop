@@ -23,7 +23,7 @@ def parse_distutils_request(request):
 
     http://bugs.python.org/issue10510
     """
-    body = request.body.decode('utf-8')
+    body = request.body.decode('latin-1')
 
     if not body.endswith('\r\n'):
         sep = body.splitlines()[1]

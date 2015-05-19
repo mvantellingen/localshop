@@ -1,18 +1,7 @@
-{% extends "layout.main.html" %}
+{% extends "dashboard/repository_settings/base.html" %}
 {% load i18n %}
 
-{% block breadcrumbs %}
-<ul class="breadcrumb">
-    <li><a href="#">localshop</a> <span class="divider">/</span></li>
-    <li><a href="{% url 'dashboard:repository_list' %}">{% trans "repository overview" %}</a> <span class="divider">/</span></li>
-    <li><a href="{% url 'dashboard:repository_detail' slug=view.repository.slug %}">{{ view.repository.name }}</a> <span class="divider">/</span></li>
-    <li><a href="{% url 'dashboard:repo_settings:index' repo=view.repository.slug %}">settings</a> <span class="divider">/</span></li>
-    <li class="active">teams</li>
-</ul>
-{% endblock %}
-
-
-{% block content %}
+{% block content_panel %}
     <table>
     {% for team in view.repository.teams.all %}
     <tr>
