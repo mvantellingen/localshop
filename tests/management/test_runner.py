@@ -3,16 +3,36 @@ import os
 
 import mock
 
+from django.core.handlers.wsgi import WSGIHandler
 from django.test import TestCase
+
 from localshop.runner import main
+from localshop import wsgi
 
 manage_instance = mock.MagicMock()
 manage_mock = mock.MagicMock(return_value=manage_instance)
 
 
+class TestWSGI(TestCase):
+    def test_init_wsgi_application(self):
+        self.assertIsInstance(wsgi.application, WSGIHandler)
+
+    def test_set_env_defaults(self):
+        # backup and remove global environment vars
+        oldenv = copy.copy(os.environ)
+        del os.environ['DJANGO_SETTINGS_MODULE']
+        del os.environ['DJANGO_CONFIGURATION']
+        reload(wsgi)
+        self.assertIn('DJANGO_SETTINGS_MODULE', os.environ)
+        self.assertIn('DJANGO_CONFIGURATION', os.environ)
+        self.assertEqual(os.environ['DJANGO_SETTINGS_MODULE'],
+                         'localshop.settings')
+        self.assertEqual(os.environ['DJANGO_CONFIGURATION'], 'Localshop')
+        os.environ = oldenv
+
+
 @mock.patch('django.core.management.ManagementUtility', manage_mock)
 class TestRunner(TestCase):
-
     def tearDown(self):
         manage_instance.reset_mock()
         manage_mock.reset_mock()
