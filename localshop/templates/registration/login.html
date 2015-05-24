@@ -1,7 +1,6 @@
 {% extends "layout.base.html" %}
-
+{% load widget_tweaks %}
 {% load i18n %}
-{% load url from future %}
 
 {% block title %}{% trans "Signin" %}{% endblock %}
 
@@ -25,62 +24,82 @@
     {{ block.super }}
     <style type="text/css">
         body {
-            padding-top: 80px;
-            padding-bottom: 40px;
-            background-color: #f5f5f5;
+          padding-top: 40px;
+          padding-bottom: 40px;
+          background-color: #eee;
         }
 
         .form-signin {
-            max-width: 300px;
-            padding: 19px 29px 29px;
-            margin: 0 auto 20px;
-            background-color: #fff;
-            border: 1px solid #e5e5e5;
-            -webkit-border-radius: 5px;
-               -moz-border-radius: 5px;
-                    border-radius: 5px;
-            -webkit-box-shadow: 0 1px 2px rgba(0,0,0,.05);
-               -moz-box-shadow: 0 1px 2px rgba(0,0,0,.05);
-                    box-shadow: 0 1px 2px rgba(0,0,0,.05);
-        }
-        .form-signin > img {
-            margin: 20px 0px;
+          max-width: 330px;
+          padding: 15px;
+          margin: 0 auto;
         }
         .form-signin .form-signin-heading,
         .form-signin .checkbox {
-            margin-bottom: 10px;
+          margin-bottom: 10px;
         }
-        .form-signin input[type="text"],
+        .form-signin .checkbox {
+          font-weight: normal;
+        }
+        .form-signin .form-control {
+          position: relative;
+          height: auto;
+          -webkit-box-sizing: border-box;
+             -moz-box-sizing: border-box;
+                  box-sizing: border-box;
+          padding: 10px;
+          font-size: 16px;
+        }
+        .form-signin .form-control:focus {
+          z-index: 2;
+        }
+        .form-signin input[name="username"] {
+          margin-bottom: -1px;
+          border-bottom-right-radius: 0;
+          border-bottom-left-radius: 0;
+        }
         .form-signin input[type="password"] {
-            font-size: 16px;
-            height: auto;
-            margin-bottom: 15px;
-            padding: 7px 9px;
+          margin-bottom: 10px;
+          border-top-left-radius: 0;
+          border-top-right-radius: 0;
         }
     </style>
 {% endblock %}
 
 {% block body %}
-    <form method="post" class="form-signin">
-        <h1>Localshop</h1>
-        {% if form.errors or form.non_field_errors %}
-        <div class="alert alert-error">
-            {{ form.errors }}
-            {{ form.non_field_errors }}
-        </div>
-        {% endif %}
+    <div class="container">
+        <form method="post" class="form-signin">
+            <h2 class="form-signin-heading">Localshop</h2>
 
-        <input type="text" name="username" class="input-block-level error" placeholder="{% trans "Username" %}" value="{{ form.username.value|default:"" }}">
+            {% if form.non_field_errors %}
+            <div class="danger alert-danger">
+                {{ form.non_field_errors }}
+            </div>
+            {% endif %}
+            {% trans "Username" as username_i18n %}
+            {% trans "Password" as password_i18n %}
 
-        <input type="password" name="password" class="input-block-level" placeholder="{% trans "Password" %}">
-        <label class="checkbox">
-            {{ form.remember_me }}
-            {% trans "Remember me for a month" %}
-        </label>
+            {% with WIDGET_ERROR_CLASS='has-error' %}
+            <div class="{% if form.username.errors %}has-error{% endif %}">
+                <label for="username" class="sr-only">{{ username_i18n }}</label>
+                {% render_field form.username class="form-control" placeholder=username_i18n autofocus=autofocus %}
+            </div>
 
-        <input type="submit" class="btn btn-primary" value="{% trans "Signin" %}" />
-        <p class="forgot-password pull-right"><a href="{% url 'password_reset' %}" title="{% trans 'Forgot your password?' %}">{% trans "Forgot your password?" %}</a></p>
-        {% if next %}<input type="hidden" name="next" value="{{ next }}" />{% endif %}
-        {% csrf_token %}
-    </form>
+            <div class="{% if form.password.errors %} has-error{% endif %}">
+                <label for="password" class="sr-only">{{ password_i18n }}</label>
+                {% render_field form.password class="form-control" placeholder=password_i18n %}
+            </div>
+            {% endwith %}
+
+            <div class="checkbox">
+                <label>
+                    {{ form.remember_me }}
+                    {% trans "Remember me" %}
+                </label>
+            </div>
+            <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+            {% if next %}<input type="hidden" name="next" value="{{ next }}" />{% endif %}
+            {% csrf_token %}
+        </form>
+    </div>
 {% endblock %}

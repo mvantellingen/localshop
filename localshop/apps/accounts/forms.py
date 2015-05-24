@@ -1,9 +1,14 @@
 from braces.forms import UserKwargModelFormMixin
 from django import forms
 from django.contrib.auth import get_user_model
+from django.contrib.auth.forms import (
+    AuthenticationForm as BaseAuthenticationForm)
 
 from localshop.apps.accounts import models
 
+
+class AuthenticationForm(BaseAuthenticationForm):
+    remember_me = forms.BooleanField(required=False)
 
 
 class ProfileForm(forms.ModelForm):

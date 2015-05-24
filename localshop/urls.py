@@ -23,7 +23,7 @@ urlpatterns = [
     url(r'^repo/',
         include('localshop.apps.packages.urls', namespace='packages')),
 
-    url(r'^accounts/', include('django.contrib.auth.urls')),
+    url(r'^accounts/', include('localshop.apps.accounts.auth_urls')),
     url(r'^accounts/',
         include('localshop.apps.accounts.urls', namespace='accounts')),
     url(r'^admin/', include(admin.site.urls)),

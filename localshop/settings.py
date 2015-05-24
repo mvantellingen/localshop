@@ -113,6 +113,8 @@ class Base(Settings):
     # Make this unique, and don't share it with anybody.
     SECRET_KEY = 'CHANGE-ME'
 
+    SESSION_COOKIE_AGE = 28 * 24 * 60 * 60  # 4 weeks
+
     # List of callables that know how to import templates from various sources.
     TEMPLATE_LOADERS = (
         'django.template.loaders.filesystem.Loader',
