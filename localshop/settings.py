@@ -40,12 +40,7 @@ class Base(Settings):
     # Django settings for localshop project.
     PROJECT_ROOT = os.path.dirname(__file__)
 
-    CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-            'LOCATION': os.path.join(DEFAULT_PATH, 'localshop.cache'),
-        }
-    }
+    CACHES = values.CacheURLValue('dummy://')
 
     DEBUG = False
     TEMPLATE_DEBUG = DEBUG
@@ -56,7 +51,8 @@ class Base(Settings):
 
     MANAGERS = ADMINS
 
-    DATABASES = values.DatabaseURLValue('sqlite:///' + os.path.join(DEFAULT_PATH, 'localshop.db'))
+    DATABASES = values.DatabaseURLValue(
+        'sqlite:///' + os.path.join(DEFAULT_PATH, 'localshop.db'))
 
     # Local time zone for this installation. Choices can be found here:
     # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -65,7 +61,7 @@ class Base(Settings):
     # timezone as the operating system.
     # If running in a Windows environment this must be set to the same as your
     # system time zone.
-    TIME_ZONE = 'Europe/Amsterdam'
+    TIME_ZONE = values.Value('UTC', environ_prefix='LOCALSHOP')
 
     # Language code for this installation. All choices can be found here:
     # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -111,7 +107,7 @@ class Base(Settings):
     )
 
     # Make this unique, and don't share it with anybody.
-    SECRET_KEY = 'CHANGE-ME'
+    SECRET_KEY = values.SecretValue()
 
     SESSION_COOKIE_AGE = 28 * 24 * 60 * 60  # 4 weeks
 
@@ -216,6 +212,8 @@ class Base(Settings):
         },
     }
 
+    EMAIL = values.EmailURLValue('smtp://localhost:25/')
+
     ALLOWED_HOSTS = ['*']
 
     LOCALSHOP_DELETE_FILES = False
@@ -238,8 +236,8 @@ class Base(Settings):
 
 
 class TestConfig(Base):
-    SECRET_KEY = "TEST-KEY"
     LOCALSHOP_PYPI_URL = 'http://localhost:12946/pypi'
+    SECRET_KEY = 'TEST-KEY'
 
     CACHES = {
         'default': {
