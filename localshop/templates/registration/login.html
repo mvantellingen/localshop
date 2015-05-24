@@ -97,7 +97,7 @@
                     {% trans "Remember me" %}
                 </label>
             </div>
-            <button class="btn btn-lg btn-primary btn-block" type="submit">Sign in</button>
+            <button class="btn btn-lg btn-primary btn-block" type="submit">{% trans "Sign in" %}</button>
             {% if next %}<input type="hidden" name="next" value="{{ next }}" />{% endif %}
             {% csrf_token %}
         </form>
