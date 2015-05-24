@@ -4,6 +4,7 @@
 /build/
 /dist/
 /source/
+/public/
 localshop.db
 *.pyc
 *.swp

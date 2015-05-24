@@ -39,6 +39,7 @@ def FileSettings(path):
 class Base(Settings):
     # Django settings for localshop project.
     PROJECT_ROOT = os.path.dirname(__file__)
+    BASE_DIR = os.path.dirname(os.path.abspath(os.path.join(__file__, '..')))
 
     CACHES = values.CacheURLValue('dummy://')
 
@@ -83,6 +84,9 @@ class Base(Settings):
     # Absolute filesystem path to the directory that will hold user-uploaded files.
     # Example: "/home/media/media.lawrence.com/media/"
     # MEDIA_ROOT = 'files'
+    STATIC_ROOT = values.Value(
+        default=os.path.join(BASE_DIR, 'public', 'media'),
+        environ_prefix='LOCALSHOP')
 
     # Absolute path to the directory static files should be collected to.
     # Don't put anything in this directory yourself; store your static files
@@ -93,11 +97,16 @@ class Base(Settings):
     # URL prefix for static files.
     # Example: "http://media.lawrence.com/static/"
     STATIC_URL = '/assets/'
+    STATIC_ROOT = values.Value(
+        default=os.path.join(BASE_DIR, 'public', 'static'),
+        environ_prefix='LOCALSHOP')
+
 
     # Additional locations of static files
     STATICFILES_DIRS = [
         os.path.join(PROJECT_ROOT, 'static')
     ]
+    STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
     # List of finder classes that know how to find static files in
     # various locations.
