@@ -21,7 +21,7 @@
     <div class="tab-content">
         <div class="tab-pane" id="description">
             <div class="row">
-                <div class="span9">
+                <div class="col-md-9">
                     {{ release.description_html|safe }}
                 </div>
             </div>
@@ -29,7 +29,7 @@
         <div class="tab-pane active" id="information">
 
             <div class="row">
-                <div class="span7">
+                <div class="col-md-7">
                     {% if package.is_local %}
                     <h2>Owners</h2>
                     <p>The following users are owners of this local package</p>
@@ -61,7 +61,7 @@
                         </tbody>
                     </table>
                 </div>
-                <div class="span2">
+                <div class="col-md-2">
                     <h2>Info</h2>
                     {% if package.is_local %}
                     <p>
@@ -81,7 +81,7 @@
                 </div>
             </div>
             <div class="row">
-                <div class="span9">
+                <div class="col-md-9">
                     <h2>Files</h2>
                     <table class="table table-striped">
                         <thead>

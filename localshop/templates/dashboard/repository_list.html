@@ -12,27 +12,36 @@
 {% block content %}
 <h1>Repositories</h1>
 
-<a href="{% url 'dashboard:repository_create' %}">create</a>
-<table class="table table-striped">
-    <thead>
-        <tr>
-            <th>Name</th>
-            <th>Description</th>
-            <th>Actions</th>
-        </tr>
-    </thead>
-    <tbody>
-        {% for repository in repositories %}
-        <tr>
-            <td><a href="{% url 'dashboard:repository_detail' slug=repository.slug %}">{{ repository.name }}</a></td>
-            <td>{{ repository.description }}</td>
-            <td>
-                <a href="{% url 'dashboard:repo_settings:index' repo=repository.slug %}">settings</a>
-            </td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+    <div class="panel panel-default">
+        <div class="panel-heading">
+            <div class="btn-group pull-right">
+                <a href="{% url 'dashboard:repository_create' %}" class="btn btn-success btn-xs">
+                    <span class="icon-plus icon-white"></span> Create new
+                </a>
+            </div>
+            Repositories
+        </div>
+
+        <table class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Name</th>
+                    <th>Description</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for repository in repositories %}
+                <tr>
+                    <td><a href="{% url 'dashboard:repository_detail' slug=repository.slug %}">{{ repository.name }}</a></td>
+                    <td>{{ repository.description }}</td>
+                    <td>
+                        <a href="{% url 'dashboard:repo_settings:index' repo=repository.slug %}">settings</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
 {% endblock %}
 
 
