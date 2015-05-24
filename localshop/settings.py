@@ -62,7 +62,7 @@ class Base(Settings):
     # timezone as the operating system.
     # If running in a Windows environment this must be set to the same as your
     # system time zone.
-    TIME_ZONE = values.Value('UTC', environ_prefix='LOCALSHOP')
+    TIME_ZONE = values.Value('UTC')
 
     # Language code for this installation. All choices can be found here:
     # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -85,8 +85,7 @@ class Base(Settings):
     # Example: "/home/media/media.lawrence.com/media/"
     # MEDIA_ROOT = 'files'
     STATIC_ROOT = values.Value(
-        default=os.path.join(BASE_DIR, 'public', 'media'),
-        environ_prefix='LOCALSHOP')
+        default=os.path.join(BASE_DIR, 'public', 'media'))
 
     # Absolute path to the directory static files should be collected to.
     # Don't put anything in this directory yourself; store your static files
@@ -98,8 +97,7 @@ class Base(Settings):
     # Example: "http://media.lawrence.com/static/"
     STATIC_URL = '/assets/'
     STATIC_ROOT = values.Value(
-        default=os.path.join(BASE_DIR, 'public', 'static'),
-        environ_prefix='LOCALSHOP')
+        default=os.path.join(BASE_DIR, 'public', 'static'))
 
 
     # Additional locations of static files
