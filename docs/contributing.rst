@@ -29,6 +29,21 @@ Get started
    changes your're making. The `Style guide`_ contains some of our preferred ones.
 
 
+Running Tests
+-------------
+
+To run all tests, simply use `tox`::
+
+    pip install tox
+
+    tox  # use `tox -r` to rebuild the virtual environment
+
+
+To run a specific test, pass the test module filename as an argument::
+
+    tox tests/apps/packages/test_models.py
+
+
 Style guide
 ===========
 
