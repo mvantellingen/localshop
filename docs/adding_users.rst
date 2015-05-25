@@ -1,11 +1,6 @@
 Adding users
 ============
 
-You can add users using the Django admin backend at ``/admin``. In order for the
-user to be able to generate credentials for his account, he needs the following
-four user permissions:
-
-* ``permissions.add_credential``
-* ``permissions.change_credential``
-* ``permissions.delete_credential``
-* ``permissions.view_credential``
+You can add users using the Django admin backend at ``/admin``. After adding
+the user you need to assign the user to a team. Only teams can be assigned to
+repositories.
