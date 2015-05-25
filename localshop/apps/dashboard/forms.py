@@ -62,3 +62,7 @@ class CredentialModelForm(RepositoryFormMixin, forms.ModelForm):
             instance.repository = self.repository
             instance.save()
         return instance
+
+
+class PackageAddForm(RepositoryFormMixin, forms.Form):
+    name = forms.CharField(max_length=200)

@@ -13,6 +13,9 @@ urlpatterns = [
     url('^repositories/(?P<repo>[^/]+)/packages/(?P<name>[-\._\w]+)/$',
         views.PackageDetail.as_view(), name='package_detail'),
 
+    url('^repositories/(?P<repo>[^/]+)/package-add/$',
+        views.PackageAddView.as_view(), name='package_add'),
+
     url(r'^repositories/(?P<repo>[^/]+)/settings/',
         include([
             url(r'^cidr/$', views.CidrListView.as_view(), name='cidr_index'),

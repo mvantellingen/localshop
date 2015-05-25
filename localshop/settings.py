@@ -1,5 +1,6 @@
 import os
 import imp
+from django.contrib import messages
 from celery.schedules import crontab
 
 import djcelery
@@ -153,6 +154,10 @@ class Base(Settings):
         os.path.join(PROJECT_ROOT, 'templates'),
     )
 
+    MESSAGE_TAGS = {
+        messages.ERROR: 'danger'
+    }
+
     BROKER_URL = "django://"
 
     CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
@@ -173,6 +178,7 @@ class Base(Settings):
         'django.contrib.messages',
         'django.contrib.staticfiles',
         'django.contrib.admin',
+        'django.contrib.humanize',
 
         'kombu.transport.django',
         'djcelery',

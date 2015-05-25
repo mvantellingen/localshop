@@ -1,15 +1,18 @@
 import operator
 
+from django.contrib import messages
 from django.contrib.sites.models import Site
 from django.core.exceptions import SuspiciousOperation
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseForbidden
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
+from django.utils.text import ugettext_lazy as _
 from django.views import generic
 from braces.views import LoginRequiredMixin, SuperuserRequiredMixin
 
 from localshop.apps.dashboard import forms
 from localshop.apps.packages import models
+from localshop.apps.packages.tasks import fetch_package
 
 
 class IndexView(LoginRequiredMixin, generic.TemplateView):
@@ -121,6 +124,29 @@ class RepositoryDeleteView(LoginRequiredMixin, generic.DeleteView):
     @property
     def repository(self):
         return self.object
+
+
+class PackageAddView(RepositoryMixin, LoginRequiredMixin, generic.FormView):
+    form_class = forms.PackageAddForm
+
+    def form_valid(self, form):
+        package_name = form.cleaned_data['name']
+        messages.info(
+            self.request,
+            _("Retrieving package information from '%s'" % form.cleaned_data['name']))
+        fetch_package.delay(self.repository.pk, package_name)
+
+        return redirect(self.get_success_url())
+
+    def form_invalid(self, form):
+        messages.error(self.request, _("Invalid package name"))
+        return redirect(self.get_success_url())
+
+    def get_success_url(self):
+        return reverse(
+            'dashboard:repository_detail', kwargs={
+                'slug': self.repository.slug
+        })
 
 
 class PackageDetail(RepositoryMixin, LoginRequiredMixin, generic.DetailView):

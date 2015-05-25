@@ -6547,4 +6547,10 @@ button.close {
     display: none !important;
   }
 }
+.panel-heading .form-inline {
+  text-align: right;
+}
+.panel-heading .form-inline .form-group .form-control {
+  height: 25px;
+}
 /*# sourceMappingURL=main.css.map */
