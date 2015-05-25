@@ -1,3 +1,12 @@
+ 0.10.0 (not released yet)
+ * Add support for multiple indexes (repositories). Indexes can be managed via
+   the web interface
+ * Implement teams
+ * Create separate user access keys and make the existing credentials only
+   work in combination with repositories.
+ * Update interface to bootstrap 3
+ * Add support for Python 3.3 and 3.4
+
 0.9.2
  * BUGFIX: Invalid template path in config. Fixes #149
 
