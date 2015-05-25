@@ -28,6 +28,8 @@ class Repository(TimeStampedModel):
     teams = models.ManyToManyField(
         'accounts.Team', related_name='repositories', blank=True)
 
+    enable_auto_mirroring = models.BooleanField(default=True)
+
     def __str__(self):
         return self.name
 

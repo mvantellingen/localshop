@@ -6,19 +6,21 @@ from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.db.models import Q
-from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFound
-from django.http import HttpResponseForbidden
+from django.http import (Http404, HttpResponse, HttpResponseBadRequest,
+                         HttpResponseForbidden, HttpResponseNotFound)
 from django.shortcuts import redirect
 from django.utils import six
 from django.views import generic
 from versio.version import Version
-from versio.version_scheme import Pep440VersionScheme, Simple3VersionScheme, Simple4VersionScheme, PerlVersionScheme
+from versio.version_scheme import (Pep440VersionScheme, PerlVersionScheme,
+                                   Simple3VersionScheme, Simple4VersionScheme)
 
 from localshop.apps.packages import forms, models
-from localshop.apps.packages.tasks import fetch_package
 from localshop.apps.packages.mixins import RepositoryMixin
 from localshop.apps.packages.pypi import get_search_names
-from localshop.apps.packages.utils import parse_distutils_request, get_versio_versioning_scheme
+from localshop.apps.packages.tasks import fetch_package
+from localshop.apps.packages.utils import (
+    get_versio_versioning_scheme, parse_distutils_request)
 from localshop.apps.permissions.mixins import RepositoryAccessMixin
 
 logger = logging.getLogger(__name__)
@@ -82,6 +84,9 @@ class SimpleDetail(RepositoryMixin, RepositoryAccessMixin, generic.DetailView):
         try:
             package = self.repository.packages.get(condition)
         except ObjectDoesNotExist:
+            if not self.repository.enable_auto_mirroring:
+                raise Http404("Auto mirroring is not enabled")
+
             fetch_package.delay(self.repository.pk, slug)
             return redirect('https://pypi.python.org/simple/{}'.format(slug))
 
@@ -122,6 +127,10 @@ class DownloadReleaseFile(RepositoryMixin, RepositoryAccessMixin,
     def get(self, request, repo, name, pk, filename):
         release_file = models.ReleaseFile.objects.get(pk=pk)
         if not release_file.file_is_available:
+
+            if not self.repository.enable_auto_mirroring:
+                raise Http404("Auto mirroring is not enabled")
+
             logger.info("Queueing %s for mirroring", release_file.url)
             release_file.download()
             if not settings.LOCALSHOP_ISOLATED:
