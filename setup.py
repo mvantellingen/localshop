@@ -36,7 +36,7 @@ setup(
         'django-configurations==0.8',
         'django-model-utils==2.2.0',
         'django-uuidfield==0.5.0',
-        'django-storages==1.1.8',
+        'django-storages-redux==1.2.3',
         'django-widget-tweaks==1.3',
         'dj-database-url==0.3.0',
         'dj-email-url==0.0.4',
