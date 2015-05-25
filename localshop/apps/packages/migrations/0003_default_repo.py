@@ -6,7 +6,15 @@ from django.db import migrations
 
 def forwards(apps, schema_editor):
     Repository = apps.get_model('packages', 'Repository')
-    Repository.objects.create(name='Default', slug='default')
+    Package = apps.get_model('packages', 'Package')
+    if Package.objects.count() > 0:
+        repo = Repository.objects.create(name='Default', slug='default')
+
+        Team = apps.get_model('accounts', 'Team')
+        team = Team.objects.filter(name='Default').first()
+        if team:
+            repo.teams.add(team)
+
 
 
 def backwards(apps, schema_editor):

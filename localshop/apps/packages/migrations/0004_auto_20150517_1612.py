@@ -17,10 +17,14 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(related_name='packages', default=1, to='packages.Repository'),
             preserve_default=False,
         ),
-        migrations.AddField(
-            model_name='repository',
-            name='description',
-            field=models.CharField(default='', max_length=500, blank=True),
-            preserve_default=False,
+        migrations.AlterField(
+            model_name='package',
+            name='name',
+            field=models.SlugField(max_length=200),
+            preserve_default=True,
+        ),
+        migrations.AlterUniqueTogether(
+            name='package',
+            unique_together=set([('repository', 'name')]),
         ),
     ]

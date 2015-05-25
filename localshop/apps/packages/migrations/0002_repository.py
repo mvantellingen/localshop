@@ -10,6 +10,7 @@ class Migration(migrations.Migration):
 
     dependencies = [
         ('packages', '0001_initial'),
+        ('accounts', '0001_initial'),
     ]
 
     operations = [
@@ -21,6 +22,8 @@ class Migration(migrations.Migration):
                 ('modified', model_utils.fields.AutoLastModifiedField(default=django.utils.timezone.now, verbose_name='modified', editable=False)),
                 ('name', models.CharField(max_length=250)),
                 ('slug', models.CharField(max_length=200, unique=True)),
+                ('description', models.CharField(default='', max_length=500, blank=True)),
+                ('teams', models.ManyToManyField(related_name='repositories', to='accounts.Team', blank=True)),
             ],
             options={
                 'abstract': False,

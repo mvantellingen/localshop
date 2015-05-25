@@ -9,8 +9,8 @@ import model_utils.fields
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('packages', '0004_auto_20150517_1612'),
-        ('permissions', '0001_squashed_0002_remove_userena'),
+        ('packages', '0003_default_repo'),
+        ('permissions', '0002_remove_userena'),
     ]
 
     operations = [
