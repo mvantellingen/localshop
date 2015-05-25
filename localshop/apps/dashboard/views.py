@@ -34,12 +34,6 @@ class IndexView(LoginRequiredMixin, generic.TemplateView):
         return sorted(repositories, key=operator.attrgetter('name'))
 
 
-class RepositoryListView(LoginRequiredMixin, generic.ListView):
-    queryset = models.Repository.objects.all()
-    template_name = 'dashboard/repository_list.html'
-    context_object_name = 'repositories'
-
-
 class RepositoryCreateView(SuperuserRequiredMixin, generic.CreateView):
     model = models.Repository
     fields = ['name', 'slug', 'description']
