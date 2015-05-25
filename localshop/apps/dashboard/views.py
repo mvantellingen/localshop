@@ -3,10 +3,10 @@ import operator
 from django.contrib.sites.models import Site
 from django.core.exceptions import SuspiciousOperation
 from django.core.urlresolvers import reverse
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404
 from django.views import generic
-from braces.views import LoginRequiredMixin, PermissionRequiredMixin
+from braces.views import LoginRequiredMixin, SuperuserRequiredMixin
 
 from localshop.apps.dashboard import forms
 from localshop.apps.packages import models
@@ -40,7 +40,7 @@ class RepositoryListView(LoginRequiredMixin, generic.ListView):
     context_object_name = 'repositories'
 
 
-class RepositoryCreateView(LoginRequiredMixin, generic.CreateView):
+class RepositoryCreateView(SuperuserRequiredMixin, generic.CreateView):
     model = models.Repository
     fields = ['name', 'slug', 'description']
     template_name = 'dashboard/repository_create.html'
@@ -69,37 +69,20 @@ class RepositoryDetailView(LoginRequiredMixin, generic.DetailView):
         return self.object
 
 
-class RepositoryUpdateView(LoginRequiredMixin, generic.UpdateView):
-    model = models.Repository
-    context_object_name = 'repository'
-    fields = ['name', 'slug', 'description']
-    template_name = 'dashboard/repository_settings/edit.html'
-
-    def get_success_url(self):
-        return reverse(
-            'dashboard:repo_settings:index', kwargs={'repo': self.object.slug})
-
-    @property
-    def repository(self):
-        return self.object
-
-
-class RepositoryDeleteView(LoginRequiredMixin, generic.DeleteView):
-    model = models.Repository
-    template_name = 'dashboard/repository_settings/delete.html'
-
-    def get_success_url(self):
-        return reverse('dashboard:repository_list')
-
-    @property
-    def repository(self):
-        return self.object
-
-
 class RepositoryMixin(object):
+    require_role = None
+    repository_slug_name = 'repo'
+
     def dispatch(self, request, *args, **kwargs):
         self.repository = get_object_or_404(
-            models.Repository.objects, slug=kwargs['repo'])
+            models.Repository.objects, slug=kwargs[self.repository_slug_name])
+
+        if self.require_role:
+            if not self.repository.check_user_role(
+                request.user, self.require_role
+            ):
+                return HttpResponseForbidden('No access')
+
         return super(RepositoryMixin, self).dispatch(request, *args, **kwargs)
 
     def get_form_kwargs(self, *args, **kwargs):
@@ -108,17 +91,49 @@ class RepositoryMixin(object):
         return kwargs
 
 
-class RepositorySettingsMixin(RepositoryMixin, LoginRequiredMixin,
-                              PermissionRequiredMixin):
-    permission_required = 'packages.view_package'
+class RepositorySettingsMixin(RepositoryMixin, LoginRequiredMixin):
+    require_role = ['owner']
 
 
-class PackageDetail(RepositoryMixin, LoginRequiredMixin,
-                    PermissionRequiredMixin, generic.DetailView):
+
+class RepositoryUpdateView(RepositorySettingsMixin, generic.UpdateView):
+    model = models.Repository
+    context_object_name = 'repository'
+    fields = ['name', 'slug', 'description']
+    repository_slug_name = 'slug'
+    template_name = 'dashboard/repository_settings/edit.html'
+
+    def get_success_url(self):
+        return reverse(
+            'dashboard:repository_detail', kwargs={'slug': self.object.slug})
+
+    def get_object(self):
+        return self.repository
+
+    def get_form_kwargs(self, *args, **kwargs):
+        kwargs = super(RepositoryUpdateView, self).get_form_kwargs(
+            *args, **kwargs)
+        del kwargs['repository']
+        return kwargs
+
+
+class RepositoryDeleteView(LoginRequiredMixin, generic.DeleteView):
+    model = models.Repository
+    template_name = 'dashboard/repository_settings/delete.html'
+
+    def get_success_url(self):
+        return reverse('dashboard:index')
+
+    @property
+    def repository(self):
+        return self.object
+
+
+class PackageDetail(RepositoryMixin, LoginRequiredMixin, generic.DetailView):
+    require_role = ['developer', 'owner']
     context_object_name = 'package'
     slug_url_kwarg = 'name'
     slug_field = 'name'
-    permission_required = 'packages.view_package'
     template_name = 'dashboard/package_detail.html'
 
     def get_queryset(self):
@@ -130,14 +145,8 @@ class PackageDetail(RepositoryMixin, LoginRequiredMixin,
         return context
 
 
-class SettingsOverview(RepositorySettingsMixin, generic.TemplateView):
-    template_name = 'dashboard/repository_settings/index.html'
-    permission_required = 'permissions.view_cidr'
-
-
 class CidrListView(RepositorySettingsMixin, generic.ListView):
     object_context_name = 'cidrs'
-    permission_required = 'permissions.view_cidr'
     template_name = 'dashboard/repository_settings/cidr_list.html'
 
     def get_queryset(self):
@@ -145,7 +154,6 @@ class CidrListView(RepositorySettingsMixin, generic.ListView):
 
 
 class CidrCreateView(RepositorySettingsMixin, generic.CreateView):
-    permission_required = 'permissions.add_cidr'
     form_class = forms.AccessControlForm
     template_name = 'dashboard/repository_settings/cidr_form.html'
 
@@ -159,7 +167,6 @@ class CidrCreateView(RepositorySettingsMixin, generic.CreateView):
 
 
 class CidrUpdateView(RepositorySettingsMixin, generic.UpdateView):
-    permission_required = 'permissions.change_cidr'
     form_class = forms.AccessControlForm
     template_name = 'dashboard/repository_settings/cidr_form.html'
 
@@ -173,7 +180,6 @@ class CidrUpdateView(RepositorySettingsMixin, generic.UpdateView):
 
 
 class CidrDeleteView(RepositorySettingsMixin, generic.DeleteView):
-    permission_required = 'permissions.delete_cidr'
     form_class = forms.AccessControlForm
     template_name = 'dashboard/repository_settings/cidr_confirm_delete.html'
 
@@ -188,7 +194,6 @@ class CidrDeleteView(RepositorySettingsMixin, generic.DeleteView):
 
 class CredentialListView(RepositorySettingsMixin, generic.ListView):
     object_context_name = 'credentials'
-    permission_required = 'permissions.view_credential'
     template_name = 'dashboard/repository_settings/credential_list.html'
 
     def get_queryset(self):
@@ -227,7 +232,6 @@ class CredentialUpdateView(RepositorySettingsMixin, generic.UpdateView):
     form_class = forms.CredentialModelForm
     slug_field = 'access_key'
     slug_url_kwarg = 'access_key'
-    permission_required = 'permissions.change_credential'
     template_name = 'dashboard/repository_settings/credential_form.html'
 
     def get_queryset(self):
@@ -242,7 +246,6 @@ class CredentialUpdateView(RepositorySettingsMixin, generic.UpdateView):
 class CredentialDeleteView(RepositorySettingsMixin, generic.DeleteView):
     slug_field = 'access_key'
     slug_url_kwarg = 'access_key'
-    permission_required = 'permissions.delete_credential'
 
     def get_success_url(self):
         return reverse('dashboard:repo_settings:credential_index', kwargs={
