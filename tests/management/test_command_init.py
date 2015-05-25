@@ -65,7 +65,7 @@ class TestInitCommand(CommonCommandsTestMixin, TestCase):
         args = fhandle.write.call_args[0]
         self.assertEqual(len(args), 1)
         file_content = args[0].strip()
-        pattern = r"SECRET_KEY = '[0-9a-f-]{36}'"
+        pattern = r"# SECRET_KEY = '[0-9a-f-]{36}'"
         self.assertIsNotNone(re.match(pattern, file_content))
 
     @mock.patch('os.path.exists')
