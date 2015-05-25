@@ -3,7 +3,9 @@ import re
 from django.conf import settings
 from django.conf.urls import include, url
 from django.contrib import admin
+from django.views.generic import RedirectView
 
+from localshop.apps.packages.views import SimpleIndex
 from localshop.apps.packages.xmlrpc import handle_request
 
 admin.autodiscover()
@@ -22,6 +24,11 @@ urlpatterns = [
 
     url(r'^repo/',
         include('localshop.apps.packages.urls', namespace='packages')),
+
+    # Backwards compatible url (except for POST requests)
+    url(r'^simple/?$', SimpleIndex.as_view(), {'repo': 'default'}),
+    url(r'^simple/(?P<path>.*)',
+        RedirectView.as_view(url='/repo/default/%(path)s')),
 
     url(r'^accounts/', include('localshop.apps.accounts.auth_urls')),
     url(r'^accounts/',
