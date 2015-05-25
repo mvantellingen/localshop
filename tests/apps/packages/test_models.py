@@ -11,6 +11,47 @@ from localshop.utils import TemporaryMediaRootMixin
 from tests import factories
 
 
+class TestRepository(TestCase):
+    def test_check_user_role_superuser(self):
+        repository = factories.RepositoryFactory()
+        team = factories.TeamFactory()
+        repository.teams.add(team)
+
+        user = factories.UserFactory(is_superuser=True)
+        user.is_superuser = True
+        factories.TeamMemberFactory(user=user, team=team, role='developer')
+
+        assert repository.check_user_role(user, ['owner'])
+
+    def test_check_user_role_owner(self):
+        repository = factories.RepositoryFactory()
+        team = factories.TeamFactory()
+        repository.teams.add(team)
+
+        user = factories.UserFactory()
+        factories.TeamMemberFactory(user=user, team=team, role='owner')
+        assert repository.check_user_role(user, ['owner'])
+
+    def test_check_user_role_wrong_role(self):
+        repository = factories.RepositoryFactory()
+        team = factories.TeamFactory()
+        repository.teams.add(team)
+
+        user = factories.UserFactory()
+        factories.TeamMemberFactory(user=user, team=team, role='developer')
+        assert not repository.check_user_role(user, ['owner'])
+
+    def test_check_user_role_multiple_roles(self):
+        repository = factories.RepositoryFactory()
+        team = factories.TeamFactory()
+        repository.teams.add(team)
+
+        user = factories.UserFactory()
+        factories.TeamMemberFactory(user=user, team=team, role='developer')
+        assert repository.check_user_role(user, ['owner', 'developer'])
+
+
+
 class TestReleaseFile(TemporaryMediaRootMixin, TestCase):
     def setUp(self):
         super(TestReleaseFile, self).setUp()

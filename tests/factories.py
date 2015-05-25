@@ -1,5 +1,8 @@
 import factory
 
+from django.contrib.auth import get_user_model
+
+from localshop.apps.accounts.models import Team, TeamMember
 from localshop.apps.packages.models import (
     Repository, Package, Release, ReleaseFile)
 from localshop.apps.permissions.models import CIDR
@@ -62,3 +65,22 @@ class CIDRFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = CIDR
+
+
+class TeamFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = Team
+
+
+class UserFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = get_user_model()
+
+
+class TeamMemberFactory(factory.DjangoModelFactory):
+    team = factory.SubFactory(TeamFactory)
+    user = factory.SubFactory(UserFactory)
+    role = 'developer'
+
+    class Meta:
+        model = TeamMember

@@ -39,6 +39,15 @@ class Repository(TimeStampedModel):
             'repo': self.slug
         })
 
+    def check_user_role(self, user, roles):
+        if user.is_superuser:
+            return True
+
+        return self.teams.filter(
+            members__user=user,
+            members__role__in=roles
+        ).exists()
+
 
 class Classifier(models.Model):
     name = models.CharField(max_length=255, unique=True)
