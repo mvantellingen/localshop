@@ -83,10 +83,10 @@
             <div class="row">
                 <div class="col-md-9">
                     <h2>Files</h2>
-                    <table class="table table-striped">
+                    <table class="table">
                         <thead>
                             <tr>
-                                <th>Filename</th>
+                                <th colspan="2">Filename</th>
                                 <th>Type</th>
                                 <th>MD5 digest</th>
                                 <th>Released</th>
@@ -96,8 +96,12 @@
                         </thead>
                         <tbody>
                             {% for release in package.releases.all %}
+                            <tr>
+                                <th colspan="8">{{ release.version }}</th>
+                            </tr>
                                 {% for file in release.files.all %}
                             <tr>
+                                <td>&nbsp;</td>
                                 <td><a href="{{ file.get_absolute_url }}">{{ file.filename }}</a></td>
                                 <td>{{ file.get_filetype_display }}</td>
                                 <td>{{ file.md5_digest }}</td>
