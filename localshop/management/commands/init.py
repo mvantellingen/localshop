@@ -40,7 +40,7 @@ class Command(BaseCommand):
 
             with open(config_path, 'w') as fh:
                 fh.write("""
-SECRET_KEY = '%(SECRET_KEY)s'
+# SECRET_KEY = '%(SECRET_KEY)s'
 
                 """ % default_params)
 

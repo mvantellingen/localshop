@@ -6,7 +6,6 @@ from shutil import copyfileobj
 from tempfile import NamedTemporaryFile
 
 from django.conf import settings
-from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import post_delete
 from django.core.files import File
@@ -63,7 +62,7 @@ class Package(models.Model):
     #: Timestamp when we last retrieved the metadata
     update_timestamp = models.DateTimeField(null=True)
 
-    owners = models.ManyToManyField(User)
+    owners = models.ManyToManyField(settings.AUTH_USER_MODEL)
 
     class Meta:
         ordering = ['name']
@@ -120,7 +119,7 @@ class Release(models.Model):
 
     summary = models.TextField(blank=True)
 
-    user = models.ForeignKey(User, null=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True)
 
     version = models.CharField(max_length=512)
 
@@ -191,7 +190,7 @@ class ReleaseFile(models.Model):
 
     url = models.CharField(max_length=1024, blank=True)
 
-    user = models.ForeignKey(User, null=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True)
 
     class Meta:
         unique_together = ('release', 'filetype', 'python_version', 'filename')

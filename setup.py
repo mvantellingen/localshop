@@ -44,6 +44,7 @@ setup(
         'gunicorn==19.1.1',
         'netaddr==0.7.12',
         'requests==2.7.0',
+        'sqlparse==0.1.15',
         'whitenoise==1.0.6',
         'Versio==0.2.1',
     ],

@@ -192,6 +192,7 @@ class Base(Settings):
     LOGIN_URL = '/accounts/login'
     LOGIN_REDIRECT_URL = '/dashboard/'
     LOGOUT_URL = '/accounts/logout'
+    AUTH_USER_MODEL = 'accounts.User'
 
     # A sample logging configuration. The only tangible logging
     # performed by this configuration is to send an email to

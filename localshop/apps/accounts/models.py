@@ -1,10 +1,15 @@
 from django.conf import settings
+from django.contrib.auth.models import AbstractUser
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext as _
 from model_utils.fields import AutoCreatedField
 from model_utils.models import TimeStampedModel
 from uuidfield import UUIDField
+
+
+class User(AbstractUser):
+    pass
 
 
 class AccessKey(models.Model):
@@ -45,7 +50,8 @@ class Team(TimeStampedModel):
 
 class TeamMember(TimeStampedModel):
     team = models.ForeignKey(Team, related_name='members')
-    user = models.ForeignKey(settings.AUTH_USER_MODEL)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, related_name='team_memberships')
     role = models.CharField(max_length=100, choices=[
         ('owner', _("Owner")),
         ('developer', _("Developer")),
