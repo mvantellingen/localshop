@@ -5,7 +5,7 @@ from django.contrib.auth import get_user_model
 from localshop.apps.accounts.models import Team, TeamMember
 from localshop.apps.packages.models import (
     Repository, Package, Release, ReleaseFile)
-from localshop.apps.permissions.models import CIDR
+from localshop.apps.permissions.models import CIDR, Credential
 
 
 class RepositoryFactory(factory.DjangoModelFactory):
@@ -65,6 +65,11 @@ class CIDRFactory(factory.DjangoModelFactory):
 
     class Meta:
         model = CIDR
+
+
+class CredentialFactory(factory.DjangoModelFactory):
+    class Meta:
+        model = Credential
 
 
 class TeamFactory(factory.DjangoModelFactory):

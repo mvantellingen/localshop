@@ -63,10 +63,10 @@ class TeamMemberRemoveForm(TeamFormMixin, forms.Form):
             self.team.members.all())
 
     def clean(self):
-        member_obj = self.cleaned_data['member_obj']
+        member_obj = self.cleaned_data.get('member_obj')
 
         # This should never happen
-        if member_obj.team.pk != self.team.pk:
+        if not member_obj or member_obj.team.pk != self.team.pk:
             raise forms.ValidationError("Member is not part of the team")
 
         return self.cleaned_data
