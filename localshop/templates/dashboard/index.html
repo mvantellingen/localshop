@@ -1,39 +1,64 @@
 {% extends "layout.main.html" %}
 
 {% block content %}
-<div class="jumbotron">
-    <h2>Localshop</h2>
-    <p>Welcome to your localshop!</p>
-    <p><a href="{% url 'dashboard:repository_list' %}" class="btn btn-primary btn-medium">See all packages &raquo;</a></p>
-</div>
+    <div class="row">
+        <div class="col-md-10">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Repositories
+                    <div class="btn-group pull-right">
+                        <a href="{% url 'dashboard:repository_create' %}" class="btn btn-success btn-xs">
+                            <span class="icon-plus icon-white"></span> Create new
+                        </a>
+                    </div>
+                </div>
 
+                <table class="table table-striped">
+                    <thead>
+                        <tr>
+                            <th>Name</th>
+                            <th>Description</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for repository in repositories %}
+                        <tr>
+                            <td><a href="{% url 'dashboard:repository_detail' slug=repository.slug %}">{{ repository.name }}</a></td>
+                            <td>{{ repository.description }}</td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
 
-<h2>Recent local package releases</h2>
-<table class="table table-striped">
-    <tbody>
-        {% for release in recent_local %}
-        <tr>
-            <td><a href="{{ release.package.get_absolute_url }}">{{ release.package.name }}</a></td>
-            <td>{{ release.version }}</td>
-            <td>{{ release.user }}</td>
-            <td>{{ release.created }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
-
-
-<h2>Recently mirrored release files</h2>
-<table class="table table-striped">
-    <tbody>
-        {% for release_file in recent_mirror %}
-        <tr>
-            <td><a href="{{ release_file.release.package.get_absolute_url }}">{{ release_file.release.package.name }}</a></td>
-            <td>{{ release_file.filename }}</td>
-            <td>{{ release_file.release.version }}</td>
-        </tr>
-        {% endfor %}
-    </tbody>
-</table>
+        <div class="col-md-2">
+            <div class="panel panel-default">
+                <div class="panel-heading">
+                    Teams
+                    {% if user.is_superuser %}
+                    <a href="{% url 'accounts:team_list' %}" class="pull-right">
+                        <i class="glyphicon glyphicon-cog"></i>
+                    </a>
+                    {% endif %}
+                </div>
+                <ul class="list-group">
+                    {% for member in user.team_memberships.all %}
+                    <li class="list-group-item">
+                        {% if member.is_owner %}
+                        <a href="{{ member.team.get_absolute_url }}">
+                            <i class="glyphicon glyphicon-tent"></i>
+                            {{ member.team }}
+                        </a>
+                        {% else %}
+                        <i class="glyphicon glyphicon-tent"></i>
+                        {{ member.team }}
+                        {% endif %}
+                    </li>
+                    {% endfor %}
+                </ul>
+            </div>
+        </div>
+    </div>
 
 {% endblock %}

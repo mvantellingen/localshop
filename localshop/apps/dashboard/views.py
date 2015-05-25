@@ -1,3 +1,5 @@
+import operator
+
 from django.contrib.sites.models import Site
 from django.core.exceptions import SuspiciousOperation
 from django.core.urlresolvers import reverse
@@ -14,24 +16,22 @@ class IndexView(LoginRequiredMixin, generic.TemplateView):
     template_name = 'dashboard/index.html'
 
     def get_context_data(self):
-
-        recent_local = (
-            models.Release.objects
-            .filter(package__is_local=True)
-            .order_by('-created')
-            .all()[:5])
-
-        recent_mirror = (
-            models.ReleaseFile.objects
-            .filter(release__package__is_local=False)
-            .exclude(distribution='')
-            .order_by('-modified')
-            .all()[:10])
-
         return {
-            'recent_local': recent_local,
-            'recent_mirror': recent_mirror,
+            'repositories': self.repositories,
         }
+
+    @property
+    def repositories(self):
+        user = self.request.user
+
+        if user.is_superuser:
+            return models.Repository.objects.all()
+
+        repositories = set()
+        for team_membership in user.team_memberships.all():
+            for repository in team_membership.team.repositories.all():
+                repositories.add(repository)
+        return sorted(repositories, key=operator.attrgetter('name'))
 
 
 class RepositoryListView(LoginRequiredMixin, generic.ListView):
@@ -43,7 +43,7 @@ class RepositoryListView(LoginRequiredMixin, generic.ListView):
 class RepositoryCreateView(LoginRequiredMixin, generic.CreateView):
     model = models.Repository
     fields = ['name', 'slug', 'description']
-    template_name = 'dashboard/repository_form.html'
+    template_name = 'dashboard/repository_create.html'
 
     def get_success_url(self):
         return reverse(

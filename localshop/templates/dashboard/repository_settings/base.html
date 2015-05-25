@@ -1,4 +1,5 @@
 {% extends "layout.main.html" %}
+{% load permission_tags %}
 {% load i18n %}
 
 
@@ -19,6 +20,7 @@
             <ul class="list-group">
                 <li class="list-group-item"><a href="{% url 'dashboard:repository_detail' slug=view.repository.slug %}">{% trans "Packages" %}</a></li>
             </ul>
+            {% if user|is_owner_of:view.repository %}
             <div class="panel-heading">Settings</div>
             <ul class="list-group">
                 <li class="list-group-item"><a href="{% url 'dashboard:repository_edit' slug=view.repository.slug %}">{% trans "Edit information" %}</a></li>
@@ -26,6 +28,7 @@
                 <li class="list-group-item"><a href="{% url 'dashboard:repo_settings:credential_index' repo=view.repository.slug %}">{% trans "System credentials" %}</a></li>
                 <li class="list-group-item"><a href="{% url 'dashboard:repo_settings:team_access' repo=view.repository.slug %}">{% trans "Team access" %}</a></li>
             </ul>
+            {% endif %}
         </div>
     </div>
     <div class="col-md-10">

@@ -16,7 +16,13 @@
 
 {% block content %}
     <div class="panel panel-default">
-        <div class="panel-heading">Update team</div>
+        <div class="panel-heading">
+            {% if team %}
+            Update team {{ team }}
+            {% else %}
+            Create new team
+            {% endif %}
+        </div>
         <div class="panel-body">
             <form method="post" action="" class="form-stacked">
                 {% include "partial/_form_fields.html" %}

@@ -1,5 +1,6 @@
 from django.conf import settings
 from django.contrib.auth.models import AbstractUser
+from django.core.urlresolvers import reverse
 from django.db import models
 from django.utils.encoding import python_2_unicode_compatible
 from django.utils.translation import ugettext as _
@@ -44,6 +45,9 @@ class Team(TimeStampedModel):
     def __str__(self):
         return self.name
 
+    def get_absolute_url(self):
+        return reverse('accounts:team_detail', kwargs={'pk': self.pk})
+
     def owners(self):
         return [member.user for member in self.members.filter(role='owner')]
 
@@ -61,3 +65,7 @@ class TeamMember(TimeStampedModel):
         unique_together = [
             ('team', 'user'),
         ]
+
+    @property
+    def is_owner(self):
+        return self.role == 'owner'
