@@ -31,6 +31,7 @@ Contents:
    adding_users
    settings
    contributing
+   changelog
 
 
 Indices and tables
