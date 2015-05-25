@@ -14,7 +14,6 @@ from django.views import generic
 from versio.version import Version
 from versio.version_scheme import Pep440VersionScheme, Simple3VersionScheme, Simple4VersionScheme, PerlVersionScheme
 
-from localshop.utils import enqueue
 from localshop.apps.packages import forms, models
 from localshop.apps.packages.tasks import fetch_package
 from localshop.apps.packages.mixins import RepositoryMixin
@@ -83,8 +82,7 @@ class SimpleDetail(RepositoryMixin, RepositoryAccessMixin, generic.DetailView):
         try:
             package = self.repository.packages.get(condition)
         except ObjectDoesNotExist:
-            #enqueue(fetch_package, slug)
-            fetch_package(self.repository.pk, slug)
+            fetch_package.delay(self.repository.pk, slug)
             return redirect('https://pypi.python.org/simple/{}'.format(slug))
 
         # Redirect if slug is not an exact match
@@ -108,7 +106,7 @@ class PackageRefreshView(RepositoryMixin, RepositoryAccessMixin, generic.View):
             package = self.repository.packages.get(name__iexact=name)
         except ObjectDoesNotExist:
             package = None
-            enqueue(fetch_package, name)
+            fetch_package.delay(self.repository.pk, name)
         return redirect(package)
 
 

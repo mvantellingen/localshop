@@ -10,11 +10,9 @@ from django.utils.timezone import now
 
 from localshop.apps.packages import models, forms
 from localshop.apps.packages.utils import md5_hash_file
-from localshop.utils import no_duplicates, enqueue
 
 
 @task(bind=True)
-@no_duplicates
 def fetch_package(self, repository_pk, slug):
     """
     """
@@ -123,7 +121,7 @@ def download_file(pk):
 
         release_file.distribution.save(filename, temp_file)
         release_file.save()
-    logging.info("Complete")
+    logging.info("Downloaded %s [OK]", release_file.url)
 
 
 @task
@@ -132,5 +130,5 @@ def update_packages():
     logging.info('Updated packages')
     for package in models.Package.objects.filter(is_local=False):
         logging.info('Updating package %s', package.name)
-        enqueue(fetch_package, package.name)
+        fetch_package.delay(package.repository.pk, package.name)
     logging.info('Complete')
