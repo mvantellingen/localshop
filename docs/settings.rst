@@ -72,7 +72,12 @@ If you want to validated versions you can choose any `Versio <https://pypi.pytho
 
 **IMPORTANT** the value of this config must be a full path of the wanted class e.g. `versio.version_scheme.Pep440VersionScheme`.
 
-- **Simple3VersionScheme** which supports 3 numerical part versions (A.B.C where A, B, and C are integers)
-- **Simple4VersionScheme** which supports 4 numerical part versions (A.B.C.D where A, B, C, and D are integers)
-- **Pep440VersionScheme** which supports `PEP 440 <http://www.python.org/dev/peps/pep-0440/>`_ versions (N[.N]+[{a|b|c|rc}N][.postN][.- devN][+local])
-- **PerlVersionScheme** which supports 2 numerical part versions where the second part is at least two digits A.BB where A and B - are integers and B is zero padded on the left. For example: 1.02, 1.34, 1.567)
+- **Simple3VersionScheme** which supports 3 numerical part versions (A.B.C
+  where A, B, and C are integers)
+- **Simple4VersionScheme** which supports 4 numerical part versions (A.B.C.D
+  where A, B, C, and D are integers)
+- **Pep440VersionScheme** which supports `PEP 440 <http://www.python.org/dev/peps/pep-0440/>`_ 
+  versions (N[.N]+[{a|b|c|rc}N][.postN][.- devN][+local])
+- **PerlVersionScheme** which supports 2 numerical part versions where the 
+  second part is at least two digits A.BB where A and B - are integers and B is 
+  zero padded on the left. For example: 1.02, 1.34, 1.567)

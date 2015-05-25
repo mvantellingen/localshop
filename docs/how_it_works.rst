@@ -24,7 +24,7 @@ file.  See the following example:
     [local]
     username: myusername
     password: mysecret
-    repository: http://localhost:8000/simple/
+    repository: http://localhost:8000/repo/default/
 
 To upload a custom package issue the following command in your package::
 
@@ -38,14 +38,14 @@ Using the shop for package installation
 
 To install packages with pip from your localshop add `-i` flag, e.g.::
 
-    pip install -i http://localhost:8000/simple/ localshop
+    pip install -i http://localhost:8000/repo/default/ localshop
 
 or edit/create a ~/.pip/pip.conf file following this template:
 
 .. code-block:: ini
 
     [global]
-    index-url = http://<access_key>:<secret_key>@localhost:8000/simple
+    index-url = http://<access_key>:<secret_key>@localhost:8000/repo/default/
 
 Then just use pip install as you are used to do.
 You can replace access_key and secret_key by a valid username and password.
@@ -74,11 +74,11 @@ A ``~/.pypirc`` could look like this:
 
 pip allows you do use those values in the index URL during download, e.g.::
 
-    pip install -i http://<access_key>:<secret_key>@localhost:8000/simple/ localshop
+    pip install -i http://<access_key>:<secret_key>@localhost:8000/repo/default/ localshop
 
 So for example::
 
-    pip install -i http://4baf221849c84a20b77a6f2d539c3e8a:200984e70f0c463b994388c4da26ec3f@localhost:8000/simple/ localshop
+    pip install -i http://4baf221849c84a20b77a6f2d539c3e8a:200984e70f0c463b994388c4da26ec3f@localhost:8000/repo/default/ localshop
 
 .. warning::
 

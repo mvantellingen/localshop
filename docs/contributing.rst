@@ -1,9 +1,9 @@
 Contributing
 ############
 
-Want to contribute with Localshop? Great! We really appreciate your help. But before digging into your new
-fluffy-next-millionaine-feature code keep in mind that you **MUST** follow this guide to get your pull
-requests approved.
+Want to contribute with Localshop? Great! We really appreciate your help. But
+before digging into your new fluffy-next-millionaine-feature code keep in mind
+that you **MUST** follow this guide to get your pull requests approved.
 
 
 Get started
@@ -11,22 +11,27 @@ Get started
 
 1. Fork the project and follow the installation instructions [#rf1]_.
 
-2. Your code **MUST** contain tests. This is a requirement and no pull request will be approved if it lacks tests. Even
-   if your're making a small bug fix we want to ensure that it will not introduce any another bug.
+2. Your code **MUST** contain tests. This is a requirement and no pull request
+   will be approved if it lacks tests. Even if your're making a small bug fix
+   we want to ensure that it will not introduce any another bug.
 
-3. Help to keep the documentation up-to-date is really appreaciated. Always check if your're making changes that
-   make the documentation obsolete and update it.
+3. Help to keep the documentation up-to-date is really appreaciated. Always
+   check if your're making changes that make the documentation obsolete and
+   update it.
 
-4. `Squash your commits`_ before making a pull request whenever possible. This will avoid history pollution with middle
-   commits that breaks things. Your pull request should be a single commit with all your changes.
+4. `Squash your commits`_ before making a pull request whenever possible. This
+   will avoid history pollution with middle commits that breaks things. Your
+   pull request should be a single commit with all your changes.
 
-5. Open a `pull request`_. Usually, the target branch at the main repository will be ``develop``, but if your're
-   sending a bugfix to avoid the extinction of human race, maybe you want to target the ``master`` branch.
+5. Open a `pull request`_. Usually, the target branch at the main repository
+   will be ``develop``, but if your're sending a bugfix to avoid the extinction
+   of human race, maybe you want to target the ``master`` branch.
 
 
 .. tip::
-   Use a meaningful and convincing pull request description. Feel free to `use emojis`_ to give us a clue of what kind
-   changes your're making. The `Style guide`_ contains some of our preferred ones.
+   Use a meaningful and convincing pull request description. Feel free to `use
+   emojis`_ to give us a clue of what kind changes your're making. The `Style
+   guide`_ contains some of our preferred ones.
 
 
 Running Tests
@@ -47,13 +52,16 @@ To run a specific test, pass the test module filename as an argument::
 Style guide
 ===========
 
-- Follow the `PEP8`_. The only exception is the maximum line width. We uses 120 characters instead of 79.
+- Follow the `PEP8`_. Try to keep the line length to 79 but don't make it a 
+  big a deal.
 - Make sure that your code does not raises any Pylint errors or warnings.
-- Always group the imports in 3 blocks: native libraries, third party libraries and project imports.
-- Keep the import block alphabetically ordered. If you use Sublime Text, you can do this by selecting the import block
-  and hitting ``F9``
-- Avoid polluting the current namespace with lots of imports. If you find yourself in a situation of importing a lot 
-  of symbols from the same package, consider import the package itself.
+- Always group the imports in 3 blocks: native libraries, third party libraries
+  and project imports.
+- Keep the import block alphabetically ordered. If you use Sublime Text, you
+  can do this by selecting the import block and hitting ``F9``
+- Avoid polluting the current namespace with lots of imports. If you find
+  yourself in a situation of importing a lot of symbols from the same package,
+  consider import the package itself.
     
   **Wrong way**:
 
