@@ -12,7 +12,7 @@ from braces.views import LoginRequiredMixin, SuperuserRequiredMixin
 
 from localshop.apps.dashboard import forms
 from localshop.apps.packages import models
-from localshop.apps.packages.tasks import fetch_package
+from localshop.apps.packages.tasks import fetch_package, download_file
 
 
 class IndexView(LoginRequiredMixin, generic.TemplateView):
@@ -146,6 +146,23 @@ class PackageAddView(RepositoryMixin, LoginRequiredMixin, generic.FormView):
             'dashboard:repository_detail', kwargs={
                 'slug': self.repository.slug
         })
+
+
+class PackageMirrorFileView(RepositoryMixin, LoginRequiredMixin,
+                              generic.View):
+    def post(self, request, repo):
+        pk = request.POST.get('pk')
+        release_file = models.ReleaseFile.objects.get(pk=pk)
+        assert release_file.release.package.repository == self.repository
+
+        messages.info(
+            request, _("Mirroring %s in the background") % release_file.filename)
+
+        download_file.delay(pk)
+        return redirect(
+            'dashboard:package_detail',
+            repo=self.repository.slug,
+            name=release_file.release.package.name)
 
 
 class PackageDetail(RepositoryMixin, LoginRequiredMixin, generic.DetailView):

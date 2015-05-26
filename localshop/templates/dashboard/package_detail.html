@@ -110,6 +110,12 @@
                                 <td>
                                     {% if file.distribution %}
                                     <span class="label label-success">local copy</span>
+                                    {% else %}
+                                    <form method="post" action="{% url 'dashboard:package_mirror_file' repo=package.repository.slug %}">
+                                        <input type="hidden" name="pk" value="{{ file.pk }}">
+                                        <button type="submit" class="btn btn-primary btn-xs">mirror</button>
+                                        {% csrf_token %}
+                                    </form>
                                     {% endif %}
                                 </td>
                             </tr>

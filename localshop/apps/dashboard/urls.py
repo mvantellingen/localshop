@@ -15,6 +15,8 @@ urlpatterns = [
 
     url('^repositories/(?P<repo>[^/]+)/package-add/$',
         views.PackageAddView.as_view(), name='package_add'),
+    url('^repositories/(?P<repo>[^/]+)/release-mirror-file/$',
+        views.PackageMirrorFileView.as_view(), name='package_mirror_file'),
 
     url(r'^repositories/(?P<repo>[^/]+)/settings/',
         include([
