@@ -10,6 +10,8 @@ from tests.factories import ReleaseFileFactory
 
 @pytest.mark.django_db
 def test_success(app, admin_user, repository, pypi_stub):
+    repository.upstream_pypi_url = pypi_stub.url
+    repository.save()
     release_file = ReleaseFileFactory(release__package__repository=repository)
 
     response = app.get(
@@ -32,6 +34,9 @@ def test_success(app, admin_user, repository, pypi_stub):
 @pytest.mark.django_db
 def test_missing_package_local_package(app, admin_user, repository,
                                        pypi_stub):
+    repository.upstream_pypi_url = pypi_stub.url
+    repository.save()
+
     fetch_package.run(repository.pk, 'minibar')
 
     response = app.get(
@@ -49,18 +54,24 @@ def test_missing_package_local_package(app, admin_user, repository,
 
 @pytest.mark.django_db
 def test_nonexistent_package(app, admin_user, repository, pypi_stub):
+    repository.upstream_pypi_url = pypi_stub.url
+    repository.save()
+
     response = app.get(
         reverse('packages:simple_detail', kwargs={
             'slug': 'nonexistent',
             'repo': repository.slug,
         }))
 
-    assert response.url == 'https://pypi.python.org/simple/nonexistent'
+    assert response.url == 'http://localhost:12946/pypi/nonexistent'
     assert response.status_code == 302
 
 
 @pytest.mark.django_db
 def test_wrong_package_name_case(app, admin_user, repository, pypi_stub):
+    repository.upstream_pypi_url = pypi_stub.url
+    repository.save()
+
     ReleaseFileFactory(
         release__package__repository=repository,
         release__package__name='minibar')

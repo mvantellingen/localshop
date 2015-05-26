@@ -7,7 +7,7 @@ from tests.factories import RepositoryFactory, ReleaseFactory, PackageFactory
 
 @pytest.mark.django_db
 def test_fetch_package(pypi_stub):
-    repository = RepositoryFactory()
+    repository = RepositoryFactory(upstream_pypi_url=pypi_stub.url)
     fetch_package(repository.pk, 'minibar')
 
     package = repository.packages.filter(name='minibar').first()
@@ -71,7 +71,7 @@ def test_fetch_package(pypi_stub):
 
 @pytest.mark.django_db
 def test_fetch_package_with_wrong_case(pypi_stub):
-    repository = RepositoryFactory()
+    repository = RepositoryFactory(upstream_pypi_url=pypi_stub.url)
     fetch_package(repository.pk, 'Minibar')
 
     assert repository.packages.filter(name='minibar').first()
@@ -79,7 +79,7 @@ def test_fetch_package_with_wrong_case(pypi_stub):
 
 @pytest.mark.django_db
 def test_fetch_package_with_wrong_separator(pypi_stub):
-    repository = RepositoryFactory()
+    repository = RepositoryFactory(upstream_pypi_url=pypi_stub.url)
     fetch_package(repository.pk, 'pyramid-debugtoolbar')
 
     assert repository.packages.filter(name='pyramid_debugtoolbar').first()
@@ -87,7 +87,7 @@ def test_fetch_package_with_wrong_separator(pypi_stub):
 
 @pytest.mark.django_db
 def test_fetch_package_with_inexistent_package(pypi_stub):
-    repository = RepositoryFactory()
+    repository = RepositoryFactory(upstream_pypi_url=pypi_stub.url)
     fetch_package(repository.pk, 'arcoiro')
 
     assert not repository.packages.filter(name='arcoiro').first()
@@ -95,7 +95,7 @@ def test_fetch_package_with_inexistent_package(pypi_stub):
 
 @pytest.mark.django_db
 def test_fetch_package_should_update_existing_package(pypi_stub):
-    repository = RepositoryFactory()
+    repository = RepositoryFactory(upstream_pypi_url=pypi_stub.url)
     package = PackageFactory(repository=repository, name='minibar')
     ReleaseFactory(package=package, version='0.1')
     ReleaseFactory(package=package, version='0.2')

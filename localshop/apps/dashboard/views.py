@@ -38,8 +38,7 @@ class IndexView(LoginRequiredMixin, generic.TemplateView):
 
 
 class RepositoryCreateView(SuperuserRequiredMixin, generic.CreateView):
-    model = models.Repository
-    fields = ['name', 'slug', 'description', 'enable_auto_mirroring']
+    form_class = forms.RepositoryForm
     template_name = 'dashboard/repository_create.html'
 
     def get_success_url(self):
@@ -96,7 +95,7 @@ class RepositorySettingsMixin(RepositoryMixin, LoginRequiredMixin):
 class RepositoryUpdateView(RepositorySettingsMixin, generic.UpdateView):
     model = models.Repository
     context_object_name = 'repository'
-    fields = ['name', 'slug', 'description', 'enable_auto_mirroring']
+    form_class = forms.RepositoryForm
     repository_slug_name = 'slug'
     template_name = 'dashboard/repository_settings/edit.html'
 

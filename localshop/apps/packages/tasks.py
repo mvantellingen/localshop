@@ -19,7 +19,8 @@ def fetch_package(self, repository_pk, slug):
     repository = models.Repository.objects.get(pk=repository_pk)
     logging.info('start fetch_package: %s', slug)
 
-    response = requests.get(settings.LOCALSHOP_PYPI_URL + '/{}/json'.format(slug))
+    response = requests.get(
+        '%s/%s/json' % (repository.upstream_pypi_url, slug))
 
     if response.status_code == 404:
         return

@@ -234,9 +234,7 @@ class Base(Settings):
 
     LOCALSHOP_DELETE_FILES = False
 
-    DEFAULT_FILE_STORAGE = 'storages.backends.overwrite.OverwriteStorage'
-
-    LOCALSHOP_PYPI_URL = 'https://pypi.python.org/pypi'
+    DEFAULT_FILE_STORAGE = values.Value('storages.backends.overwrite.OverwriteStorage')
 
     LOCALSHOP_HTTP_PROXY = None
 
@@ -252,7 +250,6 @@ class Base(Settings):
 
 
 class TestConfig(Base):
-    LOCALSHOP_PYPI_URL = 'http://localhost:12946/pypi'
     SECRET_KEY = 'TEST-KEY'
 
     CACHES = {

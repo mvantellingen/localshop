@@ -2,6 +2,7 @@ from django import forms
 from django.utils import timezone
 
 from localshop.apps.accounts.models import Team
+from localshop.apps.packages.models import Repository
 from localshop.apps.permissions.models import Credential, CIDR
 
 
@@ -22,6 +23,15 @@ class AccessControlForm(RepositoryFormMixin, forms.ModelForm):
         instance.repository = self.repository
         instance.save()
         return instance
+
+
+class RepositoryForm(forms.ModelForm):
+    class Meta:
+        model = Repository
+        fields = [
+            'name', 'slug', 'description', 'enable_auto_mirroring',
+            'upstream_pypi_url',
+        ]
 
 
 class RepositoryTeamForm(RepositoryFormMixin, forms.Form):

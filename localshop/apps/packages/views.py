@@ -88,7 +88,7 @@ class SimpleDetail(RepositoryMixin, RepositoryAccessMixin, generic.DetailView):
                 raise Http404("Auto mirroring is not enabled")
 
             fetch_package.delay(self.repository.pk, slug)
-            return redirect('https://pypi.python.org/simple/{}'.format(slug))
+            return redirect(self.repository.upstream_pypi_url + '/' + slug)
 
         # Redirect if slug is not an exact match
         if slug != package.name:

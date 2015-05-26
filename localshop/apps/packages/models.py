@@ -11,6 +11,7 @@ from django.db.models.signals import post_delete
 from django.core.files import File
 from django.core.urlresolvers import reverse
 from django.utils.html import escape
+from django.utils.text import ugettext_lazy as _
 from model_utils import Choices
 from model_utils.models import TimeStampedModel
 from model_utils.fields import AutoCreatedField, AutoLastModifiedField
@@ -29,6 +30,10 @@ class Repository(TimeStampedModel):
         'accounts.Team', related_name='repositories', blank=True)
 
     enable_auto_mirroring = models.BooleanField(default=True)
+    upstream_pypi_url = models.CharField(
+        max_length=500, default='https://pypi.python.org/simple',
+        help_text=_(
+            "The upstream pypi URL (default: https://pypi.python.org/simple)"))
 
     def __str__(self):
         return self.name
