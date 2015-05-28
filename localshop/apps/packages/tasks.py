@@ -20,7 +20,7 @@ def fetch_package(self, repository_pk, slug):
     logging.info('start fetch_package: %s', slug)
 
     response = requests.get(
-        '%s/%s/json' % (repository.upstream_pypi_url, slug))
+        '%s/%s/json' % (repository.upstream_pypi_url_api, slug))
 
     if response.status_code == 404:
         return

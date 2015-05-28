@@ -53,6 +53,12 @@ class Repository(TimeStampedModel):
             members__role__in=roles
         ).exists()
 
+    @property
+    def upstream_pypi_url_api(self):
+        if self.upstream_pypi_url == 'https://pypi.python.org/simple':
+            return 'https://pypi.python.org/pypi'
+        return self.upstream_pypi_url
+
 
 class Classifier(models.Model):
     name = models.CharField(max_length=255, unique=True)
