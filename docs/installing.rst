@@ -48,7 +48,6 @@ Install docker and docker-compose and then run:
 
 .. code-block:: bash
 
-    cp docker.conf.py{.example,}
     docker-compose build
     docker-compose run localshop syncdb
     docker-compose run localshop createsuperuser
