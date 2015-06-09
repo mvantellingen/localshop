@@ -11,9 +11,7 @@
         <div class="panel-body">
             <form method="post" action="" class="form-stacked">
                 <fieldset>
-                    {% include "partial/_form_field.html" with field=form.name %}
-                    {% include "partial/_form_field.html" with field=form.slug %}
-                    {% include "partial/_form_field.html" with field=form.description %}
+                    {% include "partial/_form_fields.html" %}
                 </fieldset>
 
                 <div class="form-actions">
