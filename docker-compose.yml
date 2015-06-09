@@ -1,6 +1,6 @@
 web:
-    image: mvantellingen/localshop:0.1.6
-    memory: 64m
+    build:
+        .
     volumes:
         - ".:/var/localshop"
     environment:
@@ -15,8 +15,8 @@ web:
 
 
 worker:
-    image: mvantellingen/localshop:0.1.6
-    memory: 64m
+    build:
+        .
     volumes:
         - ".:/var/localshop"
     environment:
@@ -25,7 +25,10 @@ worker:
         - DJANGO_MEDIA_ROOT=/var/localshop/media
     links:
         - db
-    command: localshop celery worker -B -E
+    entrypoint:
+        localshop
+    command: 
+        localshop celery worker -B -E
 
 
 db:
