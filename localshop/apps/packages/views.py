@@ -15,6 +15,7 @@ from versio.version import Version
 from versio.version_scheme import (Pep440VersionScheme, PerlVersionScheme,
                                    Simple3VersionScheme, Simple4VersionScheme)
 
+from localshop.utils import enqueue
 from localshop.apps.packages import forms, models
 from localshop.apps.packages.mixins import RepositoryMixin
 from localshop.apps.packages.pypi import get_search_names
@@ -87,7 +88,7 @@ class SimpleDetail(RepositoryMixin, RepositoryAccessMixin, generic.DetailView):
             if not self.repository.enable_auto_mirroring:
                 raise Http404("Auto mirroring is not enabled")
 
-            fetch_package.delay(self.repository.pk, slug)
+            enqueue(fetch_package, self.repository.pk, slug)
             return redirect(self.repository.upstream_pypi_url + '/' + slug)
 
         # Redirect if slug is not an exact match
@@ -111,7 +112,7 @@ class PackageRefreshView(RepositoryMixin, RepositoryAccessMixin, generic.View):
             package = self.repository.packages.get(name__iexact=name)
         except ObjectDoesNotExist:
             package = None
-            fetch_package.delay(self.repository.pk, name)
+            enqueue(fetch_package, self.repository.pk, name)
         return redirect(package)
 
 

@@ -50,15 +50,6 @@ class TestRepository(TestCase):
         factories.TeamMemberFactory(user=user, team=team, role='developer')
         assert repository.check_user_role(user, ['owner', 'developer'])
 
-    def test_simple_index_url(self):
-        repository = factories.RepositoryFactory(slug='foobar')
-        assert repository.simple_index_url == '/repo/foobar'
-
-
-class TestRelease(TestCase):
-    def test_description_html(self):
-        release = factories.ReleaseFactory(description='foobar')
-        assert release.description_html == '<p>foobar</p>\n'
 
 
 class TestReleaseFile(TemporaryMediaRootMixin, TestCase):
