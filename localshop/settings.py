@@ -160,6 +160,7 @@ class Base(Settings):
 
     BROKER_URL = "django://"
 
+    CELERY_ACCEPT_CONTENT = ['json']
     CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
     CELERYD_FORCE_EXECV = False
     CELERYBEAT_SCHEDULE = {
@@ -247,6 +248,12 @@ class Base(Settings):
     LOCALSHOP_USE_PROXIED_IP = False
 
     LOCALSHOP_VERSIONING_TYPE = None
+
+    # AWS S3 Settings
+    AWS_ACCESS_KEY_ID = values.Value()
+    AWS_SECRET_ACCESS_KEY = values.Value()
+    AWS_STORAGE_BUCKET_NAME = values.Value()
+
 
 
 class TestConfig(Base):
