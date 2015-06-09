@@ -1,31 +1,38 @@
-localshop:
-  build: .
-  volumes:
-    - ".:/localshop"
-  links:
-    - db
-    - broker
-  command: runserver 0.0.0.0:8000
-  ports:
-    - "8000:8000"
+web:
+    image: mvantellingen/localshop:0.1.6
+    memory: 64m
+    volumes:
+        - ".:/var/localshop"
+    environment:
+        - DJANGO_SECRET_KEY=a7d03faa0c054b3dba38b396bf3c7996
+        - DATABASE_URL=postgres://localshop:shopping@db/localshop
+        - DJANGO_MEDIA_ROOT=/var/localshop/media
+    links:
+        - db
+    ports:
+        - "8000:8000"
+    command: uwsgi --http 0.0.0.0:8000 --module localshop.wsgi --master --die-on-term
 
-celery:
-  build: .
-  command: celery worker -B -E
-  volumes:
-    - ".:/localshop"
-  entrypoint: localshop
-  environment:
-    - C_FORCE_ROOT=1
-  links:
-    - db
-    - broker
+
+worker:
+    image: mvantellingen/localshop:0.1.6
+    memory: 64m
+    volumes:
+        - ".:/var/localshop"
+    environment:
+        - DJANGO_SECRET_KEY=a7d03faa0c054b3dba38b396bf3c7996
+        - DATABASE_URL=postgres://localshop:shopping@db/localshop
+        - DJANGO_MEDIA_ROOT=/var/localshop/media
+    links:
+        - db
+    command: localshop celery worker -B -E
+
 
 db:
-  image: mysql:5.6
-  environment:
-    - MYSQL_ROOT_PASSWORD=1234
-    - MYSQL_DATABASE=localshop
-
-broker:
-  image: rabbitmq
+    image: sameersbn/postgresql:9.4
+    environment:
+        - DB_NAME=localshop
+        - DB_USER=localshop
+        - DB_PASS=shopping
+    ports:
+        - "5432"

@@ -1,20 +1,37 @@
-FROM python:2.7
+FROM ubuntu:14.04
 
-RUN apt-get update && apt-get install libmysqlclient-dev -y && \
-    apt-get clean
+MAINTAINER  Michael van Tellingen <michaelvantellingen@gmail.com>
 
-ADD requirements.txt /tmp/
-RUN pip install -r /tmp/requirements.txt
+# Install required packages
+RUN apt-get update
+RUN apt-get install -y python-dev python-setuptools libffi-dev libssl-dev python-psycopg2
 
-RUN mkdir /localshop
-WORKDIR /localshop
+# Create user / env
+RUN useradd -r localshop -d /localshop
+RUN mkdir -p /localshop/.localshop && \
+    chown -R localshop:localshop /localshop
+RUN touch /localshop/.localshop/localshop.conf.py
+RUN easy_install -U pip
 
-RUN pip install mysqlclient==1.3.6
 
-RUN mkdir /root/.localshop
-ADD docker.conf.py /root/.localshop/localshop.conf.py
+ENV DJANGO_STATIC_ROOT /localshop/static
 
-ADD . /localshop/
-RUN python setup.py develop
 
-ENTRYPOINT ["localshop"]
+# Install localshop
+RUN pip install https://github.com/mvantellingen/localshop/archive/develop.zip#egg=localshop
+
+# Install uWSGI / Honcho
+run pip install uwsgi==2.0.10
+run pip install honcho==0.6.6
+
+
+# Switch to user
+USER localshop
+
+# Initialize the app
+RUN DJANGO_SECRET_KEY=tmp localshop collectstatic --noinput
+
+CMD DJANGO_SECRET_KEY=tmp localshop migrate --noinput
+
+EXPOSE 8000
+
