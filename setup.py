@@ -17,7 +17,7 @@ tests_require = [
 
 setup(
     name='localshop',
-    version='0.9.2',
+    version='0.10.0.dev',
     author='Michael van Tellingen',
     author_email='michaelvantellingen@gmail.com',
     url='http://github.com/mvantellingen/localshop',
