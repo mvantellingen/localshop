@@ -164,6 +164,7 @@ def release_file_upload_to(instance, filename):
     package = instance.release.package
     assert package.name and instance.python_version
     return os.path.join(
+        instance.release.package.repository.slug,
         instance.python_version,
         package.name[0],
         package.name,

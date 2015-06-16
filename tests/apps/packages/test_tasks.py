@@ -30,7 +30,8 @@ def test_download_file(requests_mock):
 
     assert release_file.distribution.read() == file_data
     assert release_file.distribution.size == len(file_data)
-    assert release_file.distribution.name == '2.7/t/test-package/test-1.0.0-sdist.zip'
+    assert release_file.distribution.name == (
+        'default/2.7/t/test-package/test-1.0.0-sdist.zip')
 
 
 @mock.patch('requests.get')
@@ -74,7 +75,8 @@ def test_download_file_missing_content_length(requests_mock):
 
     assert release_file.distribution.read() == file_data
     assert release_file.distribution.size == len(file_data)
-    assert release_file.distribution.name == '2.7/t/test-package/test-1.0.0-sdist.zip'
+    assert release_file.distribution.name == (
+        'default/2.7/t/test-package/test-1.0.0-sdist.zip')
 
 
 @mock.patch('requests.get')

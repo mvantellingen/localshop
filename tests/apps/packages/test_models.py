@@ -67,7 +67,8 @@ class TestReleaseFile(TemporaryMediaRootMixin, TestCase):
         release_file.save_filecontent('dummy.txt', dummy_fh)
 
         self.assertEqual(
-            release_file.distribution.name, '2.7/t/test-package/dummy.txt')
+            release_file.distribution.name,
+            'default/2.7/t/test-package/dummy.txt')
         self.assertTrue(os.path.exists(release_file.distribution.path))
 
     def test_delete_file(self):
