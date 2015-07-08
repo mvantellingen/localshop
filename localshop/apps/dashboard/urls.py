@@ -10,7 +10,7 @@ urlpatterns = [
     url('^repositories/(?P<slug>[^/]+)/$', views.RepositoryDetailView.as_view(), name='repository_detail'),
     url('^repositories/(?P<slug>[^/]+)/edit$', views.RepositoryUpdateView.as_view(), name='repository_edit'),
     url('^repositories/(?P<slug>[^/]+)/delete$', views.RepositoryDeleteView.as_view(), name='repository_delete'),
-    url('^repositories/(?P<repo>[^/]+)/packages/(?P<name>[-\._\w]+)/$',
+    url('^repositories/(?P<repo>[^/]+)/packages/(?P<name>[-\._\w\s]+)/$',
         views.PackageDetail.as_view(), name='package_detail'),
 
     url('^repositories/(?P<repo>[^/]+)/package-add/$',

@@ -144,7 +144,7 @@ class DownloadReleaseFile(RepositoryMixin, RepositoryAccessMixin,
 
         content_type = 'application/force-download'
 
-        if hasattr(settings 'USE_ACCEL_REDIRECT'):
+        if hasattr(settings, 'USE_ACCEL_REDIRECT'):
             use_accel_redirect = settings.USE_ACCEL_REDIRECT
         else:
             use_accel_redirect = False
@@ -182,9 +182,10 @@ class DownloadReleaseFile(RepositoryMixin, RepositoryAccessMixin,
             if size:
                 response["Content-Length"] = size
 
-        return response
+    return response
 
-    def handle_register_or_upload(post_data, files, user, repository):
+
+def handle_register_or_upload(post_data, files, user, repository):
     """Process a `register` or `upload` comment issued via distutils.
 
     This method is called with the authenticated user.

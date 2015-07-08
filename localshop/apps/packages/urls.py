@@ -5,7 +5,7 @@ from localshop.apps.packages import views
 
 
 urlpatterns = [
-    url(r'^(?P<repo>[-\._\w]+)/?$', views.SimpleIndex.as_view(),
+    url(r'^(?P<repo>[-\._\w\s]+)/?$', views.SimpleIndex.as_view(),
         name='simple_index'),
 
     url(r'^(?P<repo>[-\._\w\s]+)/(?P<slug>[-\._\w]+)/$',
