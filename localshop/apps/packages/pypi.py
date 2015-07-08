@@ -1,8 +1,13 @@
 import re
 import requests
-import xmlrpclib
 from copy import copy
-from StringIO import StringIO
+
+from django.utils import six
+
+if six.PY2:
+    import xmlrpclib
+else:
+    import xmlrpc.client as xmlrpclib
 
 
 class RequestTransport(xmlrpclib.Transport, object):
@@ -30,7 +35,7 @@ class RequestTransport(xmlrpclib.Transport, object):
 
         if response.status_code == 200:
             self.verbose = verbose
-            fh = StringIO(response.content)
+            fh = six.StringIO(response.content)
             return self.parse_response(fh)
 
 

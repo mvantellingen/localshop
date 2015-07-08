@@ -1,16 +1,18 @@
-from md5 import md5
+from hashlib import md5
 
 import mock
 import pytest
+from django.utils import six
 
 from localshop.apps.packages import tasks, models
-from tests.apps.packages.factories import ReleaseFileFactory, PackageFactory
+
+from tests.factories import ReleaseFileFactory, PackageFactory
 
 
 @mock.patch('requests.get')
 @pytest.mark.django_db
 def test_download_file(requests_mock):
-    file_data = 'My cool package'
+    file_data = six.b('My cool package')
     release_file = ReleaseFileFactory(distribution=None,
                                       md5_digest=md5(file_data).hexdigest())
 
@@ -28,13 +30,14 @@ def test_download_file(requests_mock):
 
     assert release_file.distribution.read() == file_data
     assert release_file.distribution.size == len(file_data)
-    assert release_file.distribution.name == '2.7/t/test-package/test-1.0.0-sdist.zip'
+    assert release_file.distribution.name == (
+        'default/2.7/t/test-package/test-1.0.0-sdist.zip')
 
 
 @mock.patch('requests.get')
 @pytest.mark.django_db
 def test_download_file_incorrect_md5_sum(requests_mock):
-    file_data = 'My cool package'
+    file_data = six.b('My cool package')
     release_file = ReleaseFileFactory(distribution=None, md5_digest='arcoiro')
 
     requests_mock.return_value = mock.Mock(**{
@@ -55,7 +58,7 @@ def test_download_file_incorrect_md5_sum(requests_mock):
 @mock.patch('requests.get')
 @pytest.mark.django_db
 def test_download_file_missing_content_length(requests_mock):
-    file_data = 'My cool package'
+    file_data = six.b('My cool package')
     release_file = ReleaseFileFactory(distribution=None,
                                       md5_digest=md5(file_data).hexdigest())
 
@@ -72,7 +75,8 @@ def test_download_file_missing_content_length(requests_mock):
 
     assert release_file.distribution.read() == file_data
     assert release_file.distribution.size == len(file_data)
-    assert release_file.distribution.name == '2.7/t/test-package/test-1.0.0-sdist.zip'
+    assert release_file.distribution.name == (
+        'default/2.7/t/test-package/test-1.0.0-sdist.zip')
 
 
 @mock.patch('requests.get')
@@ -81,7 +85,7 @@ def test_download_file_with_proxy_enabled(requests_mock, settings):
     settings.LOCALSHOP_HTTP_PROXY = {
         "http": "http://10.10.1.10:3128/",
     }
-    file_data = 'My cool package'
+    file_data = six.b('My cool package')
     release_file = ReleaseFileFactory(distribution=None,
                                       md5_digest=md5(file_data).hexdigest())
 

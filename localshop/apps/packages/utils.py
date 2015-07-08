@@ -1,4 +1,5 @@
 import hashlib
+import importlib
 import logging
 import os
 
@@ -6,6 +7,7 @@ from django.core.files.uploadedfile import TemporaryUploadedFile
 from django.db.models import FieldDoesNotExist
 from django.db.models.fields.files import FileField
 from django.http import QueryDict
+from django.utils import six
 from django.utils.datastructures import MultiValueDict
 
 logger = logging.getLogger(__name__)
@@ -21,8 +23,10 @@ def parse_distutils_request(request):
 
     http://bugs.python.org/issue10510
     """
-    if not request.body.endswith('\r\n'):
-        sep = request.body.splitlines()[1]
+    body = request.body.decode('latin-1')
+
+    if not body.endswith('\r\n'):
+        sep = body.splitlines()[1]
 
         request.POST = QueryDict('', mutable=True)
         try:
@@ -30,7 +34,7 @@ def parse_distutils_request(request):
         except Exception:
             pass
 
-        for part in filter(lambda e: e.strip(), request.body.split(sep)):
+        for part in filter(lambda e: e.strip(), body.split(sep)):
             try:
                 header, content = part.lstrip().split('\n', 1)
             except Exception:
@@ -52,7 +56,7 @@ def parse_distutils_request(request):
                                              size=len(content),
                                              content_type="application/gzip",
                                              charset='utf-8')
-                dist.write(content)
+                dist.write(content.encode('utf-8'))
                 dist.seek(0)
                 request.FILES.appendlist('distribution', dist)
             else:
@@ -124,3 +128,18 @@ def md5_hash_file(fh):
             break
         md5.update(data)
     return md5.hexdigest()
+
+
+def get_versio_versioning_scheme(full_class_path):
+    """Return a class based on it's full path"""
+    module_path = '.'.join(full_class_path.split('.')[0:-1])
+    class_name = full_class_path.split('.')[-1]
+    try:
+        module = importlib.import_module(module_path)
+    except ImportError:
+        raise RuntimeError('Invalid specified Versio schema {}'.format(full_class_path))
+
+    try:
+        return getattr(module, class_name)
+    except AttributeError:
+        raise RuntimeError('Could not find Versio schema class {!r} inside {!r} module.'.format(class_name, module_path))

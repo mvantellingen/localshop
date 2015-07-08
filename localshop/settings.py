@@ -1,11 +1,14 @@
+from __future__ import absolute_import
+
 import os
 import imp
+from django.contrib import messages
 from celery.schedules import crontab
 
 import djcelery
 djcelery.setup_loader()
 
-from configurations import Settings
+from configurations import values, Settings
 from configurations.utils import uppercase_attributes
 
 try:
@@ -29,6 +32,8 @@ def FileSettings(path):
         return Holder
 
     for name, value in uppercase_attributes(mod).items():
+        if name == 'LOCALSHOP_DISTRIBUTION_STORAGE':
+            name = 'DEFAULT_FILE_STORAGE'
         setattr(Holder, name, value)
 
     return Holder
@@ -36,14 +41,10 @@ def FileSettings(path):
 
 class Base(Settings):
     # Django settings for localshop project.
-    PROJECT_ROOT = os.path.join(os.path.dirname(__file__), os.pardir)
+    PROJECT_ROOT = os.path.dirname(__file__)
+    BASE_DIR = os.path.dirname(os.path.abspath(os.path.join(__file__, '..')))
 
-    CACHES = {
-        'default': {
-            'BACKEND': 'django.core.cache.backends.filebased.FileBasedCache',
-            'LOCATION': os.path.join(DEFAULT_PATH, 'localshop.cache'),
-        }
-    }
+    CACHES = values.CacheURLValue('dummy://')
 
     DEBUG = False
     TEMPLATE_DEBUG = DEBUG
@@ -54,16 +55,8 @@ class Base(Settings):
 
     MANAGERS = ADMINS
 
-    DATABASES = {
-        'default': {
-            'ENGINE': 'django.db.backends.sqlite3',
-            'NAME': os.path.join(DEFAULT_PATH, 'localshop.db'),
-            'USER': '',
-            'PASSWORD': '',
-            'HOST': '',
-            'PORT': '',
-        }
-    }
+    DATABASES = values.DatabaseURLValue(
+        'sqlite:///' + os.path.join(DEFAULT_PATH, 'localshop.db'))
 
     # Local time zone for this installation. Choices can be found here:
     # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
@@ -72,7 +65,7 @@ class Base(Settings):
     # timezone as the operating system.
     # If running in a Windows environment this must be set to the same as your
     # system time zone.
-    TIME_ZONE = 'Europe/Amsterdam'
+    TIME_ZONE = values.Value('UTC')
 
     # Language code for this installation. All choices can be found here:
     # http://www.i18nguy.com/unicode/language-identifiers.html
@@ -94,6 +87,8 @@ class Base(Settings):
     # Absolute filesystem path to the directory that will hold user-uploaded files.
     # Example: "/home/media/media.lawrence.com/media/"
     # MEDIA_ROOT = 'files'
+    STATIC_ROOT = values.Value(
+        default=os.path.join(BASE_DIR, 'public', 'media'))
 
     # Absolute path to the directory static files should be collected to.
     # Don't put anything in this directory yourself; store your static files
@@ -104,11 +99,15 @@ class Base(Settings):
     # URL prefix for static files.
     # Example: "http://media.lawrence.com/static/"
     STATIC_URL = '/assets/'
+    STATIC_ROOT = values.Value(
+        default=os.path.join(BASE_DIR, 'public', 'static'))
+
 
     # Additional locations of static files
     STATICFILES_DIRS = [
         os.path.join(PROJECT_ROOT, 'static')
     ]
+    STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
 
     # List of finder classes that know how to find static files in
     # various locations.
@@ -118,7 +117,9 @@ class Base(Settings):
     )
 
     # Make this unique, and don't share it with anybody.
-    SECRET_KEY = 'CHANGE-ME'
+    SECRET_KEY = values.SecretValue()
+
+    SESSION_COOKIE_AGE = 28 * 24 * 60 * 60  # 4 weeks
 
     # List of callables that know how to import templates from various sources.
     TEMPLATE_LOADERS = (
@@ -134,8 +135,6 @@ class Base(Settings):
         'django.core.context_processors.media',
         'django.core.context_processors.static',
         'django.contrib.messages.context_processors.messages',
-
-        'localshop.apps.packages.context_processors.sidebar',
     ]
 
     MIDDLEWARE_CLASSES = (
@@ -152,11 +151,18 @@ class Base(Settings):
     WSGI_APPLICATION = 'localshop.wsgi.application'
 
     TEMPLATE_DIRS = (
-        os.path.join(PROJECT_ROOT, 'localshop', 'templates'),
+        os.path.join(PROJECT_ROOT, 'templates'),
     )
+
+    MESSAGE_TAGS = {
+        messages.ERROR: 'danger'
+    }
 
     BROKER_URL = "django://"
 
+    CELERY_ACCEPT_CONTENT = ['json']
+    CELERY_TASK_SERIALIZER = 'json'
+    CELERY_RESULT_SERIALIZER = 'json'
     CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
     CELERYD_FORCE_EXECV = False
     CELERYBEAT_SCHEDULE = {
@@ -175,33 +181,29 @@ class Base(Settings):
         'django.contrib.messages',
         'django.contrib.staticfiles',
         'django.contrib.admin',
+        'django.contrib.humanize',
 
         'kombu.transport.django',
         'djcelery',
         'gunicorn',
-        'userena',
-        'guardian',
+        'widget_tweaks',
 
         'localshop',
+        'localshop.apps.accounts',
+        'localshop.apps.dashboard',
         'localshop.apps.packages',
         'localshop.apps.permissions',
     ]
 
     # Auth settings
     AUTHENTICATION_BACKENDS = (
-        'userena.backends.UserenaAuthenticationBackend',
-        'guardian.backends.ObjectPermissionBackend',
-        'localshop.apps.permissions.backend.CredentialBackend',
+        'localshop.apps.accounts.backend.AccessKeyBackend',
         'django.contrib.auth.backends.ModelBackend',
     )
-
-    AUTH_PROFILE_MODULE = 'permissions.AuthProfile'
-    LOGIN_URL = '/accounts/signin/'
-    LOGIN_REDIRECT_URL = '/accounts/%(username)s/'
-    LOGOUT_URL = '/accounts/signout'
-    USERENA_MUGSHOT_GRAVATAR = True
-    USERENA_MUGSHOT_SIZE = 20
-    ANONYMOUS_USER_ID = -1
+    LOGIN_URL = '/accounts/login'
+    LOGIN_REDIRECT_URL = '/dashboard/'
+    LOGOUT_URL = '/accounts/logout'
+    AUTH_USER_MODEL = 'accounts.User'
 
     # A sample logging configuration. The only tangible logging
     # performed by this configuration is to send an email to
@@ -229,13 +231,13 @@ class Base(Settings):
         },
     }
 
+    EMAIL = values.EmailURLValue('smtp://localhost:25/')
+
     ALLOWED_HOSTS = ['*']
 
     LOCALSHOP_DELETE_FILES = False
 
-    LOCALSHOP_DISTRIBUTION_STORAGE = 'storages.backends.overwrite.OverwriteStorage'
-
-    LOCALSHOP_PYPI_URL = 'https://pypi.python.org/pypi'
+    DEFAULT_FILE_STORAGE = values.Value('storages.backends.overwrite.OverwriteStorage')
 
     LOCALSHOP_HTTP_PROXY = None
 
@@ -247,10 +249,17 @@ class Base(Settings):
     # Use where you have Nginx/Apache/etc as a reverse proxy infront of Localshop/Gunicorn.
     LOCALSHOP_USE_PROXIED_IP = False
 
+    LOCALSHOP_VERSIONING_TYPE = None
+
+    # AWS S3 Settings
+    AWS_ACCESS_KEY_ID = values.Value()
+    AWS_SECRET_ACCESS_KEY = values.Value()
+    AWS_STORAGE_BUCKET_NAME = values.Value()
+
+
 
 class TestConfig(Base):
-    SECRET_KEY = "TEST-KEY"
-    LOCALSHOP_PYPI_URL = 'http://localhost:12946/pypi'
+    SECRET_KEY = 'TEST-KEY'
 
     CACHES = {
         'default': {

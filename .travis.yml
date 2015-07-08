@@ -1,12 +1,22 @@
+sudo: false
+
 language: python
+
 env:
   - TOX_ENV=py27
+  - TOX_ENV=py33
+  - TOX_ENV=py34
 python:
-    - "2.6"
-    - "2.7"
+    - '2.7'
+
+before_install:
+    - pip install codecov
+
 install:
-    - pip install tox python-coveralls
+    - pip install tox
+
 script:
     - tox -e $TOX_ENV
+
 after_success:
-    - coveralls
+    - codecov

@@ -12,7 +12,30 @@ class PypiReleaseDataForm(forms.ModelForm):
         ]
 
 
+class PackageForm(forms.ModelForm):
+    class Meta:
+        model = models.Package
+        fields = [
+            'name',
+        ]
+
+    def __init__(self, *args, **kwargs):
+        self._repository = kwargs.pop('repository')
+        super(PackageForm, self).__init__(*args, **kwargs)
+        self.base_fields['name'].error_messages.update({
+            'invalid': 'Enter a valid name consisting of letters, numbers, underscores or hyphens'
+        })
+
+    def save(self):
+        obj = super(PackageForm, self).save(commit=False)
+        obj.is_local = True
+        obj.repository = self._repository
+        obj.save()
+        return obj
+
+
 class ReleaseForm(forms.ModelForm):
+
     class Meta:
         model = models.Release
         fields = [

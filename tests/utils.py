@@ -1,5 +1,18 @@
 import json
 
+from django.utils.encoding import force_text
+from django.utils.six import BytesIO
+from io import BytesIO
+
+
+class NamedStringIO(BytesIO):
+
+    """A StringIO that has a name in it"""
+
+    def __init__(self, *args, **kwargs):
+        self.name = kwargs.pop('name')
+        super(NamedStringIO, self).__init__(*args, **kwargs)
+
 
 DB = {
     'minibar': {
@@ -177,8 +190,9 @@ def pypi_app(environ, start_response):
 
         start_response('200 OK', [
             ('Content-Type', 'application/json; charset="UTF-8"'),
-            ('Content-Length', str(len(data)))])
-        return [data]
+            ('Content-Length', str(len(data)))
+        ])
+        return [data.encode('utf-8')]
 
     package_name = package_name.lower().replace('-', '_')
 
@@ -186,8 +200,8 @@ def pypi_app(environ, start_response):
         start_response('301 Moved Permanently', [
             ('Location', '/pypi/{}/json'.format(package_name)),
             ('Content-Length', '0')])
-        return ['']
+        return [''.encode('utf-8')]
 
     start_response('404 Not Found', [
         ('Content-Length', '0')])
-    return ['']
+    return [''.encode('utf-8')]

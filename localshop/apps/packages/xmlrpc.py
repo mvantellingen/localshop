@@ -1,11 +1,16 @@
-from SimpleXMLRPCServer import SimpleXMLRPCDispatcher
 
 from django.db.models import Q
 from django.http import HttpResponse
+from django.utils import six
 from django.views.decorators.csrf import csrf_exempt
 
 from localshop.apps.packages import models
 from localshop.apps.permissions.utils import credentials_required
+
+if six.PY2:
+    from SimpleXMLRPCServer import SimpleXMLRPCDispatcher
+else:
+    from xmlrpc.server import SimpleXMLRPCDispatcher
 
 dispatcher = SimpleXMLRPCDispatcher(allow_none=False, encoding=None)
 
@@ -13,12 +18,12 @@ dispatcher = SimpleXMLRPCDispatcher(allow_none=False, encoding=None)
 @csrf_exempt
 @credentials_required
 def handle_request(request):
-    response = HttpResponse(mimetype='application/xml')
+    response = HttpResponse(content_type='application/xml')
     response.write(dispatcher._marshaled_dispatch(request.body))
     return response
 
 
-def search(query, operator):
+def search(spec, operator='and'):
     """Implement xmlrpc search command.
 
     This only searches through the mirrored and private packages
@@ -30,7 +35,7 @@ def search(query, operator):
     }
 
     query_filter = None
-    for field, values in query.iteritems():
+    for field, values in spec.items():
         for value in values:
             if field not in field_map:
                 continue

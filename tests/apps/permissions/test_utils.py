@@ -6,6 +6,8 @@ from django.test.utils import override_settings
 from localshop.apps.permissions.utils import credentials_required
 from localshop.apps.permissions import models
 
+from tests.factories import CIDRFactory
+
 
 @credentials_required
 def myview(request):
@@ -14,7 +16,7 @@ def myview(request):
 
 class ProxiedIPText(TestCase):
     def setUp(self):
-        models.CIDR.objects.create(cidr='192.168.1.1', require_credentials=False)
+        CIDRFactory(cidr='192.168.1.1', require_credentials=False)
         self.factory = RequestFactory()
 
     def test_disabled(self):
