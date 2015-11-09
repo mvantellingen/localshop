@@ -103,7 +103,7 @@ class SimpleDetail(DetailView):
             })
             return redirect(url)
 
-        releases = package.releases
+        releases = package.releases.prefetch_related('files')
         if version and not package.is_local:
             releases = releases.filter(version=version)
 
