@@ -182,7 +182,7 @@ class DownloadReleaseFile(RepositoryMixin, RepositoryAccessMixin,
             if size:
                 response["Content-Length"] = size
 
-    return response
+        return response
 
 
 def handle_register_or_upload(post_data, files, user, repository):
