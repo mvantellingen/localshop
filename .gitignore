@@ -10,3 +10,4 @@ localshop.db
 *.swp
 .coverage
 .cache
+.idea
