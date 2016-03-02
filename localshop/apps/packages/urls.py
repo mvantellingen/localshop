@@ -5,16 +5,16 @@ from localshop.apps.packages import views
 
 
 urlpatterns = [
-    url(r'^(?P<repo>[-\._\w\s]+)/?$', views.SimpleIndex.as_view(),
+    url(r'^(?P<repo>[-\._\w]+)/?$', views.SimpleIndex.as_view(),
         name='simple_index'),
 
-    url(r'^(?P<repo>[-\._\w\s]+)/(?P<slug>[-\._\w]+)/$',
+    url(r'^(?P<repo>[-\._\w]+)/(?P<slug>[-\._\w\s]+)/$',
         cache_page(60)(views.SimpleDetail.as_view()),
         name='simple_detail'),
 
-    url(r'^(?P<repo>[-\._\w\s]+)/download/(?P<name>[-\._\w]+)/(?P<pk>\d+)/(?P<filename>.*)$',
+    url(r'^(?P<repo>[-\._\w]+)/download/(?P<name>[-\._\w\s]+)/(?P<pk>\d+)/(?P<filename>.*)$',
         views.DownloadReleaseFile.as_view(), name='download'),
 
-    url(r'^(?P<repo>[-\._\w\s]+)/refresh/(?P<name>[-\._\w]+)',
+    url(r'^(?P<repo>[-\._\w]+)/refresh/(?P<name>[-\._\w\s]+)',
         views.PackageRefreshView.as_view(), name='refresh'),
 ]
