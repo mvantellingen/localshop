@@ -133,5 +133,5 @@ def update_packages():
     logging.info('Updated packages')
     for package in models.Package.objects.filter(is_local=False):
         logging.info('Updating package %s', package.name)
-        enqueue(fetch_package, package.name)
+        enqueue(fetch_package, package.repository.pk, package.name)
     logging.info('Complete')
