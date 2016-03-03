@@ -1,12 +1,22 @@
+sudo: false
+
 language: python
+
 env:
-    - DJANGO_SETTINGS_MODULE=localshop.settings DJANGO_CONFIGURATION=TestConfig 
-python: 
-    - "2.6"
-    - "2.7"
+  - TOX_ENV=py27
+  - TOX_ENV=py33
+  - TOX_ENV=py34
+python:
+    - '2.7'
+
+before_install:
+    - pip install codecov
+
 install:
-    - pip install -r requirements-test.txt
-script: 
-    - python manage.py test --with-coverage
+    - pip install tox
+
+script:
+    - tox -e $TOX_ENV
+
 after_success:
-    - coveralls
+    - codecov

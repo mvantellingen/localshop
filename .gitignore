@@ -1,8 +1,13 @@
 *.egg-info
 *.egg
+/.tox
 /build/
 /dist/
 /source/
+/public/
 localshop.db
 *.pyc
 *.swp
+.coverage
+.cache
+.idea

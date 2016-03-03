@@ -6,22 +6,58 @@ from shutil import copyfileobj
 from tempfile import NamedTemporaryFile
 
 from django.conf import settings
-from django.contrib.auth.models import User
 from django.db import models
 from django.db.models.signals import post_delete
 from django.core.files import File
-from django.core.files.storage import get_storage_class
 from django.core.urlresolvers import reverse
-from django.utils.functional import LazyObject
 from django.utils.html import escape
+from django.utils.text import ugettext_lazy as _
 from model_utils import Choices
+from model_utils.models import TimeStampedModel
 from model_utils.fields import AutoCreatedField, AutoLastModifiedField
 
-from localshop.apps.packages.signals import release_file_notfound
 from localshop.apps.packages.utils import delete_files
 
 
 logger = logging.getLogger(__name__)
+
+
+class Repository(TimeStampedModel):
+    name = models.CharField(max_length=250)
+    slug = models.CharField(max_length=200, unique=True)
+    description = models.CharField(max_length=500, blank=True)
+    teams = models.ManyToManyField(
+        'accounts.Team', related_name='repositories', blank=True)
+
+    enable_auto_mirroring = models.BooleanField(default=True)
+    upstream_pypi_url = models.CharField(
+        max_length=500, default='https://pypi.python.org/simple',
+        help_text=_(
+            "The upstream pypi URL (default: https://pypi.python.org/simple)"))
+
+    def __str__(self):
+        return self.name
+
+    @property
+    def simple_index_url(self):
+        return reverse('packages:simple_index', kwargs={
+            'repo': self.slug
+        })
+
+    def check_user_role(self, user, roles):
+        if user.is_superuser:
+            return True
+
+        return self.teams.filter(
+            members__user=user,
+            members__role__in=roles
+        ).exists()
+
+    @property
+    def upstream_pypi_url_api(self):
+        if self.upstream_pypi_url == 'https://pypi.python.org/simple':
+            return 'https://pypi.python.org/pypi'
+        return self.upstream_pypi_url
 
 
 class Classifier(models.Model):
@@ -36,7 +72,9 @@ class Package(models.Model):
 
     modified = AutoLastModifiedField()
 
-    name = models.SlugField(max_length=200, unique=True)
+    repository = models.ForeignKey(Repository, related_name='packages')
+
+    name = models.SlugField(max_length=200)
 
     #: Indicate if this package is local (a private package)
     is_local = models.BooleanField(default=False)
@@ -44,10 +82,13 @@ class Package(models.Model):
     #: Timestamp when we last retrieved the metadata
     update_timestamp = models.DateTimeField(null=True)
 
-    owners = models.ManyToManyField(User)
+    owners = models.ManyToManyField(settings.AUTH_USER_MODEL)
 
     class Meta:
         ordering = ['name']
+        unique_together = [
+            ('repository', 'name')
+        ]
         permissions = (
             ("view_package", "Can view package"),
         )
@@ -55,9 +96,10 @@ class Package(models.Model):
     def __unicode__(self):
         return self.name
 
-    @models.permalink
     def get_absolute_url(self):
-        return ('packages:detail', None, {'name': self.name})
+        return reverse('dashboard:package_detail', kwargs={
+            'repo': self.repository.slug, 'name': self.name
+        })
 
     def get_all_releases(self):
         result = {}
@@ -97,7 +139,7 @@ class Release(models.Model):
 
     summary = models.TextField(blank=True)
 
-    user = models.ForeignKey(User, null=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True)
 
     version = models.CharField(max_length=512)
 
@@ -122,16 +164,11 @@ def release_file_upload_to(instance, filename):
     package = instance.release.package
     assert package.name and instance.python_version
     return os.path.join(
+        instance.release.package.repository.slug,
         instance.python_version,
         package.name[0],
         package.name,
         filename)
-
-
-class DistributionStorage(LazyObject):
-    def _setup(self):
-        self._wrapped = get_storage_class(
-            settings.LOCALSHOP_DISTRIBUTION_STORAGE)()
 
 
 class ReleaseFile(models.Model):
@@ -157,8 +194,7 @@ class ReleaseFile(models.Model):
 
     filetype = models.CharField(max_length=25, choices=TYPES)
 
-    distribution = models.FileField(upload_to=release_file_upload_to,
-        storage=DistributionStorage(), max_length=512)
+    distribution = models.FileField(upload_to=release_file_upload_to, max_length=512)
 
     filename = models.CharField(max_length=200, blank=True, null=True)
 
@@ -168,7 +204,7 @@ class ReleaseFile(models.Model):
 
     url = models.CharField(max_length=1024, blank=True)
 
-    user = models.ForeignKey(User, null=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True)
 
     class Meta:
         unique_together = ('release', 'filetype', 'python_version', 'filename')
@@ -178,6 +214,7 @@ class ReleaseFile(models.Model):
 
     def get_absolute_url(self):
         url = reverse('packages:download', kwargs={
+            'repo': self.release.package.repository.slug,
             'name': self.release.package.name,
             'pk': self.pk, 'filename': self.filename
         })
@@ -188,24 +225,25 @@ class ReleaseFile(models.Model):
         copyfileobj(fh, tmp_file)
         self.distribution.save(filename, File(tmp_file))
 
+    @property
+    def file_is_available(self):
+        return self.distribution and self.distribution.storage.exists(self.distribution.name)
+
+    def download(self):
+        """Start a celery task to download the release file from pypi.
+
+        If `settings.LOCALSHOP_ISOLATED` is True then download the file
+        in-process.
+
+        """
+        from .tasks import download_file
+        if not settings.LOCALSHOP_ISOLATED:
+            download_file.delay(pk=self.pk)
+        else:
+            download_file(pk=self.pk)
+
 
 if settings.LOCALSHOP_DELETE_FILES:
     post_delete.connect(
         delete_files, sender=ReleaseFile,
         dispatch_uid="localshop.apps.packages.utils.delete_files")
-
-
-def download_missing_release_file(sender, release_file, **kwargs):
-    """Start a celery task to download the release file from pypi.
-
-    If `settings.LOCALSHOP_ISOLATED` is True then download the file in-process.
-
-    """
-    from .tasks import download_file
-    if not settings.LOCALSHOP_ISOLATED:
-        download_file.delay(pk=release_file.pk)
-    else:
-        download_file(pk=release_file.pk)
-
-release_file_notfound.connect(download_missing_release_file,
-    dispatch_uid='localshop_download_release_file')
