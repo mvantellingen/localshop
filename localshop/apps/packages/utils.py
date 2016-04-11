@@ -23,7 +23,7 @@ def parse_distutils_request(request):
 
     http://bugs.python.org/issue10510
     """
-    body = request.body.decode('latin-1')
+    body = request.body
 
     if not body.endswith('\r\n'):
         sep = body.splitlines()[1]
@@ -57,7 +57,7 @@ def parse_distutils_request(request):
                                              content_type="application/gzip",
                                              charset='utf-8')
 
-                dist.write(content.encode('utf-8'))
+                dist.write(content)
                 dist.seek(0)
                 request.FILES.appendlist('distribution', dist)
             else:
