@@ -11,6 +11,7 @@ class Migration(migrations.Migration):
     dependencies = [
         ('packages', '0003_default_repo'),
         ('permissions', '0002_remove_userena'),
+        ('accounts', '0003_migrate_credentials'),
     ]
 
     operations = [
