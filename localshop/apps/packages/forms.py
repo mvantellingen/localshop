@@ -1,6 +1,7 @@
 from django import forms
 
 from localshop.apps.packages import models
+from localshop.apps.packages.pypi import normalize_name
 
 
 class PypiReleaseDataForm(forms.ModelForm):
@@ -30,6 +31,7 @@ class PackageForm(forms.ModelForm):
         obj = super(PackageForm, self).save(commit=False)
         obj.is_local = True
         obj.repository = self._repository
+        obj.normalized_name = normalize_name(obj.name)
         obj.save()
         return obj
 
