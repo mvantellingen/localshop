@@ -75,6 +75,7 @@ class Package(models.Model):
     repository = models.ForeignKey(Repository, related_name='packages')
 
     name = models.SlugField(max_length=200)
+    normalized_name = models.SlugField(max_length=200)
 
     #: Indicate if this package is local (a private package)
     is_local = models.BooleanField(default=False)

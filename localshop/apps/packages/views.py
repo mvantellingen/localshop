@@ -18,7 +18,7 @@ from versio.version_scheme import (Pep440VersionScheme, PerlVersionScheme,
 from localshop.utils import enqueue
 from localshop.apps.packages import forms, models
 from localshop.apps.packages.mixins import RepositoryMixin
-from localshop.apps.packages.pypi import get_search_names
+from localshop.apps.packages.pypi import normalize_name
 from localshop.apps.packages.tasks import fetch_package
 from localshop.apps.packages.utils import (
     get_versio_versioning_scheme, parse_distutils_request)
@@ -78,12 +78,10 @@ class SimpleDetail(RepositoryMixin, RepositoryAccessMixin, generic.DetailView):
     template_name = 'packages/simple_package_detail.html'
 
     def get(self, request, repo, slug):
-        condition = Q()
-        for name in get_search_names(slug):
-            condition |= Q(name__iexact=name)
-
         try:
-            package = self.repository.packages.get(condition)
+            package = self.repository.packages.get(
+                normalized_name=normalize_name(slug)
+            )
         except ObjectDoesNotExist:
             if not self.repository.enable_auto_mirroring:
                 raise Http404("Auto mirroring is not enabled")
@@ -92,10 +90,10 @@ class SimpleDetail(RepositoryMixin, RepositoryAccessMixin, generic.DetailView):
             return redirect(self.repository.upstream_pypi_url + '/' + slug)
 
         # Redirect if slug is not an exact match
-        if slug != package.name:
+        if slug != package.normalized_name:
             url = reverse('packages:simple_detail', kwargs={
                 'repo': self.repository.slug,
-                'slug': package.name
+                'slug': package.normalized_name
             })
             return redirect(url)
 
@@ -209,11 +207,7 @@ def handle_register_or_upload(post_data, files, user, repository):
         return HttpResponseBadRequest('No name or version given')
 
     try:
-        condition = Q()
-        for search_name in get_search_names(name):
-            condition |= Q(name__iexact=search_name)
-
-        package = repository.packages.get(condition)
+        package = repository.packages.get(normalized_name=normalize_name(name))
 
         # Error out when we try to override a mirror'ed package for now
         # not sure what the best thing is
