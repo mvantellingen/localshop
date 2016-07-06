@@ -47,6 +47,7 @@ setup(
         'sqlparse==0.1.15',
         'whitenoise==1.0.6',
         'Versio==0.2.1',
+        'distribute',
     ],
     tests_require=tests_require,
     extras_require={'test': tests_require},

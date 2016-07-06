@@ -4,6 +4,7 @@ import os
 from docutils.utils import SystemMessage
 from shutil import copyfileobj
 from tempfile import NamedTemporaryFile
+import pkg_resources  # from `distribute`
 
 from django.conf import settings
 from django.db import models
@@ -101,6 +102,12 @@ class Package(models.Model):
         return reverse('dashboard:package_detail', kwargs={
             'repo': self.repository.slug, 'name': self.name
         })
+
+    def get_ordered_releases(self):
+        releases = list(self.releases.all())
+        releases.sort(key=lambda rel: pkg_resources.parse_version(rel.version),
+                      reverse=True)
+        return releases
 
     def get_all_releases(self):
         result = {}
