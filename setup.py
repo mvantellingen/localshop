@@ -27,7 +27,6 @@ setup(
     zip_safe=False,
     install_requires=[
         'Django==1.7.8',
-        'Pillow==2.8.1',
         'celery==3.1.18',
         'kombu==3.0.26',
         'django-braces==1.8.0',
@@ -41,7 +40,6 @@ setup(
         'dj-database-url==0.3.0',
         'dj-email-url==0.0.4',
         'docutils==0.12',
-        'gunicorn==19.1.1',
         'netaddr==0.7.12',
         'requests==2.7.0',
         'sqlparse==0.1.15',

@@ -187,7 +187,6 @@ class Base(Settings):
 
         'kombu.transport.django',
         'djcelery',
-        'gunicorn',
         'widget_tweaks',
 
         'localshop',
