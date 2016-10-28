@@ -8,7 +8,7 @@ from celery.schedules import crontab
 import djcelery
 djcelery.setup_loader()
 
-from configurations import values, Settings
+from configurations import values, Configuration
 from configurations.utils import uppercase_attributes
 
 try:
@@ -41,7 +41,7 @@ def FileSettings(path):
     return Holder
 
 
-class Base(Settings):
+class Base(Configuration):
     # Django settings for localshop project.
     PROJECT_ROOT = os.path.dirname(__file__)
     BASE_DIR = os.path.dirname(os.path.abspath(os.path.join(__file__, '..')))
