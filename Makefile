@@ -1,7 +1,7 @@
 .PHONY: clean
 
 install:
-	pip install -r .
+	pip install -e .
 
 clean:
 	find . -type f -name '*.pyc' -delete
