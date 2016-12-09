@@ -230,7 +230,7 @@ def test_missing_auth(app, repository, admin_user):
 
     app.post(
         '/repo/%s/' % repository.slug, REGISTER_POST, headers=headers,
-        status=403)
+        status=401)
 
 
 def test_invalid_auth(app, repository, admin_user):

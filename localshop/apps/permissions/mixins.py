@@ -31,6 +31,13 @@ class RepositoryAccessMixin(object):
         # Check repository based credentials, move to middleware ?
         request.credentials = None
         key, secret = get_basic_auth_data(request)
+
+        if not (key and secret) and request.method == 'POST':
+            # post means register or upload,
+            # distutils for register do not sent the auth by default
+            # so force it to send HTTP_AUTHORIZATION header
+            return HttpResponseUnauthorized()
+
         if key and secret:
             credential = self.repository.credentials.authenticate(key, secret)
             if credential:
