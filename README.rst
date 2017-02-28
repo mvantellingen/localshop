@@ -11,6 +11,10 @@ localshop
 .. image:: http://codecov.io/github/mvantellingen/localshop/coverage.svg?branch=develop
     :target: http://codecov.io/github/mvantellingen/localshop?branch=develop
 
+.. image:: https://jazzband.co/static/img/badge.svg
+   :target: https://jazzband.co/
+   :alt: Jazzband
+   
 .. image:: https://requires.io/github/mvantellingen/localshop/requirements.svg?branch=develop
      :target: https://requires.io/github/mvantellingen/localshop/requirements/?branch=develop
      :alt: Requirements Status
