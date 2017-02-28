@@ -15,7 +15,7 @@ RUN easy_install -U pip
 ENV DJANGO_STATIC_ROOT /opt/localshop/static
 
 # Install localshop
-RUN pip install https://github.com/mvantellingen/localshop/archive/develop.zip#egg=localshop
+RUN pip install https://github.com/jazzband/localshop/archive/develop.zip#egg=localshop
 
 # Install uWSGI / Honcho
 run pip install psycopg2==2.6.0

@@ -20,7 +20,7 @@ setup(
     version='0.10.0.dev',
     author='Michael van Tellingen',
     author_email='michaelvantellingen@gmail.com',
-    url='http://github.com/mvantellingen/localshop',
+    url='http://github.com/localshop/localshop',
     description='A private pypi server including auto-mirroring of pypi.',
     long_description='\n'.join(readme),
     packages=find_packages(),
