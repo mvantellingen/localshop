@@ -17,7 +17,8 @@ install:
     - pip install tox
 
 script:
-    - tox -v -- -v
+    - export TOXENV=${TRAVIS_PYTHON_VERSION}
+    - tox  -v -- -v
 
 after_success:
     - codecov
