@@ -3,14 +3,11 @@ sudo: false
 language: python
 cache: pip
 
-env:
-  - TOX_ENV=py27
-  - TOX_ENV=py33
-  - TOX_ENV=py34
-  - TOX_ENV=py35
-  - TOX_ENV=py36
 python:
-    - '2.7'
+  - '2.7'
+  - '3.4'
+  - '3.5'
+  - '3.6'
 
 before_install:
     - pip install codecov
@@ -19,7 +16,7 @@ install:
     - pip install tox
 
 script:
-    - tox -e $TOX_ENV
+    - tox -v -- -v
 
 after_success:
     - codecov
