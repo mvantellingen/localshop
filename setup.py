@@ -29,6 +29,7 @@ setup(
         'Django==1.7.11',
         'Pillow==3.4.2',
         'celery==3.1.25',
+        'django-auth-ldap==1.2.9',
         'django-braces==1.8.0',
         'django-cache-url==0.8.0',
         'django-celery==3.1.17',
