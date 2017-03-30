@@ -11,6 +11,10 @@ djcelery.setup_loader()
 from configurations import values, Settings
 from configurations.utils import uppercase_attributes
 
+ 
+import ldap
+from django_auth_ldap.config import LDAPSearch, GroupOfNamesType
+
 try:
     DEFAULT_PATH = os.environ['LOCALSHOP_HOME']
 except KeyError:
@@ -200,6 +204,8 @@ class Base(Settings):
     # Auth settings
     AUTHENTICATION_BACKENDS = (
         'localshop.apps.accounts.backend.AccessKeyBackend',
+        'localshop.apps.accounts.backend.LDAPBackend',
+        'django_auth_ldap.backend.LDAPBackend',
         'django.contrib.auth.backends.ModelBackend',
     )
     LOGIN_URL = '/accounts/login'
@@ -257,7 +263,13 @@ class Base(Settings):
     AWS_ACCESS_KEY_ID = values.Value()
     AWS_SECRET_ACCESS_KEY = values.Value()
     AWS_STORAGE_BUCKET_NAME = values.Value()
-
+    
+    # LDAP Authentication
+    AUTH_LDAP_SERVER_URI = "ldap://ldapsample.com"
+    AUTH_LDAP_BIND_DN = "cn=username,dc=ldapsample,dc=com"
+    AUTH_LDAP_BIND_PASSWORD = "sompass"
+    #AUTH_LDAP_USER_DN_TEMPLATE = "uid=%(user)s,ou=users,dc=ldapsample,dc=com"
+    AUTH_LDAP_USER_SEARCH = LDAPSearch("ou=users,dc=ldapsample,dc=com", ldap.SCOPE_SUBTREE, "(uid=%(user)s)")
 
 
 class TestConfig(Base):
