@@ -1,6 +1,7 @@
 sudo: false
 
 language: python
+cache: pip
 
 env:
   - TOX_ENV=py27
