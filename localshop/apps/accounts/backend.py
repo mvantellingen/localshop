@@ -1,5 +1,6 @@
 from django.contrib.auth.backends import ModelBackend
 from django.utils import timezone
+from django_auth_ldap.backend import LDAPBackend as Orig
 
 from localshop.apps.accounts.models import AccessKey
 
@@ -18,3 +19,9 @@ class AccessKeyBackend(ModelBackend):
                 return key.user
 
         return None
+
+class LDAPBackend(Orig):
+    def authenticate(self, username=None, password=None, identification=None):
+        if identification and not username:
+            username = identification
+        return super(LDAPBackend, self).authenticate(username, password)
