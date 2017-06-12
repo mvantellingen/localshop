@@ -11,6 +11,8 @@ RUN mkdir -p /opt/localshop/var && \
     chown -R localshop:localshop /opt/localshop/
 RUN easy_install -U pip
 
+WORKDIR /opt/localshop
+
 
 ENV DJANGO_STATIC_ROOT /opt/localshop/static
 
