@@ -16,14 +16,15 @@ WORKDIR /opt/localshop
 
 ENV DJANGO_STATIC_ROOT /opt/localshop/static
 
-# Install localshop
-RUN pip install https://github.com/jazzband/localshop/archive/develop.zip#egg=localshop
-
 # Install uWSGI / Honcho
 run pip install psycopg2==2.6.0
 run pip install uwsgi==2.0.10
 run pip install honcho==0.6.6
 
+# Install localshop
+COPY ./ /opt/localshop/src/localshop
+RUN cd /opt/localshop/src/localshop && \
+  pip install .
 
 # Switch to user
 USER localshop
