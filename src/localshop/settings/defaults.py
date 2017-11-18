@@ -9,7 +9,7 @@ env = environ.Env()
 
 # Django settings for localshop project.
 PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
-BASE_DIR = os.path.dirname(PROJECT_ROOT)
+BASE_DIR = os.path.dirname(os.path.dirname(PROJECT_ROOT))
 
 DEBUG = env.bool('DEBUG', default=False)
 TEMPLATE_DEBUG = DEBUG
@@ -52,6 +52,8 @@ USE_TZ = True
 
 STATIC_ROOT = os.path.join(BASE_DIR, 'public', 'static')
 STATIC_URL = '/assets/'
+
+MEDIA_ROOT = os.path.join(BASE_DIR, 'public', 'media')
 
 # Additional locations of static files
 STATICFILES_DIRS = [

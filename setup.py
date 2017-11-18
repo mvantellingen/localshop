@@ -23,7 +23,6 @@ setup(
     url='http://github.com/localshop/localshop',
     description='A private pypi server including auto-mirroring of pypi.',
     long_description='\n'.join(readme),
-    packages=find_packages(),
     zip_safe=False,
     install_requires=[
         'Django==1.11.7',
@@ -49,6 +48,8 @@ setup(
     extras_require={'test': tests_require},
     license='BSD',
     include_package_data=True,
+    package_dir={'': 'src'},
+    packages=find_packages('src'),
     entry_points={
         'console_scripts': [
             'localshop = localshop.runner:main'
