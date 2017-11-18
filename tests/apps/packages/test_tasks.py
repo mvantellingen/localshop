@@ -11,10 +11,12 @@ from tests.factories import ReleaseFileFactory, PackageFactory
 
 @mock.patch('requests.get')
 @pytest.mark.django_db
-def test_download_file(requests_mock):
+def test_download_file(requests_mock, tmpdir, settings):
+    settings.MEDIA_ROOT = tmpdir
     file_data = six.b('My cool package')
-    release_file = ReleaseFileFactory(distribution=None,
-                                      md5_digest=md5(file_data).hexdigest())
+    release_file = ReleaseFileFactory(
+        distribution=None,
+        md5_digest=md5(file_data).hexdigest())
 
     requests_mock.return_value = mock.Mock(**{
             'headers': {
@@ -57,7 +59,8 @@ def test_download_file_incorrect_md5_sum(requests_mock):
 
 @mock.patch('requests.get')
 @pytest.mark.django_db
-def test_download_file_missing_content_length(requests_mock):
+def test_download_file_missing_content_length(requests_mock, settings, tmpdir):
+    settings.MEDIA_ROOT = tmpdir
     file_data = six.b('My cool package')
     release_file = ReleaseFileFactory(distribution=None,
                                       md5_digest=md5(file_data).hexdigest())
