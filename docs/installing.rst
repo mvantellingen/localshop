@@ -50,8 +50,8 @@ Install docker and docker-compose and then run:
 
     cp docker.conf.py{.example,}
     docker-compose build
-    docker-compose run localshop syncdb
-    docker-compose run localshop createsuperuser
+    docker-compose run worker syncdb
+    docker-compose run worker createsuperuser
     docker-compose up
 
 You should be able to see localshop running in `http://docker-host:8000`.
