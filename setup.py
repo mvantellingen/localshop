@@ -32,7 +32,6 @@ setup(
         'django-braces==1.11.0',
         'django-celery-beat==1.1.0',
         'django-celery-results==1.0.1',
-        'django-configurations==2.0',
         'django-environ==0.4.4',
         'django-model-utils==3.0.0',
         'django-storages==1.6.5',
