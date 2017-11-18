@@ -6,7 +6,11 @@ from django.contrib import admin
 from django.views.generic import RedirectView
 
 from localshop.apps.packages.views import SimpleIndex
+from localshop import views
 from localshop.apps.packages.xmlrpc import handle_request
+
+import localshop.apps.dashboard.urls
+import localshop.apps.packages.urls
 
 admin.autodiscover()
 
@@ -14,16 +18,16 @@ static_prefix = re.escape(settings.STATIC_URL.lstrip('/'))
 
 
 urlpatterns = [
-    url(r'^$', 'localshop.views.index', name='index'),
+    url(r'^$', views.index, name='index'),
     url(r'^dashboard/',
-        include('localshop.apps.dashboard.urls', namespace='dashboard')),
+        include(localshop.apps.dashboard.urls, namespace='dashboard')),
 
     # Default path for xmlrpc calls
     url(r'^RPC2$', handle_request),
     url(r'^pypi$', handle_request),
 
     url(r'^repo/',
-        include('localshop.apps.packages.urls', namespace='packages')),
+        include(localshop.apps.packages.urls, namespace='packages')),
 
     # Backwards compatible url (except for POST requests)
     url(r'^simple/?$', SimpleIndex.as_view(), {'repo': 'default'}),

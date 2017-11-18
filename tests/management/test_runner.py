@@ -22,13 +22,9 @@ class TestWSGI(TestCase):
         # backup and remove global environment vars
         oldenv = copy.copy(os.environ)
         del os.environ['DJANGO_SETTINGS_MODULE']
-        del os.environ['DJANGO_CONFIGURATION']
         imp.reload(wsgi)
         self.assertIn('DJANGO_SETTINGS_MODULE', os.environ)
-        self.assertIn('DJANGO_CONFIGURATION', os.environ)
-        self.assertEqual(os.environ['DJANGO_SETTINGS_MODULE'],
-                         'localshop.settings')
-        self.assertEqual(os.environ['DJANGO_CONFIGURATION'], 'Localshop')
+        self.assertEqual(os.environ['DJANGO_SETTINGS_MODULE'], 'localshop.settings')
         os.environ = oldenv
 
 
@@ -54,11 +50,7 @@ class TestRunner(TestCase):
         # backup and remove global environment vars
         oldenv = copy.copy(os.environ)
         del os.environ['DJANGO_SETTINGS_MODULE']
-        del os.environ['DJANGO_CONFIGURATION']
         main()
         self.assertIn('DJANGO_SETTINGS_MODULE', os.environ)
-        self.assertIn('DJANGO_CONFIGURATION', os.environ)
-        self.assertEqual(os.environ['DJANGO_SETTINGS_MODULE'],
-                         'localshop.settings')
-        self.assertEqual(os.environ['DJANGO_CONFIGURATION'], 'Localshop')
+        self.assertEqual(os.environ['DJANGO_SETTINGS_MODULE'], 'localshop.settings')
         os.environ = oldenv

@@ -43,6 +43,12 @@ class ReleaseForm(forms.ModelForm):
             'home_page', 'license', 'metadata_version', 'summary', 'version',
         ]
 
+    def clean_download_url(self):
+        value = self.cleaned_data.get('value')
+        if value is None:
+            return ''
+        return value
+
 
 class ReleaseFileForm(forms.ModelForm):
     class Meta:

@@ -10,15 +10,14 @@ from django.conf import settings
 
 class Command(BaseCommand):
 
-    option_list = BaseCommand.option_list + (
-        make_option(
+    def add_arguments(self, parser):
+        parser.add_argument(
             "--no-superuser",
             default=False,
             action="store_true",
             dest="nosuperuser",
             help="Doesn't create a superuser and therefore requires no interaction. Useful for deploying using automated tools. You'll need to provide some initial fixtures to actually get access",
-        ),
-    )
+        )
 
     def handle(self, *args, **kwargs):
 

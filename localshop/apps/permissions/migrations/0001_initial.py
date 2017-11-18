@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 from django.db import models, migrations
 import django.utils.timezone
 from django.conf import settings
-import uuidfield.fields
 
 
 class Migration(migrations.Migration):
@@ -46,8 +45,8 @@ class Migration(migrations.Migration):
             name='Credential',
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
-                ('access_key', uuidfield.fields.UUIDField(editable=False, max_length=32, blank=True, help_text=b'The access key', unique=True, verbose_name=b'Access key', db_index=True)),
-                ('secret_key', uuidfield.fields.UUIDField(editable=False, max_length=32, blank=True, help_text=b'The secret key', unique=True, verbose_name=b'Secret key', db_index=True)),
+                ('access_key', models.UUIDField(editable=False, max_length=32, blank=True, help_text=b'The access key', unique=True, verbose_name=b'Access key', db_index=True)),
+                ('secret_key', models.UUIDField(editable=False, max_length=32, blank=True, help_text=b'The secret key', unique=True, verbose_name=b'Secret key', db_index=True)),
                 ('created', models.DateTimeField(default=django.utils.timezone.now)),
                 ('deactivated', models.DateTimeField(null=True, blank=True)),
                 ('comment', models.CharField(default=b'', max_length=255, null=True, help_text=b"A comment about this credential, e.g. where it's being used", blank=True)),

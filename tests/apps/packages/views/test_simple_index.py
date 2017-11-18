@@ -161,7 +161,8 @@ def test_package_upload(app, admin_user, repository, separator):
     }
 
     response = app.post(
-        '/repo/%s/' % repository.slug, post_data, headers=headers, user=admin_user)
+        '/repo/%s/' % repository.slug, params=post_data, headers=headers,
+        user=admin_user)
 
     assert response.status_code == 200
 
@@ -200,7 +201,7 @@ def test_package_register(app, repository, admin_user):
     }
 
     response = app.post(
-        '/repo/%s/' % repository.slug, REGISTER_POST, headers=headers)
+        '/repo/%s/' % repository.slug, params=REGISTER_POST, headers=headers)
 
     assert response.status_code == 200
 
@@ -229,7 +230,7 @@ def test_missing_auth(app, repository, admin_user):
     }
 
     app.post(
-        '/repo/%s/' % repository.slug, REGISTER_POST, headers=headers,
+        '/repo/%s/' % repository.slug, params=REGISTER_POST, headers=headers,
         status=401)
 
 
@@ -240,7 +241,7 @@ def test_invalid_auth(app, repository, admin_user):
     }
 
     app.post(
-        '/repo/%s/' % repository.slug, REGISTER_POST, headers=headers,
+        '/repo/%s/' % repository.slug, params=REGISTER_POST, headers=headers,
         status=401)
 
 
@@ -310,7 +311,7 @@ def test_upload_should_not_overwrite_pypi_package(app, repository, admin_user):
     }
 
     response = app.post(
-        '/repo/%s/' % repository.slug, REGISTER_POST, headers=headers,
+        '/repo/%s/' % repository.slug, params=REGISTER_POST, headers=headers,
         status=400)
 
     assert response.unicode_body == 'localshop is a pypi package!'

@@ -2,7 +2,7 @@ import os.path
 
 from django.test import TestCase
 from django.utils import six
-from storages.backends.overwrite import OverwriteStorage
+from django.core.files.storage import FileSystemStorage
 
 from localshop.apps.packages import models
 from localshop.apps.packages import utils
@@ -58,7 +58,7 @@ class TestReleaseFile(TemporaryMediaRootMixin, TestCase):
 
         field = [field for field in models.ReleaseFile._meta.fields
                     if field.name == 'distribution'][0]
-        field.storage = OverwriteStorage()
+        field.storage = FileSystemStorage()
 
     def test_save_contents(self):
         release_file = factories.ReleaseFileFactory()

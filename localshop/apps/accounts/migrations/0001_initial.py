@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.db import models, migrations
-import model_utils.fields
-import django.utils.timezone
 from django.conf import settings
-import uuidfield.fields
+from django.db import models, migrations
 import django.core.validators
+import django.utils.timezone
+import model_utils.fields
 
 
 class Migration(migrations.Migration):
@@ -45,8 +44,8 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(verbose_name='ID', serialize=False, auto_created=True, primary_key=True)),
                 ('created', model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, editable=False)),
-                ('access_key', uuidfield.fields.UUIDField(editable=False, max_length=32, blank=True, help_text=b'The access key', unique=True, verbose_name=b'Access key', db_index=True)),
-                ('secret_key', uuidfield.fields.UUIDField(editable=False, max_length=32, blank=True, help_text=b'The secret key', unique=True, verbose_name=b'Secret key', db_index=True)),
+                ('access_key', models.UUIDField(editable=False, max_length=32, blank=True, help_text=b'The access key', unique=True, verbose_name=b'Access key', db_index=True)),
+                ('secret_key', models.UUIDField(editable=False, max_length=32, blank=True, help_text=b'The secret key', unique=True, verbose_name=b'Secret key', db_index=True)),
                 ('comment', models.CharField(default=b'', max_length=255, null=True, help_text="A comment about this credential, e.g. where it's being used", blank=True)),
                 ('last_usage', models.DateTimeField(null=True, blank=True)),
                 ('user', models.ForeignKey(related_name='access_keys', to=settings.AUTH_USER_MODEL)),

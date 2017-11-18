@@ -1,9 +1,9 @@
+import uuid
 import netaddr
 
 from django.db import models
 from django.utils.translation import ugettext as _
 from model_utils.fields import AutoCreatedField
-from uuidfield import UUIDField
 
 
 class CIDRManager(models.Manager):
@@ -45,7 +45,13 @@ class CredentialManager(models.Manager):
         return self.filter(deactivated__isnull=True)
 
     def authenticate(self, key, secret):
-        return self.active().filter(access_key=key, secret_key=secret).first()
+        try:
+            key = uuid.UUID(key)
+            secret = uuid.UUID(secret)
+        except ValueError:
+            return self.none()
+        else:
+            return self.active().filter(access_key=key, secret_key=secret).first()
 
 
 class Credential(models.Model):
@@ -53,8 +59,8 @@ class Credential(models.Model):
     created = AutoCreatedField()
 
     repository = models.ForeignKey('packages.Repository', related_name='credentials')
-    access_key = UUIDField(verbose_name='Access key', help_text='The access key', auto=True, db_index=True)
-    secret_key = UUIDField(verbose_name='Secret key', help_text='The secret key', auto=True, db_index=True)
+    access_key = models.UUIDField(verbose_name='Access key', help_text='The access key', default=uuid.uuid4, db_index=True)
+    secret_key = models.UUIDField(verbose_name='Secret key', help_text='The secret key', default=uuid.uuid4, db_index=True)
     comment = models.CharField(
         max_length=255, blank=True, null=True, default='',
         help_text="A comment about this credential, e.g. where it's being used")

@@ -12,10 +12,10 @@ from tests.factories import CIDRFactory, RepositoryFactory
 from tests.utils import pypi_app
 
 
-@pytest.yield_fixture(scope='session')
+@pytest.fixture(scope='function')
 def pypi_stub():
-    server = make_server('', 12946, pypi_app)  # Same port as LOCALSHOP_PYPI_URL
-    server.url = 'http://localhost:12946/pypi'
+    server = make_server('', 0, pypi_app)  # Same port as LOCALSHOP_PYPI_URL
+    server.url = 'http://localhost:%d/pypi' % (server.server_port)
 
     thread = threading.Thread(target=server.serve_forever)
     thread.start()
@@ -23,6 +23,7 @@ def pypi_stub():
     yield server
 
     server.shutdown()
+    thread.join()
 
 
 @pytest.fixture(scope='function')

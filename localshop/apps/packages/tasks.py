@@ -55,7 +55,6 @@ def fetch_package(self, repository_pk, slug):
             'summary': package_data['info']['summary'],
             'version': version,
         }
-
         release_form = forms.PypiReleaseDataForm(release_data, instance=release)
         if release_form.is_valid():
             release_form.save()

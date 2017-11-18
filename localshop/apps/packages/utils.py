@@ -24,6 +24,7 @@ def parse_distutils_request(request):
     http://bugs.python.org/issue10510
     """
     body = request.body.decode('latin-1')
+    request.POST = request.POST.copy()
 
     if not body.endswith('\r\n'):
         sep = body.splitlines()[1]
@@ -86,37 +87,29 @@ def parse_header(header):
 
 def delete_files(sender, **kwargs):
     """Signal callback for deleting old files when database item is deleted"""
-    for fieldname in sender._meta.get_all_field_names():
-        try:
-            field = sender._meta.get_field(fieldname)
-        except FieldDoesNotExist:
-            continue
+    instance = kwargs['instance']
 
-        if isinstance(field, FileField):
-            instance = kwargs['instance']
-            fieldfile = getattr(instance, fieldname)
+    if not hasattr(instance.distribution, 'path'):
+        return
 
-            if not hasattr(fieldfile, 'path'):
-                return
+    if not os.path.exists(instance.distribution.path):
+        return
 
-            if not os.path.exists(fieldfile.path):
-                return
+    # Check if there are other instances which reference this fle
+    is_referenced = (
+        instance.__class__.objects
+        .filter(distribution=instance.distribution)
+        .exclude(pk=instance._get_pk_val())
+        .exists())
+    if is_referenced:
+        return
 
-            # Check if there are other instances which reference this fle
-            is_referenced = (
-                instance.__class__._default_manager
-                .filter(**{'%s__exact' % fieldname: fieldfile})
-                .exclude(pk=instance._get_pk_val())
-                .exists())
-            if is_referenced:
-                return
-
-            try:
-                field.storage.delete(fieldfile.path)
-            except Exception:
-                logger.exception(
-                    'Error when trying to delete file %s of package %s:' % (
-                        instance.pk, fieldfile.path))
+    try:
+        instance.distribution.storage.delete(instance.distribution.path)
+    except Exception:
+        logger.exception(
+            'Error when trying to delete file %s of package %s:' % (
+                instance.pk, instance.distribution.path))
 
 
 def md5_hash_file(fh):

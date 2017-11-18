@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 from django.db import models, migrations
 import model_utils.fields
 import localshop.apps.packages.models
-import storages.backends.overwrite
 import django.utils.timezone
 from django.conf import settings
 
@@ -75,7 +74,7 @@ class Migration(migrations.Migration):
                 ('modified', model_utils.fields.AutoLastModifiedField(default=django.utils.timezone.now, editable=False)),
                 ('size', models.IntegerField(null=True)),
                 ('filetype', models.CharField(max_length=25, choices=[(b'sdist', b'Source'), (b'bdist_egg', b'Egg'), (b'bdist_msi', b'MSI'), (b'bdist_dmg', b'DMG'), (b'bdist_rpm', b'RPM'), (b'bdist_dumb', b'bdist_dumb'), (b'bdist_wininst', b'bdist_wininst'), (b'bdist_wheel', b'bdist_wheel')])),
-                ('distribution', models.FileField(storage=storages.backends.overwrite.OverwriteStorage(), max_length=512, upload_to=localshop.apps.packages.models.release_file_upload_to)),
+                ('distribution', models.FileField(max_length=512, upload_to=localshop.apps.packages.models.release_file_upload_to)),
                 ('filename', models.CharField(max_length=200, null=True, blank=True)),
                 ('md5_digest', models.CharField(max_length=512)),
                 ('python_version', models.CharField(max_length=25)),

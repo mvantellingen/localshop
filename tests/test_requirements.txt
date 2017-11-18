@@ -1,4 +1,0 @@
-mock==1.0.1
-factory-boy==2.5.2
-pytest-django
-pytest-cov
