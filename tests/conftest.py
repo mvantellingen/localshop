@@ -1,29 +1,45 @@
-import threading
-from wsgiref.simple_server import make_server
+import re
+import os
 
 import pytest
+import requests_mock
 from django.contrib.auth.models import AnonymousUser
 from django.contrib.messages.storage.fallback import FallbackStorage
 from django.contrib.sessions.backends.db import SessionStore
 from django.test.client import RequestFactory as BaseRequestFactory
 from django_webtest import DjangoTestApp, WebTestMixin
 
+from localshop.apps.packages.pypi import get_search_names
 from tests.factories import CIDRFactory, RepositoryFactory
-from tests.utils import pypi_app
-
 
 @pytest.fixture(scope='function')
 def pypi_stub():
-    server = make_server('', 0, pypi_app)  # Same port as LOCALSHOP_PYPI_URL
-    server.url = 'http://localhost:%d/pypi' % (server.server_port)
+    with requests_mock.Mocker(real_http=True) as rm:
+        wildcard_re = re.compile('^https://pypi\.internal/.*')
+        rm.register_uri('GET', wildcard_re, status_code=404)
 
-    thread = threading.Thread(target=server.serve_forever)
-    thread.start()
+        pypi_dir = os.path.join(os.path.dirname(__file__), 'pypi_data')
+        for filename in os.listdir(pypi_dir):
+            with open(os.path.join(pypi_dir, filename), 'rb') as fh:
+                content = fh.read()
 
-    yield server
+            name, ext = os.path.splitext(filename)
+            url = 'https://pypi.internal/pypi/%s/json' % name
+            rm.register_uri('GET', url, content=content)
 
-    server.shutdown()
-    thread.join()
+            # Register the alternative urls and redirect to original url
+            for alt_name in get_search_names(name):
+                if alt_name != name:
+                    alt_url = 'https://pypi.internal/pypi/%s/json' % alt_name
+                    rm.register_uri(
+                        'GET',
+                        alt_url,
+                        headers={
+                            'Location': url,
+                        },
+                        status_code=301)
+
+        yield 'https://pypi.internal/pypi/'
 
 
 @pytest.fixture(scope='function')

@@ -1,0 +1,1346 @@
+{
+    "info": {
+        "author": "Chris McDonough, Michael Merickel, Casey Duncan, Blaise Laflamme",
+        "author_email": "pylons-discuss@googlegroups.com",
+        "bugtrack_url": null,
+        "classifiers": [
+            "Framework :: Pyramid",
+            "Intended Audience :: Developers",
+            "License :: Repoze Public License",
+            "Programming Language :: Python",
+            "Programming Language :: Python :: 2.7",
+            "Programming Language :: Python :: 3",
+            "Programming Language :: Python :: 3.3",
+            "Programming Language :: Python :: 3.4",
+            "Programming Language :: Python :: 3.5",
+            "Programming Language :: Python :: 3.6",
+            "Topic :: Internet :: WWW/HTTP :: WSGI"
+        ],
+        "description": "pyramid_debugtoolbar\n====================\n\n``pyramid_debugtoolbar`` provides a debug toolbar useful while you're\ndeveloping your Pyramid application.\n\nNote that ``pyramid_debugtoolbar`` is a blatant rip-off of Michael van\nTellingen's ``flask-debugtoolbar`` (which itself was derived from Rob Hudson's\n``django-debugtoolbar``). It also includes a lightly sanded down version of the\nWerkzeug debugger code by Armin Ronacher and team.\n\n\nDocumentation\n-------------\n\nThe documentation of the current stable release of ``pyramid_debugtoolbar`` is\navailable at\nhttp://docs.pylonsproject.org/projects/pyramid-debugtoolbar/en/latest/.\n\n\nDemonstration\n-------------\n\nFor a demonstration:\n\n- Clone the ``pyramid_debugtoolbar`` trunk.\n\n  .. code-block:: bash\n\n      $ git clone https://github.com/Pylons/pyramid_debugtoolbar.git\n\n- Create a virtual environment in the workspace.\n\n  .. code-block:: bash\n\n      $ cd pyramid_debugtoolbar\n      $ python3 -m venv env\n\n- Install the ``pyramid_debugtoolbar`` trunk into the virtualenv.\n\n  .. code-block:: bash\n\n      $ env/bin/pip install -e .\n\n- Install the ``pyramid_debugtoolbar/demo`` package into the virtualenv.\n\n  .. code-block:: bash\n\n      $ env/bin/pip install -e demo\n\n- Run the ``pyramid_debugtoolbar`` package's ``demo/demo.py`` file using the\n  virtual environment's Python.\n\n  .. code-block:: bash\n\n      $ env/bin/python demo/demo.py\n\nVisit http://localhost:8080 in a web browser to see a page full of test\noptions.\n\n\nTesting\n-------\n\nIf you have ``tox`` installed, run all tests with:\n\n.. code-block:: bash\n\n    $ tox\n\nTo run only a specific Python environment:\n\n.. code-block:: bash\n\n    $ tox -e py35\n\nIf you don't have ``tox`` installed, you can install the testing requirements,\nthen run the tests.\n\n.. code-block:: bash\n\n    $ python3 -m venv env\n    $ env/bin/pip install -e \".[testing]\"\n    $ env/bin/nosetests\n\n\nBuilding documentation\n----------------------\n\nIf you have ``tox`` installed, build the docs with:\n\n.. code-block:: bash\n\n    $ tox -e docs\n\nIf you don't have ``tox`` installed, you can install the requirements to build\nthe docs, then build them.\n\n.. code-block:: bash\n\n    $ env/bin/pip install -e \".[docs]\"\n    $ cd docs\n    $ make clean html SPHINXBUILD=../env/bin/sphinx-build\n\n\n4.3 (2017-07-14)\n----------------\n\n- The logging panel indicator is now color-coded to indicate the severity of\n  the log messages as well as the number of messages at said level. There may\n  be more messages, but the most severe show up in the annotation.\n\n  This feature also added a new ``nav_subtitle_style`` hook to the\n  ``DebugPanel`` API for adding a custom CSS class to the subtitle tag.\n\n  See https://github.com/Pylons/pyramid_debugtoolbar/pull/322\n\n4.2.1 (2017-06-30)\n------------------\n\n- Fix a bug with the logging of squashed exceptions on Python < 3.5.\n  See https://github.com/Pylons/pyramid_debugtoolbar/pull/320\n\n4.2 (2017-06-21)\n----------------\n\nThis release contains a rewrite of the underlying exception / traceback\ntracking machinery and fixes regressions caused by the 4.1 release that\nbroke the interactive debugger.\nSee https://github.com/Pylons/pyramid_debugtoolbar/pull/318\n\n- Tracebacks are now tied to the per-request toolbar object one-to-one.\n  A request may have only one traceback. Previously they actually stuck\n  around for the entire lifetime of the app instead of being collected by\n  the max_request_history setting.\n\n- The routes for exceptions are standardized to look similar to the SQLA AJAX\n  routes. For example, ``/{request_id}/exception`` instead of\n  ``/exception?token=...&tb=...`` and\n  ``/{request_id}/exception/execute/{frame_id}?cmd=...`` instead of\n  ``/exception?token=...&tb=...&frm=...&cmd=...``.\n\n- Fixed the url generation for the traceback panel link at the bottom of the\n  traceback... it was actually empty previously - it got lost somewhere along\n  the way.\n\n- /favicon.ico is no longer specially handled.. it's just part of\n  ``exclude_prefixes`` like anything else that you want to exclude.\n\n- ``request.pdtb_history`` is available for toolbar requests (mostly AJAX\n  requests or panel rendering).\n\n- Removed the unused history predicate.\n\n- URL generation was broken in the ``debugger.js`` but that's fixed now so the\n  execute/source buttons work in tracebacks.\n\n- Drop the license from ``LICENSE.txt`` for the removed ipaddr module in 4.1.\n  See https://github.com/Pylons/pyramid_debugtoolbar/pull/315\n\n4.1 (2017-05-30)\n----------------\n\n- Debug squashed exceptions! If you register an exception view for an exception\n  it will render a response. The toolbar will see the squashed exception and\n  enable the ``Traceback`` tab in the toolbar and emit a message on the\n  console with the URL. You can then debug the exception while returning the\n  original response to the user.\n  See https://github.com/Pylons/pyramid_debugtoolbar/pull/308\n\n- Remove the vendored ipaddr package and use the stdlib ipaddress module on\n  Python 3.3+. On Python < 3.3 the ipaddress module is a dependency from PyPI.\n  This dependency uses environment markers and thus requires pip 8.1.2+.\n  See https://github.com/Pylons/pyramid_debugtoolbar/pull/304\n\n- Display a warning if the toolbar is used to display a request that no longer\n  exists. This may be because the app was restarted or the request fell off\n  the end of the ``max_request_history``.\n  See https://github.com/Pylons/pyramid_debugtoolbar/pull/305\n\n- Enable testing on Python 3.6.\n  See https://github.com/Pylons/pyramid_debugtoolbar/pull/306\n\n- Drop the link-local suffix off of local interfaces in order to accept\n  requests on them. See https://github.com/Pylons/pyramid_debugtoolbar/pull/307\n\n- Headers panel defers its processing to a finished callback. This is best\n  effort of displaying actual headers, since they could be modified by\n  a response callback or another finished callback.\n  See https://github.com/Pylons/pyramid_debugtoolbar/pull/310\n\n- Query log inside SQLAlchemy panel does not cause horizontal scrolling\n  anymore, which should improve UX.\n  See https://github.com/Pylons/pyramid_debugtoolbar/pull/311\n\n4.0.1 (2017-05-09)\n------------------\n\n- Fix sticky panel functionality that was broken by other cleanup in the 4.0\n  release. See https://github.com/Pylons/pyramid_debugtoolbar/pull/297\n\n4.0 (2017-05-03)\n----------------\n\n- The config settings ``debugtoolbar.panels``, ``debugtoolbar.extra_panels``,\n  ``debugtoolbar.global_panels`` and ``debugtoolbar.extra_global_panels``\n  now all accept panel names as defined in\n  ``pyramid_debugtoolbar.panels.DebugPanel.name``. Thus you may use names\n  such as ``performance``, ``headers``, etc. These settings still support the\n  dotted Python path but it is suggested that panels now support being\n  included via ``debugtoolbar.includes`` and ``config.add_debugtoolbar_panel``\n  instead such that they are automatically added to the toolbar.\n  See https://github.com/Pylons/pyramid_debugtoolbar/pull/288\n\n- Add a new ``config.add_debugtoolbar_panel`` directive that can be invoked\n  from ``includeme`` functions included via the ``debugtoolbar.includes``\n  setting. These panels are automatically added to the default panel list\n  and should become the way to define toolbar panels in the future.\n  See https://github.com/Pylons/pyramid_debugtoolbar/pull/283\n\n- Add a new ``config.inject_parent_action`` directive that can be invoked\n  from ``includeme`` functions included via the ``debugtoolbar.includes``\n  setting. These actions are invoked on the parent config just before it is\n  created such that actions can inspect / wrap existing config.\n  See https://github.com/Pylons/pyramid_debugtoolbar/pull/288\n\n- Added \"sticky\" panel functionality to allow a selected panel to persist\n  across pageviews using cookies.  If a cookied panel does not have content\n  available for display, the first non-disabled panel will be displayed. If a\n  cookied panel is not enabled on the toolbar, the first non-disabled panel will\n  be displayed AND will become the new default panel.\n  See https://github.com/Pylons/pyramid_debugtoolbar/pull/272\n\n- Added `CustomLoggerFactory` to javascript, used in the development of PR 272.\n  This javascript factory allows panel developers and maintainers to use verbose\n  console logging during development, partitioned by feature, and silence it for\n  deployment while still leaving the logging lines activated.\n\n- The toolbar registers a ``BeforeRender`` subscriber in your application to\n  monitor the rendering of templates. Previously it was possible that the\n  toolbar would miss rendering information because of the order in which the\n  subscribers were registered. The toolbar now waits until the application\n  is created and then appends a new subscriber that encapsulates the\n  your application's ``BeforeRender`` subscribers.\n  See https://github.com/Pylons/pyramid_debugtoolbar/pull/284\n\n- Remove duplicate ``id=\"${panel.dom_id}\"`` tags in history tab html. Only\n  the top-level ``<li>`` tag has the id now.\n  See https://github.com/Pylons/pyramid_debugtoolbar/pull/285\n\n- Emit a warning and disable the toolbar if the app is being served by\n  a forking / multiprocess wsgi server that sets\n  ``environ['wsgi.multiprocess']`` to ``True``. This should help avoid\n  confusing issues in certain deployments like gunicorn and uwsgi multiprocess\n  modes. See https://github.com/Pylons/pyramid_debugtoolbar/pull/286\n\n- The toolbar tween is always placed explicitly OVER the pyramid_tm tween.\n\n- Refactored all debugtoolbar panels to be included using\n  ``config.add_debugtoolbar_panel`` and per-panel ``includeme`` functions.\n  See https://github.com/Pylons/pyramid_debugtoolbar/pull/288\n\n- Exposed a ``request.toolbar_panels`` dictionary which can be used from within\n  ``DebugPanel.render_content`` and ``DebugPanel.render_vars`` in order to\n  introspect and use the data generated by other panels when rendering the\n  panel. See https://github.com/Pylons/pyramid_debugtoolbar/pull/291\n\n- Support streaming new requests on Microsoft Edge and Internet Explorer 8+ by\n  using a Server-Sent-Events polyfill.\n  See https://github.com/Pylons/pyramid_debugtoolbar/pull/293\n\n3.0.5 (2016-11-1)\n-----------------\n\n- Change static toolbar asset to accommodate color blindness.\n  See https://github.com/Pylons/pyramid_debugtoolbar/issues/273\n\n3.0.4 (2016-07-26)\n------------------\n\n- 3.0.3 was a brownbag release missing static assets.\n\n3.0.3 (2016-07-26)\n------------------\n\n- Fix another regression where the toolbar was modifying requests to the\n  toolbar itself such that the ``script_name`` and ``path_info`` were\n  different after handling the request than before.\n  See https://github.com/Pylons/pyramid_debugtoolbar/pull/269\n\n3.0.2 (2016-07-02)\n------------------\n\n- Fix a regression with inspecting requests with a session that is loaded\n  before the toolbar executes.\n  See https://github.com/Pylons/pyramid_debugtoolbar/pull/268\n\n3.0.1 (2016-05-20)\n------------------\n\n- Avoid touching ``request.unauthenticated_userid``,\n  ``request.authenticated_userid`` and ``request.effective_principals`` unless\n  they are accessed by the user in the normal request lifecycle. This avoids\n  some issues where unauthenticated requests could trigger side effects on\n  your authentication policy or access the properties outside of the\n  expected lifecycle of the properties.\n  See https://github.com/Pylons/pyramid_debugtoolbar/pull/263\n\n3.0 (2016-04-23)\n----------------\n\n- The toolbar is now a completely standalone application running inside the\n  tween. There are several minor incompatibilities and improvements related\n  to this extra isolation:\n\n  1. ``pyramid_mako`` and the ``.dbtmako`` renderer are no longer included\n     in the parent application (your app).\n  2. Panels must be extra careful now that they only render templates inside\n     of the ``render_vars`` and ``render_content`` functions. These are the\n     only functions in which the ``request`` object is for rendering the\n     toolbar panel.\n  3. The toolbar will not be affected by any global security policies your\n     application may put in place other than via\n     ``config.set_debugtoolbar_request_authorization``.\n     **never run the toolbar in production**\n\n  See https://github.com/Pylons/pyramid_debugtoolbar/pull/253\n\n- Updated Bootstrap to v3.3.6, refactored static assets and dropped require.js.\n  Each page now depends on what it needs without extra dependencies included\n  in the debugger pages.\n  See https://github.com/Pylons/pyramid_debugtoolbar/pull/259\n\n- Enabled interactive tablesorting on table columns.\n  See https://github.com/Pylons/pyramid_debugtoolbar/pull/256\n\n- setuptools-git is now required to install the codebase in non-editable mode.\n\n2.5 (2016-04-20)\n----------------\n\n- Drop Python 2.6 and Python 3.2 support.\n\n- Add Python 3.5 support.\n\n- Remove inline javascript from injected pages to work better with any\n  Content Security Policy that may be in place.\n  See https://github.com/Pylons/pyramid_debugtoolbar/pull/250\n\n- Added the packages' `.location` to the \"Versions\" panel so developers can tell\n  which version of each package is actually being used.\n  See https://github.com/Pylons/pyramid_debugtoolbar/pull/240\n\n- Upon exception do a better job guessing the charset of the sourcefile when\n  reading it in to display tracebacks.\n  See https://github.com/Pylons/pyramid_debugtoolbar/pull/244\n\n- Removed jQuery code in the toolbar referring to a DOM node called 'myTab',\n  which doesn't seem to exist anymore.\n  See https://github.com/Pylons/pyramid_debugtoolbar/pull/247\n\n- Updated the \"Request Vars\" panel:\n  1. Show additional values that were previously missing\n  2. Sections upgraded to link to Pyramid Documentation when possible\n  3. Mako reformatted into \"defs\" for simpler reorganization in the future\n  See https://github.com/Pylons/pyramid_debugtoolbar/pull/241\n\n- Fix to prevent the toolbar from loading the session until it is actually\n  accessed by the user. This avoids unnecessary parsing of the session object\n  as well as waiting to parse it until later in the request which may meet\n  more expectations of the session factory.\n  See https://github.com/Pylons/pyramid_debugtoolbar/pull/249\n\n2.4.2 (2015-10-28)\n------------------\n\n- Fix a long-standing bug in which log messages were not rendered until\n  the end of the response. By this time the arguments passed to the logger\n  may no longer be valid (such as SQLAlchemy managed objects) and you would\n  see a ``DetachedInstanceError``.\n  See https://github.com/Pylons/pyramid_debugtoolbar/issues/188\n\n2.4.1 (2015-08-12)\n------------------\n\n- Remove the extra query hash constructed when indexing into SQL queries via\n  url as it was unused after releasing 2.4.\n  See https://github.com/Pylons/pyramid_debugtoolbar/pull/232\n\n2.4 (2015-06-04)\n----------------\n\nThis release changes some details of the panel API, so if you are writing\nany custom panels for the toolbar please review the changes.\n\n- Document the cookie used to activate panels on a per-request basis. It is\n  possible to specify the cookie per-request to turn on certain panels. This\n  is used by default in the browser, but may also be used on a per-request\n  basis by curl or other http APIs.\n\n- Add new ``debugtoolbar.active_panels`` setting which can specify certain\n  panels to be always active.\n\n- Modify ``DebugPanel.name`` to be a valid python identifier, used for\n  settings and lookup.\n\n- The toolbar no longer will clobber the ``request.id`` property. It now\n  namespaces its usage as ``request.pdtb_id``, freeing up ``request.id``\n  for applications.\n\n- Add a lock icon next to the request method in the sidebar if the request\n  was accessed over https.\n  See https://github.com/Pylons/pyramid_debugtoolbar/pull/213\n\n- Update to bootstrap 3.1.1.\n  See https://github.com/Pylons/pyramid_debugtoolbar/pull/213\n\n- Fix display of POST variables where the same key is used multiple times.\n  See https://github.com/Pylons/pyramid_debugtoolbar/pull/210\n\n- Fix auth callback so it protects the toolbar views. Auth system is tested\n  now. See https://github.com/Pylons/pyramid_debugtoolbar/pull/226\n\n- Convert SQLAlchemy views to obtain the query and params internally; this\n  allows executing queries with parameters that are not serializable.\n  See https://github.com/Pylons/pyramid_debugtoolbar/pull/227\n\n- Adds Pyramid version tests and bumps required Pyramid version to 1.4.\n  The pyramid_mako dependency requires 1.3, but debugtoolbar also uses\n  ``invoke_subrequest`` which was added in 1.4. The ``invoke_subrequest`` call\n  was added\n  in pyramid_debugtoolbar 2.0; if you need Pyramid 1.3 compatibility, try\n  an older version.\n  See https://github.com/Pylons/pyramid_debugtoolbar/issues/183\n  and https://github.com/Pylons/pyramid_debugtoolbar/pull/225\n\n2.3 (2015-01-05)\n----------------\n\n- Support a ``debugtoolbar.includes`` setting which will allow addons to\n  extend the toolbar's internal Pyramid application with custom logic.\n  See https://github.com/Pylons/pyramid_debugtoolbar/issues/207\n\n- Fixed an issue when the toolbar is not mounted at the root of the domain.\n  See https://github.com/Pylons/pyramid_debugtoolbar/pull/201\n\n- Fixed an issue where the `button_css` was not pulled from the settings.\n  Added support for configurable `max_request_history` and\n  `max_visible_requests`.\n  See https://github.com/Pylons/pyramid_debugtoolbar/pull/206\n\n2.2.2 (2014-11-09)\n------------------\n\n- Brownbagged 2.2.1, forgot to include the templates!\n\n2.2.1 (2014-11-09)\n------------------\n\n- Several internal links were not relative causing them to fail when the\n  app is mounted at a path prefix. See\n  https://github.com/Pylons/pyramid_debugtoolbar/pull/185 and\n  https://github.com/Pylons/pyramid_debugtoolbar/pull/196\n\n- Pin pygments<2 on 3.2 as the new release has dropped support.\n\n2.2 (2014-08-12)\n----------------\n\n- Avoid polluting user code with unnecessary toolbar css just to show the\n  button. See https://github.com/Pylons/pyramid_debugtoolbar/pull/174\n\n- Inject the toolbar button into ``application/xhtml+xml`` requests.\n  See https://github.com/Pylons/pyramid_debugtoolbar/pull/176\n\n- Make the toolbar accessible before another request has been served by the\n  application. See https://github.com/Pylons/pyramid_debugtoolbar/pull/171\n\n\n2.1 (2014-05-22)\n----------------\n\n- Add new \"debugtoolbar.\" configuration settings that allow enabling or\n  disabling various Pyramid knobs in a users .ini file. This for instance\n  allows easy enabling/disabling of template reloading for the debugtoolbar.\n\n- Allow the toolbar to display always, even when the parent application\n  is using a default permission.\n  See https://github.com/Pylons/pyramid_debugtoolbar/issues/147\n\n- Stabilize and document the ``pyramid_debugtoolbar.panels.DebugPanel``\n  API to allow developers to create their own panels.\n\n- Add new ``debugtoolbar.extra_panels`` and\n  ``debugtoolbar.extra_global_panels`` configuration settings to make it\n  simpler to support custom panels without overwriting the default panels.\n\n2.0.2 (2014-02-13)\n------------------\n\n- Fix breaking bugs when run under Py3k.\n\n2.0.1 (2014-02-12)\n------------------\n\n- Fixes a bug in 2.0 expecting pyramid_beaker to be around.\n\n2.0 (2014-02-12)\n----------------\n\n- The toolbar has undergone a major refactoring to mitigate the effects of\n  the toolbar's internal behavior on the application to which it is connected\n  and make it possible to inspect arbitrary requests. It is now available at\n  ``/_debug_toolbar`` and can be used to monitor any and all requests serviced\n  by the Pyramid application that it is wrapping, including non-html responses.\n\n  The toolbar will live-update (on conforming browsers via Server Sent Events)\n  when requests come into the Pyramid application, and can be used to debug and\n  inspect multiple requests simultaneously.\n\n1.0.9 (2013-10-20)\n------------------\n\n- Use new ``pyramid_mako`` configuration directive add_mako_renderer.\n\n1.0.8 (2013-09-09)\n------------------\n\n- Depend on ``pyramid_mako`` (Mako support will be split out of Pyramid in\n  1.5+).\n\n1.0.7 (2013-08-29)\n------------------\n\n- Drop support for Python 2.5.\n\n- Fix computation of proxy addresses.  See\n  https://github.com/Pylons/pyramid_debugtoolbar/pull/100 .\n\n- Make templates compatible with no-MarkupSafe Mako under Python 3.2.\n\n- Decode platform name to Unicode using utf-8 encoding to cope with nonascii\n  characters in platform (e.g. Fedora's Schrodinger's Cat).  See\n  https://github.com/Pylons/pyramid_debugtoolbar/pull/98\n\n- Raise a ``pyramid.exceptions.URLDecodeError`` instead of a raw\n  UnicodeDecodeError when the request path cannot be decoded.  See\n  https://github.com/Pylons/pyramid/issues/1057.\n\n- Added new configuration option: `debugtoolbar.show_on_exc_only` (\n  default=false).  If set to true (`debugtoolbar.show_on_exc_only = true`)\n  the debugtoolbar will only be injected into the response in case a\n  exception is raised. If the response is processed without exception the\n  returned html code is not changed at all.\n  See https://github.com/Pylons/pyramid_debugtoolbar/issues/54\n\n- Fix various UnicodeDecodeError exceptions.\n\n1.0.6 (2013-04-17)\n------------------\n\n- Packaging release only, no code changes.  1.0.5 was a brownbag release due to\n  missing directories in the tarball.\n\n1.0.5 (2013-04-17)\n------------------\n\n- Parse IPs correctly when request.remote_addr is a comma separated list\n  of proxies IPs.\n\n- If you are also using require.js, the debug toolbar's version of jQuery\n  will no longer conflict with your application's version of the library.\n\n- Use the \"n\" filter to disable default_filters when including the raw\n  SQL in links, leaving only the \"u\" filter (URL escaping).\n\n- Support for per-request authorization of toolbar middleware via\n  ``config.set_debugtoolbar_request_authorization(callback)`` where callback\n  accepts request object and returns boolean value whether toolbar is enabled\n  or not.\n\n- Short term fix for preventing error when converting binary query params to json.\n\n- Fix sqlalchemy query duration from microseconds to milliseconds.\n\n1.0.4 (2013-01-05)\n------------------\n\n- Add a ``debugtoolbar.excluded_prefixes`` setting.  When a URL path prefix\n  matches one of these prefixes, the toolbar will not be shown on the resulting\n  page.\n\n- Show the prompt and little text file icons show all the time, instead of\n  only on hover.\n\n- Do not set max-height on result boxes (which result in nested scroll on\n  the page, which makes it hard to find information quickly).\n\n- When an expression result is long, do not truncate with an ellipsis, which\n  requires one more click to get at the information I need.\n\n- Support ``pip install`` from the github repository by adding all static files\n  required to install in the ``package_data`` ``setup.py``. Setuptools usually\n  uses Subversion or CVS to tell it what static files it needs to package up\n  for egg distribution, but does not support reading git metadata.\n\n- The debug toolbar now use a patched version of require.js with a distinct\n  private name that cannot clash with the dojo loader or other incompatible\n  versions of require that may already be loaded on the page. You no longer\n  need to add the toolbar to your own require.js to make it work.\n\n1.0.3 (2012-09-23)\n------------------\n\n- The ``valid_host`` custom predicate used internally by pyramid_debugtoolbar\n  views didn't use newer \"ipaddr\"-based logic.  Symptom: some views may have\n  been incorrectly inaccessible if you used a network mask as a\n  \"debugtoolbar.hosts\" option.\n\n- The debug console now works with Google App Engine.\n\n- The debug console now adds a shortcut for accessing the last result through\n  ``_``.\n\n1.0.2 (2012-04-19)\n------------------\n\n- Moved the toolbar and debugger javascript files to use requirejs for\n  better dependency loading and module isolation to play better with mutiple\n  library versions. Recurrent problem was with async loading and application\n  specific jquery library where the expected version was overrided by the\n  toolbar one.\n\n  If you are already using requirejs and want the toolbar to load, just add it\n  to your path and module::\n\n    require.config({\n      paths: {\n        \"jquery\": \"jquery-1.7.2.min\",\n        \"toolbar\": \"/_debug_toolbar/static/js/toolbar\"\n      }\n    });\n\n    require([\"jquery\", \"toolbar\"], function($, toolbar) {\n      $(function() {\n        // your module\n      });\n    });\n\n1.0.1 (2012-03-27)\n------------------\n\n- If ``request.remote_addr`` is ``None``, disable the toolbar.\n\n1.0 (2012-03-17)\n----------------\n\n- Don't URL-quote SQL parameters on SQLAlchemy panel.\n\n- Allow hostmask values as ``debugtoolbar.hosts`` entries\n  (e.g. ``192.168.1.0/24``).\n\n0.9.9.1 (2012-02-22)\n--------------------\n\n- When used with Pyramid 1.3a9+, views, routes, and other registrations made\n  by ``pyramid_debugtoolbar`` itself will not show up in the introspectables\n  panel.\n\n0.9.9 (2012-02-19)\n------------------\n\n- Try to take advantage of MakoRendererFactoryHelper in Pyramid 1.3a8+.  If\n  we can do this, the toolbar templates won't be effected by normal mako\n  settings.  The most visible change is that toolbar mako templates now have\n  a ``dbtmako`` extension.\n\n0.9.8 (2012-01-09)\n------------------\n\n- Show request headers instead of mistakenly showing environ values in\n  Headers panel under \"Request Headers\".  This also fixes a potential\n  UnicodeDecodeError.\n\n- Set content_length on response object when we regenerate app_iter while\n  replacing original content.\n\n0.9.7 (2011-12-09)\n------------------\n\n- The performance panel of the debugtoolbar used a variable named\n  ``function_calls`` which was not initialised when stats are not\n  collected. This caused a ``NameError`` when mako rendered the template with\n  the ``strict_undefined`` option.\n\n- Fix Python 3 compatibility in SQLAlchemy panel.\n\n- Make SQLAlchemy explain and select work again.\n\n0.9.6 (2011-12-09)\n------------------\n\n- Added \"Introspection\" panel; active only under Pyramid 1.3dev+ (requires\n  Pyramid introspection subsystem).\n\n- Address heisenbug reported where performance panel template variables cause\n  unexpected results.  Can't repeat, but reporter indicates the fix works for\n  him, so hail marying.  See\n  https://github.com/Pylons/pyramid_debugtoolbar/commit/5719c97ea2a3a41fc01e261403d0167cc38f3b49\n\n0.9.5 (2011-11-12)\n------------------\n\n- Adjust tox setup to test older Pyramid and WebOb branches under 2.5.\n\n- Convert all templates to Mako.\n\n- Don't rely on ``pyramid.compat.json``.\n\n- Add Tweens toolbar panel.\n\n0.9.4 (2011-09-28)\n------------------\n\n- Upgrade to jquery 1.6.4 and tablesorter plugin 2.0.5b\n\n- Introduced new setting ``debugtoolbar.button_style``. Which can be used\n  to override the default style (top:30px) set by ``toolbar.css``.\n\n- Compatible with Python 3.2 (requires Pyramid 1.3dev+).\n\n- Appease settings values that were sensitive to ``__getattr__`` in the\n  settings debug panel (e.g. MongoDB databases).  See\n  https://github.com/Pylons/pyramid_debugtoolbar/issues/30\n\n0.9.3 (2011-09-12)\n------------------\n\n- All debug toolbar panels and underlying views are now always executable by\n  entirely anonymous users, regardless of the default permission that may be\n  in effect (use the ``NO_PERMISSION_REQUIRED`` permission for all\n  debugtoolbar views).\n\n- Toolbar cookie settings name changed (from fldt to p_dt), to avoid messing\n  up folks who use both the flask debugtoolbar and Pyramid's.\n\n- Fix IE7 and IE8 renderings of the toolbar.\n\n0.9.2 (2011-09-05)\n------------------\n\n- Log an exception body to the debug toolbar logger when an exception\n  happens.\n\n- Don't reset the root logger level to NOTSET in the logging panel (changes\n  console logging output to sanity again).\n\n0.9.1 (2011-08-30)\n------------------\n\n- The ``debugtoolbar.intercept_exc`` setting is now a tri-state setting.  It\n  can be one of ``debug``, ``display`` or ``false``.  ``debug`` means show\n  the pretty traceback page with debugging controls.  ``display`` means show\n  the pretty traceback package but omit the debugging controls.  ``false``\n  means don't show the pretty traceback page.  For backwards compatibility\n  purposes, ``true`` means ``debug``.\n\n- A URL is now logged to the console for each exception when\n  ``debugtoolbar.intercept_exc`` is ``debug`` or ``display``.  This URL leads\n  to a rendering of the \"pretty\" traceback page for an exception.  This is\n  useful when the exception was caused by an AJAX or non-human-driven\n  request.  This URL is also injected into the pretty traceback page (at the\n  bottom).\n\n- \"Unfixed\" indentation of SQL EXPLAIN done in 0.9, it broke the explain page\n  when a column value isn't a string.\n\n0.9 (2011-08-29)\n----------------\n\n- Fixed indentation of SQL EXPLAIN by replacing spaces with HTML spaces.\n\n- ``response.charset`` in some undefined user-reported cases may be ``None``,\n  which would lead to an exception when attempting to render the debug\n  toolbar.  In such cases we now assume the charset is UTF-8.\n\n- Some renderings of the request vars and renderer values would raise an\n  uncaught exception.\n\n0.8 (2011-08-24)\n----------------\n\n- Try to cope with braindead Debian Python installs which package the\n  ``pstats`` module separately from Python for god only knows what reason.\n  Turn the performance panel off in this case instead of crashing.\n\n0.7 (2011-08-24)\n----------------\n\n- Docs-only changes.\n\n0.6 (2011-08-21)\n----------------\n\n- Do not register an alias when registering an implicit tween factory (compat\n  with future 1.2 release).\n\n0.5 (2011-08-18)\n----------------\n\n- The toolbar didn't work under Windows due to usage of the ``resource``\n  module: https://github.com/Pylons/pyramid_debugtoolbar/issues/12\n\n0.4 (2011-08-18)\n----------------\n\n- Change the default value for ``debugtoolbar.intercept_redirects`` to\n  ``false.`` Rationale: it confuses people when first developing if the\n  application they're working on has a home page which does a redirection.\n\n0.3 (2011-08-15)\n----------------\n\n- Request vars panel would cause a UnicodeDecodeError under some\n  circumstances (see https://github.com/Pylons/pyramid_debugtoolbar/issues/9).\n\n- Dynamicize URLs for SQLAlchemy subpanels.\n\n- Require \"pyramid>=1.2dev\" for install; the trunk is now \"1.2dev\" instead of\n  \"1.1.1dev\".\n\n- Requires trunk after 2011-08-14: WSGIHTTPException \"prepare\" method and\n  ``alias`` param to add_tween, BeforeRender event has no \"_system\" attr.\n\n- Fix memory leak.\n\n- HTML HTTP exceptions now are rendered with the debug toolbar div.\n\n- Added NotFound page to demo app and selenium tests.\n\n0.2 (2011-08-07)\n----------------\n\n- Add SQLAlchemy \"explain\" and \"select\" pages (available from the SQLALchemy\n  panel next to each query shown in the page).\n\n- Requires newer Pyramid trunk (checked out on 2011-08-07 or later).\n\n- Add a link to the SQLAlchemy demo page from the demo app index page.\n\n0.1 (2011-07-30)\n----------------\n\n- Initial release.\n\n\n",
+        "docs_url": null,
+        "download_url": "",
+        "downloads": {
+            "last_day": 0,
+            "last_month": 0,
+            "last_week": 0
+        },
+        "home_page": "https://docs.pylonsproject.org/projects/pyramid-debugtoolbar/en/latest/",
+        "keywords": "wsgi pylons pyramid transaction",
+        "license": "BSD",
+        "maintainer": "",
+        "maintainer_email": "",
+        "name": "pyramid_debugtoolbar",
+        "platform": "",
+        "project_url": "https://pypi.org/project/pyramid_debugtoolbar/",
+        "release_url": "https://pypi.org/project/pyramid_debugtoolbar/4.3/",
+        "requires_dist": [
+            "nose; extra == 'testing'",
+            "coverage; extra == 'testing'",
+            "WebTest; extra == 'testing'",
+            "pylons-sphinx-themes (>=0.3); extra == 'docs'",
+            "Sphinx (>=1.3.1); extra == 'docs'",
+            "ipaddress; python_version<\"3.3\"",
+            "repoze.lru",
+            "pyramid-mako (>=0.3.1)",
+            "pyramid (>=1.4)",
+            "Pygments"
+        ],
+        "requires_python": ">=2.7,!=3.0.*,!=3.1.*,!=3.2.*",
+        "summary": "A package which provides an interactive HTML debugger for Pyramid application development",
+        "version": "4.3"
+    },
+    "releases": {
+        "0.1": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "24e63abf400260565f93bd8199f9e6ef",
+                    "sha256": "2e5b6112dc91a9ad21447185cde6e1f9e56ef2421c0ba763d62683fe9a7006c5"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-0.1.tar.gz",
+                "has_sig": false,
+                "md5_digest": "24e63abf400260565f93bd8199f9e6ef",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 1449280,
+                "upload_time": "2011-07-30T20:17:22",
+                "url": "https://files.pythonhosted.org/packages/af/c9/be618cda4cab47cdc67a10ddcba1fc8a9a3711761e33e37307151209fd4b/pyramid_debugtoolbar-0.1.tar.gz"
+            }
+        ],
+        "0.2": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "5771c6edcab7c39d1347e0479a4b0044",
+                    "sha256": "12478d411a2e517528eaafa7d271a60d5b30a65676472389d5b331b1b6ccc4af"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-0.2.tar.gz",
+                "has_sig": false,
+                "md5_digest": "5771c6edcab7c39d1347e0479a4b0044",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 1450325,
+                "upload_time": "2011-08-07T05:22:22",
+                "url": "https://files.pythonhosted.org/packages/bc/d1/9df6f67e02d1b1f26b0b992ad6d9333ecd679793e00409c7671080712f83/pyramid_debugtoolbar-0.2.tar.gz"
+            }
+        ],
+        "0.3": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "fc430136950cf2c7b334dad87ca61008",
+                    "sha256": "9b436f3754e83ec61a27782414c81bc9473a253c1735630d52be0b0664b43c72"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-0.3.tar.gz",
+                "has_sig": false,
+                "md5_digest": "fc430136950cf2c7b334dad87ca61008",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 1452632,
+                "upload_time": "2011-08-15T06:13:54",
+                "url": "https://files.pythonhosted.org/packages/18/fe/b1f19760c34c633d35b13f23cc35963e14f3717ddd6d9f03ee84090e40aa/pyramid_debugtoolbar-0.3.tar.gz"
+            }
+        ],
+        "0.4": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "45e43e5e5d9ec3f47b9f3dbc73c9142b",
+                    "sha256": "d37475478f5bdb8e34d6540aeeb0eb4e6f3de3713f44e4f00ce681c5dbf05740"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-0.4.tar.gz",
+                "has_sig": false,
+                "md5_digest": "45e43e5e5d9ec3f47b9f3dbc73c9142b",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 1453644,
+                "upload_time": "2011-08-18T18:44:47",
+                "url": "https://files.pythonhosted.org/packages/f3/c0/e239a47af5bbb511fcb58da61e6a03edb621cb954b2a87fe9b84a1fc5c0e/pyramid_debugtoolbar-0.4.tar.gz"
+            }
+        ],
+        "0.5": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "fe72bcd836dafe1f8b6fa8880a583be6",
+                    "sha256": "7a4b6ec55aa5d72e72b0804c47bead3c77fe8ab9e439dca00033cfa936b3b8b7"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-0.5.tar.gz",
+                "has_sig": false,
+                "md5_digest": "fe72bcd836dafe1f8b6fa8880a583be6",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 1453752,
+                "upload_time": "2011-08-18T18:48:46",
+                "url": "https://files.pythonhosted.org/packages/e0/db/491d9fd63230a9d1d2d2a77312c4b6248bb703bf7065bf6ee2f1469ddaf4/pyramid_debugtoolbar-0.5.tar.gz"
+            }
+        ],
+        "0.6": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "df765179cba5f5124ee5dc8f94749d84",
+                    "sha256": "dd243b34784c4941258b63e39fd229cdfc9c3a03e2f2bc7d6406ab2bd1f1cf46"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-0.6.tar.gz",
+                "has_sig": false,
+                "md5_digest": "df765179cba5f5124ee5dc8f94749d84",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 1453838,
+                "upload_time": "2011-08-21T07:32:52",
+                "url": "https://files.pythonhosted.org/packages/d1/05/1cabd33b837c19b23cfd461be9258835ca4b53b3d0623238c71c21843304/pyramid_debugtoolbar-0.6.tar.gz"
+            }
+        ],
+        "0.7": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "cf67ecf743c597ba26b8c27af039e11d",
+                    "sha256": "4f86398f4cdb496da11457025824c92e8ab2a4dc7cc6b4770f996b5ab7c20338"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-0.7.tar.gz",
+                "has_sig": false,
+                "md5_digest": "cf67ecf743c597ba26b8c27af039e11d",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 1453729,
+                "upload_time": "2011-08-24T07:42:35",
+                "url": "https://files.pythonhosted.org/packages/83/68/967e3a53d60fd9144274bd0855e8bdb5a8f9216b3a313616efcb6c45c729/pyramid_debugtoolbar-0.7.tar.gz"
+            }
+        ],
+        "0.8": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "9548392f438baa4653b886c16d2137c4",
+                    "sha256": "c81a5707a67064c16187b51a955f156fc57e138bd552d95f4277e7eefeac06ca"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-0.8.tar.gz",
+                "has_sig": false,
+                "md5_digest": "9548392f438baa4653b886c16d2137c4",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 1453954,
+                "upload_time": "2011-08-24T20:18:37",
+                "url": "https://files.pythonhosted.org/packages/0a/6a/b3d5324132cd88d8b5d0ca73a9f98684f51cb364622e4d28b0ce2e0b471d/pyramid_debugtoolbar-0.8.tar.gz"
+            }
+        ],
+        "0.9": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "6c74d17ea311b85b4d8a2319c1c255b8",
+                    "sha256": "8a3d149774a8161e8e0efde17f02210302b483238052f2c8785b1a7d544820f4"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-0.9.tar.gz",
+                "has_sig": false,
+                "md5_digest": "6c74d17ea311b85b4d8a2319c1c255b8",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 1454537,
+                "upload_time": "2011-08-29T17:10:22",
+                "url": "https://files.pythonhosted.org/packages/99/a1/122b192e3c699ccd5f84130e6fa1fbb78704a319cb5c595c40f1d1396bfa/pyramid_debugtoolbar-0.9.tar.gz"
+            }
+        ],
+        "0.9.1": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "61e962d6bc1d6eb3bbdd183790ae6c1b",
+                    "sha256": "3942166a78c4a414bb24b6cbfd83d25797681d2bfccf830a7fbe5131b5537866"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-0.9.1.tar.gz",
+                "has_sig": false,
+                "md5_digest": "61e962d6bc1d6eb3bbdd183790ae6c1b",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 1456059,
+                "upload_time": "2011-08-31T00:46:46",
+                "url": "https://files.pythonhosted.org/packages/c2/ec/1fbea261fb9976837dd254187f2858a73b2f1fc94ee754616ae7e4323920/pyramid_debugtoolbar-0.9.1.tar.gz"
+            }
+        ],
+        "0.9.2": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "2c52d4b6d2f0feedc7b98ffcb180368c",
+                    "sha256": "55015c48aacee53121ff116f911e94fb85049da201f4540c94e16c9b714cfe52"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-0.9.2.tar.gz",
+                "has_sig": false,
+                "md5_digest": "2c52d4b6d2f0feedc7b98ffcb180368c",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 1456250,
+                "upload_time": "2011-09-05T09:35:32",
+                "url": "https://files.pythonhosted.org/packages/be/7c/2804f13d4030eb95e76087a20f7dd45f5363aa8c6d90bd31c8673da4b828/pyramid_debugtoolbar-0.9.2.tar.gz"
+            }
+        ],
+        "0.9.3": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "5b69497e5dd54bbca8c5fd0d20f15f0d",
+                    "sha256": "b37a7c5e94fc8d7b262849525326b9e6eeaca7c4454aa882cbffac33dd66b89d"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-0.9.3.tar.gz",
+                "has_sig": false,
+                "md5_digest": "5b69497e5dd54bbca8c5fd0d20f15f0d",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 1456740,
+                "upload_time": "2011-09-13T04:22:17",
+                "url": "https://files.pythonhosted.org/packages/b2/d5/cca15951fcc38b49912fc3a3b6527321e2d9a744300f7121c4a53256cea9/pyramid_debugtoolbar-0.9.3.tar.gz"
+            }
+        ],
+        "0.9.4": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "d21f83e7016e6f7135d27247f7223a77",
+                    "sha256": "940d4e037ab80a2c2ae9abb85e320a1a7acaece4dc261cf38f001556890f47a5"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-0.9.4.tar.gz",
+                "has_sig": false,
+                "md5_digest": "d21f83e7016e6f7135d27247f7223a77",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 1458900,
+                "upload_time": "2011-09-28T09:06:33",
+                "url": "https://files.pythonhosted.org/packages/7f/57/236ed7462007a3365dafb35c044ef22fe18b9eed40d164ea2df559f7ef5e/pyramid_debugtoolbar-0.9.4.tar.gz"
+            }
+        ],
+        "0.9.5": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "47250653c08b7e8492d9df32a4d8087e",
+                    "sha256": "b532379bc7ad68f752d2534eb985222b8164150651b23c9d621431a7143c42e4"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-0.9.5.tar.gz",
+                "has_sig": false,
+                "md5_digest": "47250653c08b7e8492d9df32a4d8087e",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 1500154,
+                "upload_time": "2011-11-12T23:47:35",
+                "url": "https://files.pythonhosted.org/packages/32/e0/d0e2053aa9bf718b157b9a966cce6a9ebbb4bc1d1cbc7d2ba68d0ca0134c/pyramid_debugtoolbar-0.9.5.tar.gz"
+            }
+        ],
+        "0.9.6": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "f6f3401d86692bed43ba2504320af0e7",
+                    "sha256": "e9e84b725e8c15176e1818b5e2b053b97da4c4bf776c8c2ef9e6ff8adef8e635"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-0.9.6.tar.gz",
+                "has_sig": false,
+                "md5_digest": "f6f3401d86692bed43ba2504320af0e7",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 1603379,
+                "upload_time": "2011-12-09T09:12:43",
+                "url": "https://files.pythonhosted.org/packages/38/2f/b7d9bd327797ff1fa675cf9c113c14809db35691a92acae9f68458b043f0/pyramid_debugtoolbar-0.9.6.tar.gz"
+            }
+        ],
+        "0.9.7": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "1190a578fa0f9bf64c653bc5f4b19e79",
+                    "sha256": "46003103af8b2f3bc0ddf07f6a3d95cf21776e5abbd4dd9ecf702decad90c2d8"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-0.9.7.tar.gz",
+                "has_sig": false,
+                "md5_digest": "1190a578fa0f9bf64c653bc5f4b19e79",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 1603909,
+                "upload_time": "2011-12-09T20:17:51",
+                "url": "https://files.pythonhosted.org/packages/07/bd/fd17bacafc36c0c0d4ae9c789ca64fad417ec156750ddf528bf7941212f9/pyramid_debugtoolbar-0.9.7.tar.gz"
+            }
+        ],
+        "0.9.8": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "a83133089d3580e0ae3e453b6bd07b91",
+                    "sha256": "d5fa4b8d29f5a6dfdc8d4a07b15691b3e2590d7f532ae286cc8e29bd827a7806"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-0.9.8.tar.gz",
+                "has_sig": false,
+                "md5_digest": "a83133089d3580e0ae3e453b6bd07b91",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 1604662,
+                "upload_time": "2012-01-09T21:46:05",
+                "url": "https://files.pythonhosted.org/packages/88/91/95860cc97619a25ad1be3b59cb0da3b7e48d3076fb2778fa8058ee16b016/pyramid_debugtoolbar-0.9.8.tar.gz"
+            }
+        ],
+        "0.9.9": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "f7df3ac2305bb2b02c65ea9e7028babc",
+                    "sha256": "b92b5c284b282e5ccd2c0f2a4ed87891952dbfbe39bca61d4b49cdbe6cb2ec8b"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-0.9.9.tar.gz",
+                "has_sig": false,
+                "md5_digest": "f7df3ac2305bb2b02c65ea9e7028babc",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 1605672,
+                "upload_time": "2012-02-20T00:01:50",
+                "url": "https://files.pythonhosted.org/packages/63/2f/d575b15c7c43da0ce4205e8652268ae1f1c2dd241cf7c147e2c604722178/pyramid_debugtoolbar-0.9.9.tar.gz"
+            }
+        ],
+        "0.9.9.1": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "9db9c0cc6c6cdfada23fbba32ba6bd59",
+                    "sha256": "9680e77bf1f19b845b9a582d6f3f5618523cb849c90fd3baae25812eedabfc89"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-0.9.9.1.tar.gz",
+                "has_sig": false,
+                "md5_digest": "9db9c0cc6c6cdfada23fbba32ba6bd59",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 1605949,
+                "upload_time": "2012-02-23T02:52:38",
+                "url": "https://files.pythonhosted.org/packages/e6/fa/8f8e5ef4fdc524f5da80b0f8c04193769cfe176609d7d3037810d13d4f1d/pyramid_debugtoolbar-0.9.9.1.tar.gz"
+            }
+        ],
+        "1.0": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "37bff0f1d44941b97137dab24facc978",
+                    "sha256": "4303d25557ea6b4150c6d7fc56b43d191d16e5bfeb5e909c5da2dc7e1ecd5e1f"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-1.0.tar.gz",
+                "has_sig": false,
+                "md5_digest": "37bff0f1d44941b97137dab24facc978",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 1626279,
+                "upload_time": "2012-03-17T22:43:08",
+                "url": "https://files.pythonhosted.org/packages/11/3a/60fc405bc137a43ff0f194e57e74b1d7b55658df0dbcb79f47511a8408d0/pyramid_debugtoolbar-1.0.tar.gz"
+            }
+        ],
+        "1.0.1": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "c03750506585e30183e84e5678ef0c3d",
+                    "sha256": "c72248c485032d240382a905577e3c5c2d5264f6df4ba60b2f2a8cfe0790d082"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-1.0.1.tar.gz",
+                "has_sig": false,
+                "md5_digest": "c03750506585e30183e84e5678ef0c3d",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 1626432,
+                "upload_time": "2012-03-27T06:07:59",
+                "url": "https://files.pythonhosted.org/packages/5f/fd/443e8418a96d9dc1abb49381882901b0c0acfba80f372cf1ead6cd9bccdd/pyramid_debugtoolbar-1.0.1.tar.gz"
+            }
+        ],
+        "1.0.2": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "4da4cb7d2c53b40b71d16fec9e1ca9a7",
+                    "sha256": "a2f4e80989aa18e70c0bd580025b9e12d3eeee04a25fffb9cb5e56bb820768ad"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-1.0.2.tar.gz",
+                "has_sig": false,
+                "md5_digest": "4da4cb7d2c53b40b71d16fec9e1ca9a7",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 1760483,
+                "upload_time": "2012-04-19T18:31:42",
+                "url": "https://files.pythonhosted.org/packages/c4/55/35ad68c46bcc734e5401c7335942f4ac4edb1957ce958fcf302149fd89fb/pyramid_debugtoolbar-1.0.2.tar.gz"
+            }
+        ],
+        "1.0.3": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "67324e75a0b3ecf3fe1804ce82a430cb",
+                    "sha256": "22e4e4220f8ef137165a4bda98423e2ca0835f9bf007500922d2f2d298c48f06"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-1.0.3.tar.gz",
+                "has_sig": false,
+                "md5_digest": "67324e75a0b3ecf3fe1804ce82a430cb",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 1760974,
+                "upload_time": "2012-09-23T05:47:52",
+                "url": "https://files.pythonhosted.org/packages/58/65/3fcc670301ef11b1c2caca94183464dcaeab52a7bb48509935ad6532152a/pyramid_debugtoolbar-1.0.3.tar.gz"
+            }
+        ],
+        "1.0.4": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "0133cacdb0fb08b15d6945d2e01b2d8f",
+                    "sha256": "4e15fa4ea220f8f1e925b70bd835658cdad02a2411fc33cb586ee84ab7430112"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-1.0.4.tar.gz",
+                "has_sig": false,
+                "md5_digest": "0133cacdb0fb08b15d6945d2e01b2d8f",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 1762091,
+                "upload_time": "2013-01-05T06:37:38",
+                "url": "https://files.pythonhosted.org/packages/73/b3/a03db5050d84506633e95c04a2c6979010b22fae08f6ca7e3bd5e22e87fe/pyramid_debugtoolbar-1.0.4.tar.gz"
+            }
+        ],
+        "1.0.5": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "e5fe098fd0dcdb899d393e703635a287",
+                    "sha256": "753abfcd17f3ad60dd1a4d1e00bddaff19605506819c3c106cef12445829c303"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-1.0.5.tar.gz",
+                "has_sig": false,
+                "md5_digest": "e5fe098fd0dcdb899d393e703635a287",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 57602,
+                "upload_time": "2013-04-17T19:34:01",
+                "url": "https://files.pythonhosted.org/packages/96/50/1e17f0758efca7b3d9cc64833fa67a4ff1c4b3748fe1a35f23f742c12c42/pyramid_debugtoolbar-1.0.5.tar.gz"
+            }
+        ],
+        "1.0.6": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "3230293866dd5dfdec54a4888d47924c",
+                    "sha256": "269b5c0bfd49ba9a313ac95a0379dcaf5e1909d148837221aa541cd51c3100ff"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-1.0.6.tar.gz",
+                "has_sig": false,
+                "md5_digest": "3230293866dd5dfdec54a4888d47924c",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 1771819,
+                "upload_time": "2013-04-17T21:20:03",
+                "url": "https://files.pythonhosted.org/packages/3d/2b/3b997852916c1b28a43f1f341eb6024b2a23ebb3c9bd83a55798cb3f2a8a/pyramid_debugtoolbar-1.0.6.tar.gz"
+            }
+        ],
+        "1.0.7": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "c1ea9b0fc8938a2bec1e36f15ad6c3cb",
+                    "sha256": "fb7d2450ca49bb0f91dd0f6b75490c161c16e90ae5824c3063c243f6835b1039"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-1.0.7.tar.gz",
+                "has_sig": false,
+                "md5_digest": "c1ea9b0fc8938a2bec1e36f15ad6c3cb",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 1769482,
+                "upload_time": "2013-08-30T00:18:00",
+                "url": "https://files.pythonhosted.org/packages/69/ea/252a042f91c233e3e37d3cbb2eecb51f5fafecdf5d135d86d5e1c0633c17/pyramid_debugtoolbar-1.0.7.tar.gz"
+            }
+        ],
+        "1.0.8": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "222012b25b2ac01b6de597233a2e46c7",
+                    "sha256": "e485db99cedf3b408fcb3f2e2b8e4fdf08c4a95f1f418710d7d39872f57a371e"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-1.0.8.tar.gz",
+                "has_sig": false,
+                "md5_digest": "222012b25b2ac01b6de597233a2e46c7",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 1767994,
+                "upload_time": "2013-09-09T22:24:00",
+                "url": "https://files.pythonhosted.org/packages/1e/a0/94cebdc731f0ae4b586a4e854d227cf2c9d82cede2da96f3c2f883b85f21/pyramid_debugtoolbar-1.0.8.tar.gz"
+            }
+        ],
+        "1.0.9": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "450543b9d990719624131e07131f93fd",
+                    "sha256": "60fb2b7092fcb5ea48c6b6e89ccfb7237be79556f7bc6effd93a7a6b7178dfee"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-1.0.9.tar.gz",
+                "has_sig": false,
+                "md5_digest": "450543b9d990719624131e07131f93fd",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 1773867,
+                "upload_time": "2013-10-21T02:58:59",
+                "url": "https://files.pythonhosted.org/packages/54/e3/f23042c309899075aa13978226d8752a5d4b922efd13ecd2e69c1b0d83b3/pyramid_debugtoolbar-1.0.9.tar.gz"
+            }
+        ],
+        "2.0": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "6b856b9b724f2526d2553a3d1004c39a",
+                    "sha256": "4a4627afb30bd4c903693ee2897f0876c0c7e3c35d20bdfa93dd2a8f32e57cac"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-2.0.tar.gz",
+                "has_sig": false,
+                "md5_digest": "6b856b9b724f2526d2553a3d1004c39a",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 3009179,
+                "upload_time": "2014-02-13T00:27:44",
+                "url": "https://files.pythonhosted.org/packages/bf/85/067f8cdac7b52c27fa1b9558f7bb4b67c927d08b70c65f81d39e0b9dbdca/pyramid_debugtoolbar-2.0.tar.gz"
+            }
+        ],
+        "2.0.1": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "db77e4362fb0e1a1db7e97d7d880906f",
+                    "sha256": "ebe878b1d42ffc1c96b0bd3d7560d7d13c9afde847fb3c6dba7ecadb545e17d3"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-2.0.1.tar.gz",
+                "has_sig": false,
+                "md5_digest": "db77e4362fb0e1a1db7e97d7d880906f",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 3009325,
+                "upload_time": "2014-02-13T00:41:03",
+                "url": "https://files.pythonhosted.org/packages/ff/8b/b9ab7168fc3b0feea6ee7b59e3a17573b79027bde0ec78080bd6697c0ce0/pyramid_debugtoolbar-2.0.1.tar.gz"
+            }
+        ],
+        "2.0.2": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "be3914e1967f6421261af7705ed35dbc",
+                    "sha256": "5bf6659818f9db7c4b25ecf23b4c9d1f65a371713f5a7350a42dc1970f508bbe"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-2.0.2.tar.gz",
+                "has_sig": false,
+                "md5_digest": "be3914e1967f6421261af7705ed35dbc",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 3009442,
+                "upload_time": "2014-02-13T16:56:07",
+                "url": "https://files.pythonhosted.org/packages/69/26/d51dc9250b8cbec4c408149816c85a55ff47612c764657c717e574685082/pyramid_debugtoolbar-2.0.2.tar.gz"
+            }
+        ],
+        "2.1": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "2c7c9fdba41184d4e6bca0874ea806e4",
+                    "sha256": "b54e6a210da7bf08d81efa76896ac01f1282e9e32a87e2dda393c1116b3b52a0"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-2.1.tar.gz",
+                "has_sig": false,
+                "md5_digest": "2c7c9fdba41184d4e6bca0874ea806e4",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 3014159,
+                "upload_time": "2014-05-22T16:31:48",
+                "url": "https://files.pythonhosted.org/packages/ea/9a/8df1240d6849d4490bca239904d42e4216f84b363ba8900436cb22cb41ec/pyramid_debugtoolbar-2.1.tar.gz"
+            }
+        ],
+        "2.2": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "2f927278ec680277ef72dd85bf49d73b",
+                    "sha256": "956b089991241793de761e385218292d4ff7dfc7e0136b8a50d98525face280f"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-2.2-py2-none-any.whl",
+                "has_sig": false,
+                "md5_digest": "2f927278ec680277ef72dd85bf49d73b",
+                "packagetype": "bdist_wheel",
+                "python_version": "any",
+                "size": 449618,
+                "upload_time": "2014-08-12T18:52:14",
+                "url": "https://files.pythonhosted.org/packages/24/84/020ea51780d2102b42c690e21470169d7d873e48ef58a37dec1e3710b298/pyramid_debugtoolbar-2.2-py2-none-any.whl"
+            },
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "9b20b80a33e319e90a96e58fefd1895b",
+                    "sha256": "794c6635dcb824db10c72101a98ce4e83f39522aa24f576172d316e0581427a2"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-2.2.tar.gz",
+                "has_sig": false,
+                "md5_digest": "9b20b80a33e319e90a96e58fefd1895b",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 3014816,
+                "upload_time": "2014-08-12T18:48:12",
+                "url": "https://files.pythonhosted.org/packages/97/59/2cae06dd824bdd4b32a0745957bb34df3932563b39ac9327b5bc06304f27/pyramid_debugtoolbar-2.2.tar.gz"
+            }
+        ],
+        "2.2.1": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "017884cadd4897e63028d7020bc74dde",
+                    "sha256": "f89ddeb31c3300439aa808306987bde6c80e90d9d3f685b2bde7a17e2622ce98"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-2.2.1.tar.gz",
+                "has_sig": false,
+                "md5_digest": "017884cadd4897e63028d7020bc74dde",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 64710,
+                "upload_time": "2014-11-10T02:51:24",
+                "url": "https://files.pythonhosted.org/packages/a6/f8/b6b72f96b886aa50feede639c3d68c961379aa92fd12430376073da14c86/pyramid_debugtoolbar-2.2.1.tar.gz"
+            }
+        ],
+        "2.2.2": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "0e247dd114aef17b1f1255f8b7222748",
+                    "sha256": "f50cfbe38a11da40b7924a182bf067b44d96db9d6e75763e18e403bfd6e5e0db"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-2.2.2-py2.py3-none-any.whl",
+                "has_sig": false,
+                "md5_digest": "0e247dd114aef17b1f1255f8b7222748",
+                "packagetype": "bdist_wheel",
+                "python_version": "any",
+                "size": 448704,
+                "upload_time": "2014-11-10T02:57:13",
+                "url": "https://files.pythonhosted.org/packages/8f/e4/74698713840f2a5e0fbbe47d9c89406729798378ba5f88d985900f6dc94a/pyramid_debugtoolbar-2.2.2-py2.py3-none-any.whl"
+            },
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "232daa3f2defa5d47d8acc1b8d670e01",
+                    "sha256": "2e5eb0807095f1fb2a8524220f14864b5f1ae18e1c948db18c15aa15ab8e60b2"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-2.2.2.tar.gz",
+                "has_sig": false,
+                "md5_digest": "232daa3f2defa5d47d8acc1b8d670e01",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 3015869,
+                "upload_time": "2014-11-10T02:55:37",
+                "url": "https://files.pythonhosted.org/packages/89/96/9223dea6354ceca277cb23e4afc02072c540c652e0795158ceb129207f50/pyramid_debugtoolbar-2.2.2.tar.gz"
+            }
+        ],
+        "2.3": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "64e1cfcf6a988edb189af13e36ab875c",
+                    "sha256": "942a82fc494be72a0efd1226bb319c4035724d847d2583a95b94e04c3d93ad3f"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-2.3-py2.py3-none-any.whl",
+                "has_sig": false,
+                "md5_digest": "64e1cfcf6a988edb189af13e36ab875c",
+                "packagetype": "bdist_wheel",
+                "python_version": "2.7",
+                "size": 449260,
+                "upload_time": "2015-01-05T21:45:08",
+                "url": "https://files.pythonhosted.org/packages/82/92/730f9b8e9ec2a84a4ec8c2ccfacd522067e041f22f6f84bfd48ea14e6ecf/pyramid_debugtoolbar-2.3-py2.py3-none-any.whl"
+            },
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "3d4c2af7d4f45efd796cdd58126ac446",
+                    "sha256": "38c4ae0524b7e045f816c96697369849c0f8562e3f1ae0fbaf168b53b2105ea3"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-2.3.tar.gz",
+                "has_sig": false,
+                "md5_digest": "3d4c2af7d4f45efd796cdd58126ac446",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 3017109,
+                "upload_time": "2015-01-05T21:44:32",
+                "url": "https://files.pythonhosted.org/packages/78/a9/ef0f8382bf948a57efe9d389f652d9a3f733be54a5acc7e595891006e0c8/pyramid_debugtoolbar-2.3.tar.gz"
+            }
+        ],
+        "2.4": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "194d84fa3a91050024c69a7afa8e0cb8",
+                    "sha256": "2f93936021174e215a63ebc701bddee3dff93f2bd286b0045581867b994cadd8"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-2.4-py2.py3-none-any.whl",
+                "has_sig": true,
+                "md5_digest": "194d84fa3a91050024c69a7afa8e0cb8",
+                "packagetype": "bdist_wheel",
+                "python_version": "py2.py3",
+                "size": 455725,
+                "upload_time": "2015-06-04T17:00:47",
+                "url": "https://files.pythonhosted.org/packages/35/71/e9c9c4496a294fd6ff4a14c42cef52a645ed1e5cf258a1105824e9515da2/pyramid_debugtoolbar-2.4-py2.py3-none-any.whl"
+            },
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "7fe77dd0ce5b12f8e11a6853fdb8a704",
+                    "sha256": "6ea0ffd2736d9c5dc8da4cb289c9eec87cac090b91ed717dc0127e9850f3191f"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-2.4.tar.gz",
+                "has_sig": true,
+                "md5_digest": "7fe77dd0ce5b12f8e11a6853fdb8a704",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 3042917,
+                "upload_time": "2015-06-04T17:00:52",
+                "url": "https://files.pythonhosted.org/packages/09/3b/a554704488991e87748cc01ea02617709045027e35b84adb7c57451753ac/pyramid_debugtoolbar-2.4.tar.gz"
+            }
+        ],
+        "2.4.1": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "de0a708b38609ff02272ce74b2da4f60",
+                    "sha256": "cc1644765fd0dd5a3e3a9bf18ceb9416927b62eb07154b262c00ddc9e9c47168"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-2.4.1-py2.py3-none-any.whl",
+                "has_sig": true,
+                "md5_digest": "de0a708b38609ff02272ce74b2da4f60",
+                "packagetype": "bdist_wheel",
+                "python_version": "py2.py3",
+                "size": 455815,
+                "upload_time": "2015-08-12T17:32:17",
+                "url": "https://files.pythonhosted.org/packages/74/5d/e3b44db7b6777d27a64ce4974a6011bf0ead8a7cd1ff85b6a2741917d2a0/pyramid_debugtoolbar-2.4.1-py2.py3-none-any.whl"
+            },
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "a0fc99c07b758477e35d0f344216ee2f",
+                    "sha256": "0303bac4e33fa232b2d1e4bfc5471239b0af3028ccbe0b97f8982b1568364067"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-2.4.1.tar.gz",
+                "has_sig": true,
+                "md5_digest": "a0fc99c07b758477e35d0f344216ee2f",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 3043264,
+                "upload_time": "2015-08-12T17:32:23",
+                "url": "https://files.pythonhosted.org/packages/3f/f3/252c40f4efdaf6ba921afac66f316ebd54e0153aab2f9819d1c9fb565cd6/pyramid_debugtoolbar-2.4.1.tar.gz"
+            }
+        ],
+        "2.4.2": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "8289e54d4e3d8d8b949caff22b087f7b",
+                    "sha256": "0a6f89bac68437f0bbd3edae768e2491845d6bc949783af9f839bfd7ad08593b"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-2.4.2-py2.py3-none-any.whl",
+                "has_sig": true,
+                "md5_digest": "8289e54d4e3d8d8b949caff22b087f7b",
+                "packagetype": "bdist_wheel",
+                "python_version": "py2.py3",
+                "size": 456043,
+                "upload_time": "2015-10-28T23:13:56",
+                "url": "https://files.pythonhosted.org/packages/84/9b/e24fba208da29695b4aa8c549fd835f94952cc5e459a3f089bf3415d01b4/pyramid_debugtoolbar-2.4.2-py2.py3-none-any.whl"
+            },
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "073ea67086cc4bd5decc3a000853642d",
+                    "sha256": "7211ef92e2a8e9f18695b4404e8b51914696924557a4dd1c32aabba4be5143be"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-2.4.2.tar.gz",
+                "has_sig": true,
+                "md5_digest": "073ea67086cc4bd5decc3a000853642d",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 3043662,
+                "upload_time": "2015-10-29T01:42:01",
+                "url": "https://files.pythonhosted.org/packages/89/00/ed5426ee41ed747ba3ffd30e8230841a6878286ea67d480b1444d24f06a2/pyramid_debugtoolbar-2.4.2.tar.gz"
+            }
+        ],
+        "2.5": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "33f36a7213b58f05ee72395b1c4eb40c",
+                    "sha256": "04f2131d7d1cf4d5882bbd100fe8faa3000452073e7a0c78f0200cc50e5ea5d6"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-2.5-py2.py3-none-any.whl",
+                "has_sig": true,
+                "md5_digest": "33f36a7213b58f05ee72395b1c4eb40c",
+                "packagetype": "bdist_wheel",
+                "python_version": "py2.py3",
+                "size": 458464,
+                "upload_time": "2016-04-21T03:35:59",
+                "url": "https://files.pythonhosted.org/packages/b6/0e/771f911e7b1bc91128a543430a954b011455cb0ed69d3f3f0b4d43024f3b/pyramid_debugtoolbar-2.5-py2.py3-none-any.whl"
+            },
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "903192fd516b2c21d72c02e213b22618",
+                    "sha256": "3caaf368e4ab3b4dd67e27cc1d6e9fb51e0d332f38e07fb8c57cfc7cc2cc5714"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-2.5.tar.gz",
+                "has_sig": true,
+                "md5_digest": "903192fd516b2c21d72c02e213b22618",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 3046726,
+                "upload_time": "2016-04-21T03:36:35",
+                "url": "https://files.pythonhosted.org/packages/69/38/bc1f3e3e0b328fd6cf692e59691df217a210ec14284bd3140e90e8ba063f/pyramid_debugtoolbar-2.5.tar.gz"
+            }
+        ],
+        "3.0": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "60021bfa30ed6568cabce38b5cce1ca9",
+                    "sha256": "693662282fdd2cd4d0e27eabc387667ffb2f8ee28de7fc1efa00a169b11ded72"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-3.0-py2.py3-none-any.whl",
+                "has_sig": true,
+                "md5_digest": "60021bfa30ed6568cabce38b5cce1ca9",
+                "packagetype": "bdist_wheel",
+                "python_version": "py2.py3",
+                "size": 353235,
+                "upload_time": "2016-04-23T17:08:29",
+                "url": "https://files.pythonhosted.org/packages/27/92/7d69a9bfc45279b70be867b9bca2a9b13ea2f086d8491587cb4e4466ef5d/pyramid_debugtoolbar-3.0-py2.py3-none-any.whl"
+            },
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "2542d08cd70b12a64bb76912a4e381e4",
+                    "sha256": "27020de1f4e5a1dc61ade083ac676257699361252eb23dcec932a445a39c86c0"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-3.0.tar.gz",
+                "has_sig": true,
+                "md5_digest": "2542d08cd70b12a64bb76912a4e381e4",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 2938004,
+                "upload_time": "2016-04-23T17:11:23",
+                "url": "https://files.pythonhosted.org/packages/11/46/e65ef1a78569c1974a39a4b819f59620e20f215eb663b7a4d3d0be54f4f4/pyramid_debugtoolbar-3.0.tar.gz"
+            }
+        ],
+        "3.0.1": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "26b376925bf8ee23e39404e500a5ca90",
+                    "sha256": "fad3f254aaaf235ddf450523d2ddc2e3f2c47ad244671455104383d5269ed096"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-3.0.1-py2.py3-none-any.whl",
+                "has_sig": true,
+                "md5_digest": "26b376925bf8ee23e39404e500a5ca90",
+                "packagetype": "bdist_wheel",
+                "python_version": "py2.py3",
+                "size": 353747,
+                "upload_time": "2016-05-20T05:24:18",
+                "url": "https://files.pythonhosted.org/packages/74/78/63414cf488f659204af260ac3830ac60e28d7b96ff38d85e4ae57d9b78f2/pyramid_debugtoolbar-3.0.1-py2.py3-none-any.whl"
+            },
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "b5871b259b8c0bb0ce5c3b3ebbc5d495",
+                    "sha256": "e3b501e85296d19ba0817a99f0d73486df73db8d53d8b8cce3fe55812318cdd4"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-3.0.1.tar.gz",
+                "has_sig": true,
+                "md5_digest": "b5871b259b8c0bb0ce5c3b3ebbc5d495",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 2938648,
+                "upload_time": "2016-05-20T05:24:39",
+                "url": "https://files.pythonhosted.org/packages/79/a4/a92f161920ac1a2b71000299ad6bd1449c7729cd94eead18ab7a52d68c70/pyramid_debugtoolbar-3.0.1.tar.gz"
+            }
+        ],
+        "3.0.2": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "9c0d90a497ee2967afa4677d97864cea",
+                    "sha256": "a53fc87d5843090073b25fa9df713fec14bbe0f9843d64ce45f00fe261947482"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-3.0.2-py2.py3-none-any.whl",
+                "has_sig": true,
+                "md5_digest": "9c0d90a497ee2967afa4677d97864cea",
+                "packagetype": "bdist_wheel",
+                "python_version": "py2.py3",
+                "size": 353838,
+                "upload_time": "2016-07-03T02:38:45",
+                "url": "https://files.pythonhosted.org/packages/cc/ef/774ae64bb92946663604b450e8eb02ebfd92a1cb289a2635bc1f483c0ee4/pyramid_debugtoolbar-3.0.2-py2.py3-none-any.whl"
+            },
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "d562573dd5808946dc0b32ef4eb06ba9",
+                    "sha256": "497c56bc7a0c3a040b3b3a4a27c90468592b2368209a4798d03b7333d2b85cf2"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-3.0.2.tar.gz",
+                "has_sig": true,
+                "md5_digest": "d562573dd5808946dc0b32ef4eb06ba9",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 2938804,
+                "upload_time": "2016-07-03T02:38:53",
+                "url": "https://files.pythonhosted.org/packages/8e/2c/2b72775dcda1f7897ce605f942c9a76a86193fbd8c8f29dca1173bacd51a/pyramid_debugtoolbar-3.0.2.tar.gz"
+            }
+        ],
+        "3.0.3": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "83ef20edfef5b5029ba1453c27b97d69",
+                    "sha256": "16c25913734297d7ea7fca50a245a95dc2684557976fe2a5bd9c0f2aae2fca1f"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-3.0.3-py2.py3-none-any.whl",
+                "has_sig": true,
+                "md5_digest": "83ef20edfef5b5029ba1453c27b97d69",
+                "packagetype": "bdist_wheel",
+                "python_version": "py2.py3",
+                "size": 83616,
+                "upload_time": "2016-07-26T23:10:32",
+                "url": "https://files.pythonhosted.org/packages/c8/ea/c86ca83d9f204cd74b65f1d9eee1d352e26802c47e21fceebcc881ea7cea/pyramid_debugtoolbar-3.0.3-py2.py3-none-any.whl"
+            },
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "a414511c169fe67fb0501d70e8c77163",
+                    "sha256": "b2731fc6e49b37e4d4f5a641d45fcd4820dc69a157b04833d631ea7071468b45"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-3.0.3.tar.gz",
+                "has_sig": true,
+                "md5_digest": "a414511c169fe67fb0501d70e8c77163",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 2682361,
+                "upload_time": "2016-07-26T23:10:38",
+                "url": "https://files.pythonhosted.org/packages/6b/c1/e4a9e1dd412e82e38a29693264055651d9bd62f310be273bf7cd875bb7fd/pyramid_debugtoolbar-3.0.3.tar.gz"
+            }
+        ],
+        "3.0.4": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "dedfc7ebc3d82050c79948cf43082787",
+                    "sha256": "74a3852a51d1653045f9cfd3fcfa2f577390a6b27bccdc377d1d3260e34bd285"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-3.0.4-py2.py3-none-any.whl",
+                "has_sig": true,
+                "md5_digest": "dedfc7ebc3d82050c79948cf43082787",
+                "packagetype": "bdist_wheel",
+                "python_version": "py2.py3",
+                "size": 354073,
+                "upload_time": "2016-07-26T23:15:23",
+                "url": "https://files.pythonhosted.org/packages/80/ed/a2428bca8201307d29db0de2283366f4f9a42dce2e94991af1992aaa5b45/pyramid_debugtoolbar-3.0.4-py2.py3-none-any.whl"
+            },
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "51ff68a733ae994641027f10116e519d",
+                    "sha256": "6e18c71ccac3c80e6b32a49300f16301e7a5b79a8eb8e4cff48450dd522b5805"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-3.0.4.tar.gz",
+                "has_sig": true,
+                "md5_digest": "51ff68a733ae994641027f10116e519d",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 2939582,
+                "upload_time": "2016-07-26T23:15:30",
+                "url": "https://files.pythonhosted.org/packages/b0/c5/aae5d99983600146875d471aab9142b925fd3596e6e637f6c35d158d09cc/pyramid_debugtoolbar-3.0.4.tar.gz"
+            }
+        ],
+        "3.0.5": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "6e4455811a822e137dab2bed1058b556",
+                    "sha256": "568f2ce3011b955e81ff0a982b0cc61f26622801881d28899bdba02374468cbe"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-3.0.5-py2.py3-none-any.whl",
+                "has_sig": true,
+                "md5_digest": "6e4455811a822e137dab2bed1058b556",
+                "packagetype": "bdist_wheel",
+                "python_version": "py2.py3",
+                "size": 353637,
+                "upload_time": "2016-11-01T05:50:32",
+                "url": "https://files.pythonhosted.org/packages/13/b1/344c7a7cd2db825c01992faa25b7a7279019b636efa57b49cfc25fa824e5/pyramid_debugtoolbar-3.0.5-py2.py3-none-any.whl"
+            },
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "aebab8c3bfdc6f89e4d3adc1d126538e",
+                    "sha256": "6bf9dd67e75ef89c91a70d479a84912a86f4cc81183cfd44e5f0b7704fcd4ffc"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-3.0.5.tar.gz",
+                "has_sig": true,
+                "md5_digest": "aebab8c3bfdc6f89e4d3adc1d126538e",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 2939005,
+                "upload_time": "2016-11-01T05:50:37",
+                "url": "https://files.pythonhosted.org/packages/64/0e/df00bfb55605900e7a2f7e4a18dd83575a6651688e297d5a0aa4c208fd7d/pyramid_debugtoolbar-3.0.5.tar.gz"
+            }
+        ],
+        "4.0": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "0912c402bb9a00028500ae3f262133de",
+                    "sha256": "0dc0cb1fc4ce9969061726550cc64d11de135ff079de8ac98da9a1788218eccd"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-4.0-py2.py3-none-any.whl",
+                "has_sig": true,
+                "md5_digest": "0912c402bb9a00028500ae3f262133de",
+                "packagetype": "bdist_wheel",
+                "python_version": "py2.py3",
+                "size": 364366,
+                "upload_time": "2017-05-03T05:30:15",
+                "url": "https://files.pythonhosted.org/packages/d4/58/b5c2f289c360ddd5bdfccf0d07e12a45d68ea64dea63f7f7f956cfa659ce/pyramid_debugtoolbar-4.0-py2.py3-none-any.whl"
+            },
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "29280b5ca996e7c34abe3a69400d1469",
+                    "sha256": "255d468aa55771597b7877c1def3044df18c53074366a8dac51fb5b20a773edd"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-4.0.tar.gz",
+                "has_sig": true,
+                "md5_digest": "29280b5ca996e7c34abe3a69400d1469",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 2952473,
+                "upload_time": "2017-05-03T05:30:20",
+                "url": "https://files.pythonhosted.org/packages/c9/e6/d90ce2bb3512eb09403bd790561d31ade8eed7c0f7e47a922bbde3f31a5f/pyramid_debugtoolbar-4.0.tar.gz"
+            }
+        ],
+        "4.0.1": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "2b18db21f7d0ec0f8d5c2074ac7b57c7",
+                    "sha256": "bc7f2e434046636f2f05da0805234cdfa31a9c37322ca018b4e1c07c4c435c2a"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-4.0.1-py2.py3-none-any.whl",
+                "has_sig": true,
+                "md5_digest": "2b18db21f7d0ec0f8d5c2074ac7b57c7",
+                "packagetype": "bdist_wheel",
+                "python_version": "py2.py3",
+                "size": 364474,
+                "upload_time": "2017-05-10T00:32:06",
+                "url": "https://files.pythonhosted.org/packages/06/53/5945c6d63af588be9a994186e1b54732232df877862ce589550518d5398e/pyramid_debugtoolbar-4.0.1-py2.py3-none-any.whl"
+            },
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "2f7dd10a9c7b2faa59e956fdc66f42e9",
+                    "sha256": "3a429bbbb91c11bc2fc04714cde65a57e24794b61debf13de0af3901ae2fd2d2"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-4.0.1.tar.gz",
+                "has_sig": true,
+                "md5_digest": "2f7dd10a9c7b2faa59e956fdc66f42e9",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 2952821,
+                "upload_time": "2017-05-10T00:32:17",
+                "url": "https://files.pythonhosted.org/packages/a3/e0/7d34bae384ab2692ebc6d43101006e8804e8a838dfc037bd1588287261fb/pyramid_debugtoolbar-4.0.1.tar.gz"
+            }
+        ],
+        "4.1": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "d3e99b8918b72500355d4a54434d7e46",
+                    "sha256": "800ad173588066ab8068eaab6e4000690daf489ef40ebec8a03f757ffa4bb96d"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-4.1-py2.py3-none-any.whl",
+                "has_sig": true,
+                "md5_digest": "d3e99b8918b72500355d4a54434d7e46",
+                "packagetype": "bdist_wheel",
+                "python_version": "py2.py3",
+                "size": 354304,
+                "upload_time": "2017-05-31T02:50:46",
+                "url": "https://files.pythonhosted.org/packages/4d/a4/a27135e1d8a049bd7a9c901165240c3af8f2a5a3a2ea3dd8f1453126320d/pyramid_debugtoolbar-4.1-py2.py3-none-any.whl"
+            },
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "6a9f0f8f39b730e51a9f49920d132f59",
+                    "sha256": "8522de5197fbc35a191ebdb5fe36c849a466e2fa85dd3ad078b507d8401725dc"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-4.1.tar.gz",
+                "has_sig": true,
+                "md5_digest": "6a9f0f8f39b730e51a9f49920d132f59",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 2932999,
+                "upload_time": "2017-05-31T02:50:51",
+                "url": "https://files.pythonhosted.org/packages/4b/92/0c484de9c2657a9ca15dfd9588d5e9ecbe5482834221135294ec031d5c82/pyramid_debugtoolbar-4.1.tar.gz"
+            }
+        ],
+        "4.2": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "6ae9eb14e49f62e352e5b0617ccec2c3",
+                    "sha256": "b239e27aab35666d14fa24a31b21e9f4d821dc517c8fc71c44751147a5479fea"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-4.2-py2.py3-none-any.whl",
+                "has_sig": true,
+                "md5_digest": "6ae9eb14e49f62e352e5b0617ccec2c3",
+                "packagetype": "bdist_wheel",
+                "python_version": "py2.py3",
+                "size": 354833,
+                "upload_time": "2017-06-22T00:57:25",
+                "url": "https://files.pythonhosted.org/packages/93/e3/a5645a2f2d67155a8dffaa068012bb22a3731f0cc248f193a9d3a16c4319/pyramid_debugtoolbar-4.2-py2.py3-none-any.whl"
+            },
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "babaa2124b7a5286c1231130155adcf4",
+                    "sha256": "e03a84adb29d485f92afc2c5702f3aa9d9ea2248ddc26d35a3f6fd07a135cedf"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-4.2.tar.gz",
+                "has_sig": true,
+                "md5_digest": "babaa2124b7a5286c1231130155adcf4",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 2933666,
+                "upload_time": "2017-06-22T00:57:30",
+                "url": "https://files.pythonhosted.org/packages/ee/f6/607cdbd06c964ef8ef1939669eb51ec2715a5a64dabd4d9330c8fb8e5edd/pyramid_debugtoolbar-4.2.tar.gz"
+            }
+        ],
+        "4.2.1": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "79dd7e9a79d6c1d34570d0397e1cc1e1",
+                    "sha256": "340e0cde67f1af996b86e03aa3e432c8f0355938a39c09adc87fe54c705330a5"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-4.2.1-py2.py3-none-any.whl",
+                "has_sig": true,
+                "md5_digest": "79dd7e9a79d6c1d34570d0397e1cc1e1",
+                "packagetype": "bdist_wheel",
+                "python_version": "py2.py3",
+                "size": 354934,
+                "upload_time": "2017-07-01T01:35:59",
+                "url": "https://files.pythonhosted.org/packages/95/c7/7aa120244565dc3a9e8fa85ab252c705d637fc501431e00e060b27e5591e/pyramid_debugtoolbar-4.2.1-py2.py3-none-any.whl"
+            },
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "3dfaced2fab1644ff5284017be9d92b9",
+                    "sha256": "54311a0b7526fefb4b29fea7d896a63101405e1d267de121c3125fe0cccc000a"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-4.2.1.tar.gz",
+                "has_sig": true,
+                "md5_digest": "3dfaced2fab1644ff5284017be9d92b9",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 2933954,
+                "upload_time": "2017-07-01T01:36:05",
+                "url": "https://files.pythonhosted.org/packages/db/26/94620b7752936e2cd74838263ff366db9b454f7394bfb62d1eb2f84b29c1/pyramid_debugtoolbar-4.2.1.tar.gz"
+            }
+        ],
+        "4.3": [
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "393ca48d7c8f13ccc78f493c67a7cb18",
+                    "sha256": "391360cbaf07d27730cdc08b80b919330b0a00c550bc63db9afead3943448aa1"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-4.3-py2.py3-none-any.whl",
+                "has_sig": true,
+                "md5_digest": "393ca48d7c8f13ccc78f493c67a7cb18",
+                "packagetype": "bdist_wheel",
+                "python_version": "py2.py3",
+                "size": 355739,
+                "upload_time": "2017-07-15T01:08:10",
+                "url": "https://files.pythonhosted.org/packages/28/40/f12b2cfd19e6091a44f1d1fdeccc87498a13fd7c2f20c2f37839d4a24cdf/pyramid_debugtoolbar-4.3-py2.py3-none-any.whl"
+            },
+            {
+                "comment_text": "",
+                "digests": {
+                    "md5": "9c49029e9f0695130499ef6416ffaaf8",
+                    "sha256": "7f77c1a7e9705b07dcb66ad4aeb92e8a0c5ac073ff766bf9c2f36259fa677f57"
+                },
+                "downloads": -1,
+                "filename": "pyramid_debugtoolbar-4.3.tar.gz",
+                "has_sig": true,
+                "md5_digest": "9c49029e9f0695130499ef6416ffaaf8",
+                "packagetype": "sdist",
+                "python_version": "source",
+                "size": 2935933,
+                "upload_time": "2017-07-15T01:08:15",
+                "url": "https://files.pythonhosted.org/packages/a4/40/f09d8800bfc3c09bdb6c95f37bb61c890dc62c19c4e7caa304da7aa77403/pyramid_debugtoolbar-4.3.tar.gz"
+            }
+        ]
+    },
+    "urls": [
+        {
+            "comment_text": "",
+            "digests": {
+                "md5": "393ca48d7c8f13ccc78f493c67a7cb18",
+                "sha256": "391360cbaf07d27730cdc08b80b919330b0a00c550bc63db9afead3943448aa1"
+            },
+            "downloads": -1,
+            "filename": "pyramid_debugtoolbar-4.3-py2.py3-none-any.whl",
+            "has_sig": true,
+            "md5_digest": "393ca48d7c8f13ccc78f493c67a7cb18",
+            "packagetype": "bdist_wheel",
+            "python_version": "py2.py3",
+            "size": 355739,
+            "upload_time": "2017-07-15T01:08:10",
+            "url": "https://files.pythonhosted.org/packages/28/40/f12b2cfd19e6091a44f1d1fdeccc87498a13fd7c2f20c2f37839d4a24cdf/pyramid_debugtoolbar-4.3-py2.py3-none-any.whl"
+        },
+        {
+            "comment_text": "",
+            "digests": {
+                "md5": "9c49029e9f0695130499ef6416ffaaf8",
+                "sha256": "7f77c1a7e9705b07dcb66ad4aeb92e8a0c5ac073ff766bf9c2f36259fa677f57"
+            },
+            "downloads": -1,
+            "filename": "pyramid_debugtoolbar-4.3.tar.gz",
+            "has_sig": true,
+            "md5_digest": "9c49029e9f0695130499ef6416ffaaf8",
+            "packagetype": "sdist",
+            "python_version": "source",
+            "size": 2935933,
+            "upload_time": "2017-07-15T01:08:15",
+            "url": "https://files.pythonhosted.org/packages/a4/40/f09d8800bfc3c09bdb6c95f37bb61c890dc62c19c4e7caa304da7aa77403/pyramid_debugtoolbar-4.3.tar.gz"
+        }
+    ]
+}

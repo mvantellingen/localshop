@@ -1,0 +1,130 @@
+{
+    "info":{
+        "author":"Cesar Canassa",
+        "author_email":"cesar@canassa.com",
+        "bugtrack_url":"",
+        "classifiers":[
+            "Development Status :: 3 - Alpha",
+            "Intended Audience :: Developers",
+            "Intended Audience :: System Administrators",
+            "License :: OSI Approved :: MIT License",
+            "Programming Language :: Python :: 2.6",
+            "Programming Language :: Python :: 2.7",
+            "Programming Language :: Python :: 3.4",
+            "Topic :: Software Development :: Libraries",
+            "Topic :: Software Development :: User Interfaces",
+            "Topic :: Utilities"
+        ],
+        "description":"Minibar",
+        "docs_url":null,
+        "download_url":"UNKNOWN",
+        "downloads":{
+            "last_day":0,
+            "last_month":0,
+            "last_week":0
+        },
+        "home_page":"https://github.com/canassa/minibar",
+        "keywords":"progressbar progress bar",
+        "license":"MIT",
+        "maintainer":null,
+        "maintainer_email":null,
+        "name":"minibar",
+        "platform":"UNKNOWN",
+        "project_url":"https://pypi.org/project/minibar/",
+        "release_url":"https://pypi.org/project/minibar/0.5.0/",
+        "requires_dist":[
+
+        ],
+        "requires_python":null,
+        "summary":"Simple text progress bar library",
+        "version":"0.5.0"
+    },
+    "releases":{
+        "0.1":[
+            {
+                "comment_text":"",
+                "digests":{
+                    "md5":"c935bfa49cb49e4f97fb8e24371105d7",
+                    "sha256":"51d65f2bef0394d0afaa71f3ae11efef1d623939921f97bf6c5be3c1bd0cfbc4"
+                },
+                "downloads":-1,
+                "filename":"minibar-0.1.tar.gz",
+                "has_sig":false,
+                "md5_digest":"c935bfa49cb49e4f97fb8e24371105d7",
+                "packagetype":"sdist",
+                "python_version":"source",
+                "size":3461,
+                "upload_time":"2014-06-01T02:49:38",
+                "url":"https://files.pythonhosted.org/packages/4e/c5/9275972ae0aff6a8102978b677290aae7e7ca1133bc0765b685cc2d5b1f1/minibar-0.1.tar.gz"
+            }
+        ],
+        "0.4.0":[
+            {
+                "comment_text":"",
+                "digests":{
+                    "md5":"0bbdf41e028a4e6c75dfbd59660b6328",
+                    "sha256":"129d8582b6ec96c6513537a3ad504215a83e830b88a971737e15df147bb8e6e9"
+                },
+                "downloads":-1,
+                "filename":"minibar-0.4.0-py2.py3-none-any.whl",
+                "has_sig":false,
+                "md5_digest":"0bbdf41e028a4e6c75dfbd59660b6328",
+                "packagetype":"bdist_wheel",
+                "python_version":"3.4",
+                "size":5844,
+                "upload_time":"2015-01-16T17:13:55",
+                "url":"https://pypi.python.org/packages/6c/60/8554f591f2a5a830c06070397df765d2cce36277459f3cb4ff2c2fa08369/minibar-0.4.0-py2.py3-none-any.whl"
+            },
+            {
+                "comment_text":"",
+                "digests":{
+                    "md5":"a3768a7f948871d8e47b146053265100",
+                    "sha256":"54f81c46c2a9bfa6cd250c3b5c065c1ebf9c03db1a272b5b3a25154714acae24"
+                },
+                "downloads":-1,
+                "filename":"minibar-0.4.0.tar.gz",
+                "has_sig":false,
+                "md5_digest":"a3768a7f948871d8e47b146053265100",
+                "packagetype":"sdist",
+                "python_version":"source",
+                "size":3956,
+                "upload_time":"2015-01-16T17:13:52",
+                "url":"https://pypi.python.org/packages/57/f3/fecf00ba7ec1989aa55d98be1eccd26a9c38a9cbe3ec70487908a8749ba1/minibar-0.4.0.tar.gz"
+            }
+        ]
+    },
+    "urls":[
+        {
+            "comment_text":"",
+            "digests":{
+                "md5":"e58fa9dcf8574cb3274377a8d96f4ac2",
+                "sha256":"0fcb9c63de04a131ce6bc6fe83908079203d6aaa55a04e03e4bad01e6d792b42"
+            },
+            "downloads":-1,
+            "filename":"minibar-0.5.0-py2.py3-none-any.whl",
+            "has_sig":false,
+            "md5_digest":"e58fa9dcf8574cb3274377a8d96f4ac2",
+            "packagetype":"bdist_wheel",
+            "python_version":"2.7",
+            "size":5855,
+            "upload_time":"2015-06-07T11:01:57",
+            "url":"https://files.pythonhosted.org/packages/d7/38/dca571f56ed876794b3eaa17c2a97d1e9413931e719d43a2e729ae868ccb/minibar-0.5.0-py2.py3-none-any.whl"
+        },
+        {
+            "comment_text":"",
+            "digests":{
+                "md5":"7d6ca9c46db6529b6c6c9581d4df4d91",
+                "sha256":"da7d1f8ccf4e7fe3b9952ab9dc6f9cee308f52a8c0903747a606c4d8b0353a2c"
+            },
+            "downloads":-1,
+            "filename":"minibar-0.5.0.tar.gz",
+            "has_sig":false,
+            "md5_digest":"7d6ca9c46db6529b6c6c9581d4df4d91",
+            "packagetype":"sdist",
+            "python_version":"source",
+            "size":3968,
+            "upload_time":"2015-06-07T11:01:53",
+            "url":"https://files.pythonhosted.org/packages/12/34/f1d8396d246f9649e164208d9c28e3c2bdb91077c59f86368b10fba36324/minibar-0.5.0.tar.gz"
+        }
+    ]
+}

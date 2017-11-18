@@ -10,7 +10,7 @@ from tests.factories import ReleaseFileFactory
 
 @pytest.mark.django_db
 def test_success(app, admin_user, repository, pypi_stub):
-    repository.upstream_pypi_url = pypi_stub.url
+    repository.upstream_pypi_url = pypi_stub
     repository.save()
     release_file = ReleaseFileFactory(release__package__repository=repository)
 
@@ -34,7 +34,7 @@ def test_success(app, admin_user, repository, pypi_stub):
 @pytest.mark.django_db
 def test_missing_package_local_package(app, admin_user, repository,
                                        pypi_stub):
-    repository.upstream_pypi_url = pypi_stub.url
+    repository.upstream_pypi_url = pypi_stub
     repository.save()
 
     fetch_package.run(repository.pk, 'minibar')
@@ -55,7 +55,7 @@ def test_missing_package_local_package(app, admin_user, repository,
 @pytest.mark.django_db
 @pytest.mark.skip
 def test_nonexistent_package(app, admin_user, repository, pypi_stub):
-    repository.upstream_pypi_url = pypi_stub.url
+    repository.upstream_pypi_url = pypi_stub
     repository.save()
 
     response = app.get(
@@ -70,7 +70,7 @@ def test_nonexistent_package(app, admin_user, repository, pypi_stub):
 
 @pytest.mark.django_db
 def test_wrong_package_name_case(app, admin_user, repository, pypi_stub):
-    repository.upstream_pypi_url = pypi_stub.url
+    repository.upstream_pypi_url = pypi_stub
     repository.save()
 
     ReleaseFileFactory(
