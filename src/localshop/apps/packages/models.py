@@ -1,23 +1,22 @@
-import docutils.core
 import logging
 import os
-from docutils.utils import SystemMessage
 from shutil import copyfileobj
 from tempfile import NamedTemporaryFile
 
+import docutils.core
 from django.conf import settings
-from django.db import models
-from django.db.models.signals import post_delete
 from django.core.files import File
 from django.core.urlresolvers import reverse
+from django.db import models
+from django.db.models.signals import post_delete
 from django.utils.html import escape
 from django.utils.text import ugettext_lazy as _
+from docutils.utils import SystemMessage
 from model_utils import Choices
-from model_utils.models import TimeStampedModel
 from model_utils.fields import AutoCreatedField, AutoLastModifiedField
+from model_utils.models import TimeStampedModel
 
 from localshop.apps.packages.utils import delete_files
-
 
 logger = logging.getLogger(__name__)
 

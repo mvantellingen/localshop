@@ -5,12 +5,11 @@ from django.conf.urls import include, url
 from django.contrib import admin
 from django.views.generic import RedirectView
 
-from localshop.apps.packages.views import SimpleIndex
-from localshop import views
-from localshop.apps.packages.xmlrpc import handle_request
-
 import localshop.apps.dashboard.urls
 import localshop.apps.packages.urls
+from localshop import views
+from localshop.apps.packages.views import SimpleIndex
+from localshop.apps.packages.xmlrpc import handle_request
 
 admin.autodiscover()
 

@@ -3,7 +3,7 @@ from django.utils import timezone
 
 from localshop.apps.accounts.models import Team
 from localshop.apps.packages.models import Repository
-from localshop.apps.permissions.models import Credential, CIDR
+from localshop.apps.permissions.models import CIDR, Credential
 
 
 class RepositoryFormMixin(object):

@@ -3,7 +3,6 @@ from django.views.decorators.cache import cache_page
 
 from localshop.apps.packages import views
 
-
 urlpatterns = [
     url(r'^(?P<repo>[-\._\w]+)/?$', views.SimpleIndex.as_view(),
         name='simple_index'),

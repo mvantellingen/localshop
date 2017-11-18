@@ -3,7 +3,8 @@ from django.utils.datastructures import MultiValueDict
 from mock import Mock
 from versio.version_scheme import VersionScheme
 
-from localshop.apps.packages.utils import parse_distutils_request, get_versio_versioning_scheme
+from localshop.apps.packages.utils import (
+    get_versio_versioning_scheme, parse_distutils_request)
 
 
 class TestParseDistutilsRequest(TestCase):

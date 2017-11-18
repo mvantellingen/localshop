@@ -2,7 +2,6 @@ from django.conf.urls import url
 
 from localshop.apps.accounts import views
 
-
 urlpatterns = [
     url('^profile/$', views.ProfileView.as_view(), name='profile'),
     url('^access-keys/$', views.AccessKeyListView.as_view(), name='access_key_list'),

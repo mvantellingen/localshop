@@ -1,9 +1,9 @@
 import mock
-
 from django.conf import settings
 from django.test import TestCase
 
-from . import CommonCommandsTestMixin, call_command_real as call_command
+from . import call_command_real as call_command
+from . import CommonCommandsTestMixin
 
 global_mock = mock.MagicMock()
 

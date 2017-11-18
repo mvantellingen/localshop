@@ -4,7 +4,6 @@ import pytest
 from django.core.urlresolvers import reverse
 
 from localshop.apps.packages.tasks import fetch_package
-
 from tests.factories import ReleaseFileFactory
 
 

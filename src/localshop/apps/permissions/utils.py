@@ -2,10 +2,10 @@ from base64 import b64decode
 from functools import wraps
 
 from django.conf import settings
-from django.contrib.auth import login, authenticate
-from django.utils.decorators import available_attrs
+from django.contrib.auth import authenticate, login
+from django.db import DatabaseError, DataError
 from django.http import HttpResponseForbidden
-from django.db import DataError, DatabaseError
+from django.utils.decorators import available_attrs
 
 from localshop.apps.permissions.models import CIDR
 from localshop.http import HttpResponseUnauthorized

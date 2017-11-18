@@ -1,8 +1,7 @@
 import pytest
 
 from localshop.apps.packages.tasks import fetch_package
-
-from tests.factories import RepositoryFactory, ReleaseFactory, PackageFactory
+from tests.factories import PackageFactory, ReleaseFactory, RepositoryFactory
 
 
 @pytest.mark.django_db

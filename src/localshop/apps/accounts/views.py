@@ -1,5 +1,6 @@
 from braces.views import LoginRequiredMixin, UserFormKwargsMixin
-from django.contrib.auth import REDIRECT_FIELD_NAME, login as auth_login
+from django.contrib.auth import login as auth_login
+from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.sites.shortcuts import get_current_site
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect

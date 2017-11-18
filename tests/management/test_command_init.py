@@ -3,7 +3,8 @@ import os
 import mock
 from django.test import TestCase
 
-from . import CommonCommandsTestMixin, call_command_real as call_command
+from . import call_command_real as call_command
+from . import CommonCommandsTestMixin
 
 DEFAULT_PATH = os.path.expanduser('~/.localshop')
 

@@ -1,12 +1,12 @@
+import logging
 import os
 import shutil
 import tempfile
-import logging
 from functools import wraps
 
 from django.conf import settings
-from django.test.utils import override_settings
 from django.core.cache import cache
+from django.test.utils import override_settings
 
 
 class TemporaryMediaRootMixin(object):

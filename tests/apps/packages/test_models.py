@@ -1,14 +1,12 @@
 import os.path
-import pytest
 
+import pytest
+from django.core.files.storage import FileSystemStorage
 from django.test import TestCase
 from django.utils import six
-from django.core.files.storage import FileSystemStorage
 
-from localshop.apps.packages import models
-from localshop.apps.packages import utils
+from localshop.apps.packages import models, utils
 from localshop.utils import TemporaryMediaRootMixin
-
 from tests import factories
 
 

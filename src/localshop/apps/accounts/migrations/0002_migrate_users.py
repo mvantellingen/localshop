@@ -4,7 +4,6 @@ from __future__ import unicode_literals
 from django.db import migrations
 
 
-
 def forwards(apps, schema_editor):
 
     if 'auth_user' in schema_editor.connection.introspection.table_names():

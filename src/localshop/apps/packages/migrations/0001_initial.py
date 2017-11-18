@@ -1,11 +1,12 @@
 # -*- coding: utf-8 -*-
 from __future__ import unicode_literals
 
-from django.db import models, migrations
-import model_utils.fields
-import localshop.apps.packages.models
 import django.utils.timezone
+import model_utils.fields
 from django.conf import settings
+from django.db import migrations, models
+
+import localshop.apps.packages.models
 
 
 class Migration(migrations.Migration):

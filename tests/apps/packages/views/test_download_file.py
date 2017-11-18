@@ -8,7 +8,6 @@ from django.utils import six
 from mock import Mock
 
 from localshop.apps.packages import views
-
 from tests.factories import ReleaseFileFactory
 
 

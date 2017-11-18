@@ -1,5 +1,6 @@
 import operator
 
+from braces.views import LoginRequiredMixin, SuperuserRequiredMixin
 from django.contrib import messages
 from django.contrib.sites.models import Site
 from django.core.exceptions import SuspiciousOperation
@@ -8,11 +9,10 @@ from django.http import HttpResponse, HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.text import ugettext_lazy as _
 from django.views import generic
-from braces.views import LoginRequiredMixin, SuperuserRequiredMixin
 
 from localshop.apps.dashboard import forms
 from localshop.apps.packages import models
-from localshop.apps.packages.tasks import fetch_package, download_file
+from localshop.apps.packages.tasks import download_file, fetch_package
 
 
 class IndexView(LoginRequiredMixin, generic.TemplateView):

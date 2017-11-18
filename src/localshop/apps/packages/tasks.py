@@ -1,5 +1,5 @@
-import mimetypes
 import logging
+import mimetypes
 import os
 
 import requests
@@ -8,9 +8,9 @@ from django.conf import settings
 from django.core.files.uploadedfile import TemporaryUploadedFile
 from django.utils.timezone import now
 
-from localshop.apps.packages import models, forms, pypi
+from localshop.apps.packages import forms, models, pypi
 from localshop.apps.packages.utils import md5_hash_file
-from localshop.utils import no_duplicates, enqueue
+from localshop.utils import enqueue, no_duplicates
 
 
 @shared_task

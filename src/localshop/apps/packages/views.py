@@ -6,16 +6,17 @@ from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
 from django.core.urlresolvers import reverse
 from django.db.models import Q
-from django.http import (Http404, HttpResponse, HttpResponseBadRequest,
-                         HttpResponseForbidden, HttpResponseNotFound)
+from django.http import (
+    Http404, HttpResponse, HttpResponseBadRequest, HttpResponseForbidden,
+    HttpResponseNotFound)
 from django.shortcuts import redirect
 from django.utils import six
 from django.views import generic
 from versio.version import Version
-from versio.version_scheme import (Pep440VersionScheme, PerlVersionScheme,
-                                   Simple3VersionScheme, Simple4VersionScheme)
+from versio.version_scheme import (
+    Pep440VersionScheme, PerlVersionScheme, Simple3VersionScheme,
+    Simple4VersionScheme)
 
-from localshop.utils import enqueue
 from localshop.apps.packages import forms, models
 from localshop.apps.packages.mixins import RepositoryMixin
 from localshop.apps.packages.pypi import get_search_names
@@ -23,6 +24,7 @@ from localshop.apps.packages.tasks import fetch_package
 from localshop.apps.packages.utils import (
     get_versio_versioning_scheme, parse_distutils_request)
 from localshop.apps.permissions.mixins import RepositoryAccessMixin
+from localshop.utils import enqueue
 
 logger = logging.getLogger(__name__)
 Version.set_supported_version_schemes((Simple3VersionScheme, Simple4VersionScheme, Pep440VersionScheme,))

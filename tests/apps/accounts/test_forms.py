@@ -1,8 +1,7 @@
 from django.test import TestCase
 
 from localshop.apps.accounts import forms
-
-from tests.factories import TeamFactory, UserFactory, TeamMemberFactory
+from tests.factories import TeamFactory, TeamMemberFactory, UserFactory
 
 
 class TestAccessKeyForm(TestCase):

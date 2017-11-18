@@ -4,9 +4,8 @@ import mock
 import pytest
 from django.utils import six
 
-from localshop.apps.packages import tasks, models
-
-from tests.factories import ReleaseFileFactory, PackageFactory
+from localshop.apps.packages import models, tasks
+from tests.factories import PackageFactory, ReleaseFileFactory
 
 
 @mock.patch('requests.get')

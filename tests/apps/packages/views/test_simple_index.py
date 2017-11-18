@@ -6,7 +6,6 @@ import pytest
 from django.utils import six
 
 from localshop.apps.packages.models import Package
-
 from tests.factories import ReleaseFileFactory
 from tests.utils import NamedStringIO
 

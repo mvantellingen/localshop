@@ -16,10 +16,9 @@ framework.
 import os
 
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'localshop.settings')
-os.environ.setdefault('DJANGO_CONFIGURATION', 'Localshop')
 
-from configurations.wsgi import get_wsgi_application
-from whitenoise.django import DjangoWhiteNoise
+from django.core.wsgi import get_wsgi_application  # noqa isort:skip
+from whitenoise.django import DjangoWhiteNoise # noqa isort:skip
 
 application = get_wsgi_application()
 application = DjangoWhiteNoise(application)

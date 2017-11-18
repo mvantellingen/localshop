@@ -1,8 +1,7 @@
 from django.test import TestCase
 
 from localshop.apps.dashboard import forms
-
-from tests.factories import CredentialFactory, TeamFactory, RepositoryFactory
+from tests.factories import CredentialFactory, RepositoryFactory, TeamFactory
 
 
 class TestAccessControlForm(TestCase):

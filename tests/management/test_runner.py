@@ -1,14 +1,13 @@
 import copy
-import os
 import imp
+import os
 
 import mock
-
-from whitenoise.django import DjangoWhiteNoise
 from django.test import TestCase
+from whitenoise.django import DjangoWhiteNoise
 
-from localshop.runner import main
 from localshop import wsgi
+from localshop.runner import main
 
 manage_instance = mock.MagicMock()
 manage_mock = mock.MagicMock(return_value=manage_instance)

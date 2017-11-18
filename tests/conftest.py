@@ -1,5 +1,5 @@
-import re
 import os
+import re
 
 import pytest
 import requests_mock
@@ -11,6 +11,7 @@ from django_webtest import DjangoTestApp, WebTestMixin
 
 from localshop.apps.packages.pypi import get_search_names
 from tests.factories import CIDRFactory, RepositoryFactory
+
 
 @pytest.fixture(scope='function')
 def pypi_stub():

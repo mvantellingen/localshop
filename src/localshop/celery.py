@@ -1,4 +1,5 @@
 import os
+
 import celery  # noqa isort:skip
 from django.conf import settings  # noqa isort:skip
 

@@ -1,6 +1,6 @@
 import uuid
-import netaddr
 
+import netaddr
 from django.db import models
 from django.utils.translation import ugettext as _
 from model_utils.fields import AutoCreatedField
@@ -80,4 +80,3 @@ class Credential(models.Model):
         permissions = (
             ("view_credential", "Can view credential"),
         )
-
