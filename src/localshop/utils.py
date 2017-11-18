@@ -41,7 +41,7 @@ def generate_key(function, *args, **kwargs):
 
 def enqueue(function, *args, **kwargs):
     key = generate_key(function, *args, **kwargs)
-    logging.info('key %s', key)
+    logging.info('Scheduling task %s', key)
 
     if cache.get(key):
         logging.info('Dropping task %s', key)

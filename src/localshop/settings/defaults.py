@@ -120,20 +120,22 @@ MESSAGE_TAGS = {
     messages.ERROR: 'danger'
 }
 
-BROKER_URL = "django://"
-
+CELERY_BROKER_URL = env.str('CELERY_BROKER_URL', default='redis://127.0.0.1:6379/0')
 CELERY_ACCEPT_CONTENT = ['json']
-CELERY_TASK_SERIALIZER = 'json'
-CELERY_RESULT_SERIALIZER = 'json'
-CELERYBEAT_SCHEDULER = 'djcelery.schedulers.DatabaseScheduler'
-CELERYD_FORCE_EXECV = False
-CELERYBEAT_SCHEDULE = {
+CELERY_DEFAULT_QUEUE = 'default'
+CELERY_PREFETCH_MULTIPLIER = 0
+CELERY_RESULT_BACKEND = 'django-db'
+CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers.DatabaseScheduler'
+CELERY_BEAT_SCHEDULE = {
     # Executes every day at 1:00 AM
     'every-day-1am': {
         'task': 'localshop.apps.packages.tasks.update_packages',
         'schedule': crontab(hour=1, minute=0),
     },
 }
+CELERY_IMPORTS = [
+    'localshop.apps.packages.tasks',
+]
 
 INSTALLED_APPS = [
     'django.contrib.auth',

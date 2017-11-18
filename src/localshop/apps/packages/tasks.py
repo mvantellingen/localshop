@@ -3,19 +3,20 @@ import logging
 import os
 
 import requests
-from celery.task import task
+from celery import shared_task
 from django.conf import settings
 from django.core.files.uploadedfile import TemporaryUploadedFile
 from django.utils.timezone import now
+
 
 from localshop.apps.packages import models, forms
 from localshop.apps.packages.utils import md5_hash_file
 from localshop.utils import no_duplicates, enqueue
 
 
-@task(bind=True)
+@shared_task
 @no_duplicates
-def fetch_package(self, repository_pk, slug):
+def fetch_package(repository_pk, slug):
     """
     """
     repository = models.Repository.objects.get(pk=repository_pk)
@@ -77,7 +78,7 @@ def fetch_package(self, repository_pk, slug):
     logging.info('done fetch_package: %s', slug)
 
 
-@task
+@shared_task
 def download_file(pk):
     """Download the file reference in `models.ReleaseFile` with the given pk.
 
@@ -126,7 +127,7 @@ def download_file(pk):
     logging.info("Complete")
 
 
-@task
+@shared_task
 def update_packages():
     """Update package information for all packages"""
     logging.info('Updated packages')
