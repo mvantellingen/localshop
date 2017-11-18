@@ -8,8 +8,7 @@ from django.conf import settings
 from django.core.files.uploadedfile import TemporaryUploadedFile
 from django.utils.timezone import now
 
-
-from localshop.apps.packages import models, forms
+from localshop.apps.packages import models, forms, pypi
 from localshop.apps.packages.utils import md5_hash_file
 from localshop.utils import no_duplicates, enqueue
 
@@ -17,21 +16,15 @@ from localshop.utils import no_duplicates, enqueue
 @shared_task
 @no_duplicates
 def fetch_package(repository_pk, slug):
-    """
-    """
     repository = models.Repository.objects.get(pk=repository_pk)
     logging.info('start fetch_package: %s', slug)
 
-    response = requests.get(
-        '%s/%s/json' % (repository.upstream_pypi_url_api, slug))
+    package_data = pypi.get_package_information(
+        repository.upstream_pypi_url_api, slug)
 
-    if response.status_code == 404:
+    if not package_data:
         return
 
-    if response.status_code != 200:
-        return
-
-    package_data = response.json()
     name = package_data['info']['name']
 
     try:

@@ -2,12 +2,15 @@ import re
 import requests
 from copy import copy
 
+import requests
 from django.utils import six
 
 if six.PY2:
     import xmlrpclib
 else:
     import xmlrpc.client as xmlrpclib
+
+
 
 
 class RequestTransport(xmlrpclib.Transport, object):
@@ -60,3 +63,10 @@ def get_search_names(name):
                 for s3 in '-_.':
                     result.add(s3.join([prefix, suffix]))
     return list(result)
+
+
+def get_package_information(index_url, package_name):
+    index_url = index_url.rstrip('/')
+    response = requests.get('%s/%s/json' % (index_url, package_name))
+    if response.status_code == 200:
+        return response.json()
