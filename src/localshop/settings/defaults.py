@@ -12,7 +12,6 @@ PROJECT_ROOT = os.path.dirname(os.path.dirname(__file__))
 BASE_DIR = os.path.dirname(os.path.dirname(PROJECT_ROOT))
 
 DEBUG = env.bool('DEBUG', default=False)
-TEMPLATE_DEBUG = DEBUG
 
 ADMINS = (
     # ('Your Name', 'your_email@example.com'),
@@ -112,9 +111,6 @@ ROOT_URLCONF = 'localshop.urls'
 # Python dotted path to the WSGI application used by Django's runserver.
 WSGI_APPLICATION = 'localshop.wsgi.application'
 
-TEMPLATE_DIRS = (
-    os.path.join(PROJECT_ROOT, 'templates'),
-)
 
 MESSAGE_TAGS = {
     messages.ERROR: 'danger'
