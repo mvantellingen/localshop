@@ -27,7 +27,7 @@ class CIDR(models.Model):
 
     objects = CIDRManager()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.cidr
 
     class Meta:
@@ -72,7 +72,7 @@ class Credential(models.Model):
 
     objects = CredentialManager()
 
-    def __unicode__(self):
+    def __str__(self):
         return self.access_key.hex
 
     class Meta:

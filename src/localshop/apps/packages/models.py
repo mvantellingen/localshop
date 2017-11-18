@@ -63,7 +63,7 @@ class Repository(TimeStampedModel):
 class Classifier(models.Model):
     name = models.CharField(max_length=255, unique=True)
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
 
@@ -93,7 +93,7 @@ class Package(models.Model):
             ("view_package", "Can view package"),
         )
 
-    def __unicode__(self):
+    def __str__(self):
         return self.name
 
     def get_absolute_url(self):
@@ -146,7 +146,7 @@ class Release(models.Model):
     class Meta:
         ordering = ['-version']
 
-    def __unicode__(self):
+    def __str__(self):
         return self.version
 
     @property
@@ -209,7 +209,7 @@ class ReleaseFile(models.Model):
     class Meta:
         unique_together = ('release', 'filetype', 'python_version', 'filename')
 
-    def __unicode__(self):
+    def __str__(self):
         return self.filename
 
     def get_absolute_url(self):

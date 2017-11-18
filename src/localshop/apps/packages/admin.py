@@ -12,14 +12,14 @@ class ReleaseFileInline(admin.TabularInline):
 
 
 class PackageAdmin(admin.ModelAdmin):
-    list_display = ['repository', '__unicode__', 'created', 'modified', 'is_local']
+    list_display = ['repository', '__str__', 'created', 'modified', 'is_local']
     list_filter = ['is_local', 'repository']
     search_fields = ['name']
 
 
 class ReleaseAdmin(admin.ModelAdmin):
     inlines = [ReleaseFileInline]
-    list_display = ['__unicode__', 'package', 'created', 'modified']
+    list_display = ['__str__', 'package', 'created', 'modified']
     list_filter = ['package__repository', 'package']
     search_fields = ['version', 'package__name']
     ordering = ['-created', 'version']
@@ -27,7 +27,7 @@ class ReleaseAdmin(admin.ModelAdmin):
 
 class ReleaseFileAdmin(admin.ModelAdmin):
     list_filter = ['user', 'release__package__repository']
-    list_display = ['__unicode__', 'created', 'modified', 'md5_digest', 'url']
+    list_display = ['__str__', 'created', 'modified', 'md5_digest', 'url']
 
 
 admin.site.register(models.Classifier)
