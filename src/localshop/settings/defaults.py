@@ -24,6 +24,9 @@ DATABASES = {
     'default': env.db(default='sqlite:///localshop.db'),
 }
 
+# Make this unique, and don't share it with anybody.
+SECRET_KEY = env.str('SECRET_KEY', default=uuid.uuid4())
+
 # Local time zone for this installation. Choices can be found here:
 # http://en.wikipedia.org/wiki/List_of_tz_zones_by_name
 # although not all choices may be available on all operating systems.
@@ -50,27 +53,20 @@ USE_L10N = True
 # If you set this to False, Django will not use timezone-aware datetimes.
 USE_TZ = True
 
-STATIC_ROOT = os.path.join(BASE_DIR, 'public', 'static')
+MEDIA_ROOT = env.str('LOCALSHOP_ROOT', os.path.join(PROJECT_ROOT, 'public', 'media'))
+
+
+# Staticfiles
+STATIC_ROOT = env.str('STATIC_ROOT', os.path.join(PROJECT_ROOT, 'public', 'static'))
 STATIC_URL = '/assets/'
-
-MEDIA_ROOT = os.path.join(BASE_DIR, 'public', 'media')
-
-# Additional locations of static files
 STATICFILES_DIRS = [
     os.path.join(PROJECT_ROOT, 'static')
 ]
-STATICFILES_STORAGE = 'whitenoise.django.GzipManifestStaticFilesStorage'
-
-# List of finder classes that know how to find static files in
-# various locations.
-STATICFILES_FINDERS = (
+STATICFILES_STORAGE = 'django.contrib.staticfiles.storage.ManifestStaticFilesStorage'
+STATICFILES_FINDERS = [
     'django.contrib.staticfiles.finders.FileSystemFinder',
     'django.contrib.staticfiles.finders.AppDirectoriesFinder',
-)
-
-
-# Make this unique, and don't share it with anybody.
-SECRET_KEY = env.str('SECRET_KEY', default=uuid.uuid4())
+]
 
 SESSION_COOKIE_AGE = 28 * 24 * 60 * 60  # 4 weeks
 
@@ -144,7 +140,6 @@ INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.humanize',
 
-    'gunicorn',
     'django_celery_beat',
     'django_celery_results',
     'widget_tweaks',

@@ -25,18 +25,6 @@ class TestInitCommand(CommonCommandsTestMixin, TestCase):
 
     def test_default_commands_called(self):
         call_command('init')
-        self.assertEqual(self.mock_call.call_count, 3)
-        self.mock_call.assert_any_call(
-            'syncdb', database='default', interactive=False)
-        self.mock_call.assert_any_call(
-            'migrate', database='default', interactive=False)
-        self.mock_call.assert_any_call(
-            'createsuperuser', database='default', interactive=True)
-
-    def test_nosuperuser_commands_called(self):
-        call_command('init', nosuperuser=True)
         self.assertEqual(self.mock_call.call_count, 2)
-        self.mock_call.assert_any_call(
-            'syncdb', database='default', interactive=False)
         self.mock_call.assert_any_call(
             'migrate', database='default', interactive=False)

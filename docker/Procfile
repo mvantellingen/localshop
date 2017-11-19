@@ -1,0 +1,3 @@
+redis: redis-server
+celery: celery -A localshop.celery worker -B -E --loglevel=info
+web: uwsgi --ini /home/localshop/uwsgi.ini
