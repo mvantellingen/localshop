@@ -108,16 +108,6 @@ class SimpleDetail(RepositoryMixin, RepositoryAccessMixin, generic.DetailView):
         return self.render_to_response(context)
 
 
-class PackageRefreshView(RepositoryMixin, RepositoryAccessMixin, generic.View):
-    def get(self, request, repo, name):
-        try:
-            package = self.repository.packages.get(name__iexact=name)
-        except ObjectDoesNotExist:
-            package = None
-            enqueue(fetch_package, self.repository.pk, name)
-        return redirect(package)
-
-
 class DownloadReleaseFile(RepositoryMixin, RepositoryAccessMixin,
                           generic.View):
     """

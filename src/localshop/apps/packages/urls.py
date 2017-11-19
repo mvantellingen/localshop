@@ -13,7 +13,4 @@ urlpatterns = [
 
     url(r'^(?P<repo>[-\._\w]+)/download/(?P<name>[-\._\w]+)/(?P<pk>\d+)/(?P<filename>.*)$',
         views.DownloadReleaseFile.as_view(), name='download'),
-
-    url(r'^(?P<repo>[-\._\w]+)/refresh/(?P<name>[-\._\w]+)',
-        views.PackageRefreshView.as_view(), name='refresh'),
 ]

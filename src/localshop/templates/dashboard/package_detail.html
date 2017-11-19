@@ -76,7 +76,7 @@
                         <li><a href="http://crate.io/packages/{{ package.name }}">crate.io</a></li>
                     </ul>
 
-                    <a href="{% url 'packages:refresh' repo=view.repository.slug name=package.name %}" class="btn"><span class="icon-refresh"></span> Refresh</a>
+                    <a href="{% url 'dashboard:package_refresh' repo=view.repository.slug name=package.name %}" class="btn"><span class="icon-refresh"></span> Refresh</a>
                     {% endif %}
                 </div>
             </div>
@@ -111,7 +111,7 @@
                                     {% if file.distribution %}
                                     <span class="label label-success">local copy</span>
                                     {% else %}
-                                    <form method="post" action="{% url 'dashboard:package_mirror_file' repo=package.repository.slug %}">
+                                    <form method="post" action="{% url 'dashboard:package_mirror_file' repo=package.repository.slug name=package.name %}">
                                         <input type="hidden" name="pk" value="{{ file.pk }}">
                                         <button type="submit" class="btn btn-primary btn-xs">mirror</button>
                                         {% csrf_token %}
