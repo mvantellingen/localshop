@@ -3,6 +3,12 @@ from django.contrib import admin
 from localshop.apps.packages import models
 
 
+@admin.register(models.Classifier)
+class RepositoryAdmin(admin.ModelAdmin):
+    list_display = ['name']
+
+
+@admin.register(models.Repository)
 class RepositoryAdmin(admin.ModelAdmin):
     list_display = ['name', 'slug']
 
@@ -11,12 +17,14 @@ class ReleaseFileInline(admin.TabularInline):
     model = models.ReleaseFile
 
 
+@admin.register(models.Package)
 class PackageAdmin(admin.ModelAdmin):
     list_display = ['repository', '__str__', 'created', 'modified', 'is_local']
     list_filter = ['is_local', 'repository']
     search_fields = ['name']
 
 
+@admin.register(models.Release)
 class ReleaseAdmin(admin.ModelAdmin):
     inlines = [ReleaseFileInline]
     list_display = ['__str__', 'package', 'created', 'modified']
@@ -25,13 +33,7 @@ class ReleaseAdmin(admin.ModelAdmin):
     ordering = ['-created', 'version']
 
 
+@admin.register(models.ReleaseFile)
 class ReleaseFileAdmin(admin.ModelAdmin):
     list_filter = ['user', 'release__package__repository']
     list_display = ['__str__', 'created', 'modified', 'md5_digest', 'url']
-
-
-admin.site.register(models.Classifier)
-admin.site.register(models.Repository, RepositoryAdmin)
-admin.site.register(models.Package, PackageAdmin)
-admin.site.register(models.Release, ReleaseAdmin)
-admin.site.register(models.ReleaseFile, ReleaseFileAdmin)

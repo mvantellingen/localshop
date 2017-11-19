@@ -8,6 +8,7 @@ from django.utils.translation import ugettext_lazy as _
 from localshop.apps.accounts import models
 
 
+@admin.register(models.AccessKey)
 class AccessKeyAdmin(admin.ModelAdmin):
     model = models.AccessKey
     list_display = ['user', 'created', 'last_usage']
@@ -18,14 +19,10 @@ class TeamMemberInline(admin.TabularInline):
     list_display = ['user', 'role']
 
 
+@admin.register(models.Team)
 class TeamAdmin(admin.ModelAdmin):
     list_display = ['name']
     inlines = [TeamMemberInline]
-
-
-admin.site.register(models.AccessKey, AccessKeyAdmin)
-admin.site.register(models.Team, TeamAdmin)
-
 
 
 class UserCreationForm(forms.ModelForm):
@@ -79,6 +76,7 @@ class UserChangeForm(forms.ModelForm):
         return self.initial["password"]
 
 
+@admin.register(models.User)
 class UserAdmin(UserAdmin):
     form = UserChangeForm
     add_form = UserCreationForm
@@ -101,5 +99,5 @@ class UserAdmin(UserAdmin):
     ordering = ['email']
     filter_horizontal = []
 
-admin.site.register(models.User, UserAdmin)
+
 admin.site.unregister(Group)
