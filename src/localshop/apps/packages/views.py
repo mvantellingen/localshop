@@ -14,7 +14,7 @@ from django.utils import six
 from django.views import generic
 from versio.version import Version
 from versio.version_scheme import (
-    Pep440VersionScheme, PerlVersionScheme, Simple3VersionScheme,
+    Pep440VersionScheme, Simple3VersionScheme,
     Simple4VersionScheme)
 
 from localshop.apps.packages import forms, models
@@ -27,7 +27,8 @@ from localshop.apps.permissions.mixins import RepositoryAccessMixin
 from localshop.utils import enqueue
 
 logger = logging.getLogger(__name__)
-Version.set_supported_version_schemes((Simple3VersionScheme, Simple4VersionScheme, Pep440VersionScheme,))
+Version.set_supported_version_schemes((
+    Simple3VersionScheme, Simple4VersionScheme, Pep440VersionScheme,))
 
 
 class SimpleIndex(CsrfExemptMixin, RepositoryMixin, RepositoryAccessMixin,

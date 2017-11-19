@@ -132,4 +132,6 @@ def get_versio_versioning_scheme(full_class_path):
     try:
         return getattr(module, class_name)
     except AttributeError:
-        raise RuntimeError('Could not find Versio schema class {!r} inside {!r} module.'.format(class_name, module_path))
+        raise RuntimeError(
+            'Could not find Versio schema class {!r} inside {!r} module.'.format(
+                class_name, module_path))

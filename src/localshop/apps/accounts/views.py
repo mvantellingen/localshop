@@ -1,11 +1,13 @@
 from braces.views import UserFormKwargsMixin
+from django.conf import settings
 from django.contrib.auth import login as auth_login
 from django.contrib.auth import REDIRECT_FIELD_NAME
 from django.contrib.auth.mixins import LoginRequiredMixin
 from django.contrib.sites.shortcuts import get_current_site
+from django.core.exceptions import SuspiciousOperation
 from django.core.urlresolvers import reverse
 from django.http import HttpResponse, HttpResponseRedirect
-from django.shortcuts import get_object_or_404, redirect
+from django.shortcuts import get_object_or_404, redirect, resolve_url
 from django.template.response import TemplateResponse
 from django.utils.http import is_safe_url
 from django.views import generic

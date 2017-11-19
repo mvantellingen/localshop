@@ -4,7 +4,7 @@ from localshop.apps.packages import models
 
 
 @admin.register(models.Classifier)
-class RepositoryAdmin(admin.ModelAdmin):
+class ClassifierAdmin(admin.ModelAdmin):
     list_display = ['name']
 
 

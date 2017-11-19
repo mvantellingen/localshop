@@ -56,8 +56,13 @@ class Credential(models.Model):
     created = AutoCreatedField()
 
     repository = models.ForeignKey('packages.Repository', related_name='credentials')
-    access_key = models.UUIDField(verbose_name='Access key', help_text='The access key', default=uuid.uuid4, db_index=True)
-    secret_key = models.UUIDField(verbose_name='Secret key', help_text='The secret key', default=uuid.uuid4, db_index=True)
+    access_key = models.UUIDField(
+        verbose_name='Access key',
+        help_text='The access key',
+        default=uuid.uuid4, db_index=True)
+    secret_key = models.UUIDField(
+        verbose_name='Secret key',
+        help_text='The secret key', default=uuid.uuid4, db_index=True)
     comment = models.CharField(
         max_length=255, blank=True, null=True, default='',
         help_text="A comment about this credential, e.g. where it's being used")

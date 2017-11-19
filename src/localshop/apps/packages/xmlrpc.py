@@ -62,4 +62,5 @@ def search(spec, operator='and'):
         })
     return result
 
+
 dispatcher.register_function(search, 'search')
