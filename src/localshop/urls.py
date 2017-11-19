@@ -33,6 +33,7 @@ urlpatterns = [
     url(r'^simple/(?P<path>.*)',
         RedirectView.as_view(url='/repo/default/%(path)s')),
 
+    url(r'^oauth/', include('social_django.urls', namespace='social')),
     url(r'^accounts/', include('localshop.apps.accounts.auth_urls')),
     url(r'^accounts/',
         include('localshop.apps.accounts.urls', namespace='accounts')),

@@ -142,6 +142,7 @@ INSTALLED_APPS = [
 
     'django_celery_beat',
     'django_celery_results',
+    'social_django',
     'widget_tweaks',
 
     'localshop',
@@ -203,3 +204,12 @@ LOCALSHOP_RELEASE_OVERWRITE = True
 LOCALSHOP_USE_PROXIED_IP = False
 
 LOCALSHOP_VERSIONING_TYPE = None
+
+OAUTH2_PROVIDER = env.str('OAUTH2_PROVIDER', '')
+
+if OAUTH2_PROVIDER == 'azuread-oauth2':
+    AUTHENTICATION_BACKENDS.append('social_core.backends.azuread.AzureADOAuth2')
+
+    SOCIAL_AUTH_AZUREAD_OAUTH2_KEY = env.str('OAUTH2_APPLICATION_ID', default='')
+    SOCIAL_AUTH_AZUREAD_OAUTH2_SECRET = env.str('OAUTH2_SECRET_KEY', default='')
+    SOCIAL_AUTH_PROTECTED_USER_FIELDS = ['username']

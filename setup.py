@@ -39,6 +39,7 @@ setup(
         'docutils==0.12',
         'netaddr==0.7.12',
         'requests==2.18.4',
+        'social-auth-app-django==1.2.0',
         'sqlparse==0.1.15',
         'Versio==0.3.0',
     ],
