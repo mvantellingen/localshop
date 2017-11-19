@@ -1,10 +1,10 @@
-from django.utils.datastructures import MultiValueDict
 from django.core.handlers.wsgi import WSGIRequest
 from django.test.client import FakePayload
+from django.utils.datastructures import MultiValueDict
 from versio.version_scheme import VersionScheme
 
 from localshop.apps.packages.utils import (
-    get_versio_versioning_scheme, alter_old_distutils_request)
+    alter_old_distutils_request, get_versio_versioning_scheme)
 
 
 def test_alter_old_distutils_request():

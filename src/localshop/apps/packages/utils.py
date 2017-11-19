@@ -1,8 +1,8 @@
-from io import BytesIO
 import hashlib
 import importlib
 import logging
 import os
+from io import BytesIO
 
 from django.core.handlers.wsgi import WSGIRequest
 from django.http.multipartparser import parse_header

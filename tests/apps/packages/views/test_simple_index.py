@@ -61,7 +61,6 @@ def upload_post_data():
     })
 
 
-
 @pytest.mark.parametrize('separator', [b'\n', b'\r\n'])
 def test_package_upload(django_app, admin_user, repository, upload_post_data,
                         separator):

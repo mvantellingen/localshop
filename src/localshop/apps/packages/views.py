@@ -14,15 +14,14 @@ from django.utils import six
 from django.views import generic
 from versio.version import Version
 from versio.version_scheme import (
-    Pep440VersionScheme, Simple3VersionScheme,
-    Simple4VersionScheme)
+    Pep440VersionScheme, Simple3VersionScheme, Simple4VersionScheme)
 
 from localshop.apps.packages import forms, models
 from localshop.apps.packages.mixins import RepositoryMixin
 from localshop.apps.packages.pypi import get_search_names
 from localshop.apps.packages.tasks import fetch_package
 from localshop.apps.packages.utils import (
-    get_versio_versioning_scheme, alter_old_distutils_request)
+    alter_old_distutils_request, get_versio_versioning_scheme)
 from localshop.apps.permissions.mixins import RepositoryAccessMixin
 from localshop.utils import enqueue
 

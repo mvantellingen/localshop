@@ -52,7 +52,6 @@ def test_missing_package_local_package(django_app, admin_user, repository,
 
 
 @pytest.mark.django_db
-@pytest.mark.skip
 def test_nonexistent_package(django_app, admin_user, repository, pypi_stub):
     repository.upstream_pypi_url = pypi_stub
     repository.save()
@@ -63,7 +62,7 @@ def test_nonexistent_package(django_app, admin_user, repository, pypi_stub):
             'repo': repository.slug,
         }), user=admin_user)
 
-    assert response.url == '%s/nonexistent' % pypi_stub.url
+    assert response.url == '%s/nonexistent' % pypi_stub
     assert response.status_code == 302
 
 
