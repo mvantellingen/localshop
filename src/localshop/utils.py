@@ -1,36 +1,7 @@
 import logging
-import os
-import shutil
-import tempfile
 from functools import wraps
 
-from django.conf import settings
 from django.core.cache import cache
-from django.test.utils import override_settings
-
-
-class TemporaryMediaRootMixin(object):
-
-    def setUp(self):
-        super().setUp()
-
-        # Create path to temp dir and recreate it
-        temp_media_root = os.path.join(
-            tempfile.gettempdir(), 'project-testrun')
-        if os.path.exists(temp_media_root):
-            shutil.rmtree(temp_media_root)
-        os.mkdir(temp_media_root)
-
-        self.override = override_settings(
-            MEDIA_ROOT=temp_media_root,
-        )
-        self.override.enable()
-
-    def tearDown(self):
-        shutil.rmtree(settings.MEDIA_ROOT)
-        self.override.disable()
-
-        super().tearDown()
 
 
 def generate_key(function, *args, **kwargs):
