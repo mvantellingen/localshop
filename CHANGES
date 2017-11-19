@@ -1,15 +1,17 @@
-0.10.0 (in development)
------------------------
+2.0.0-alpha.1
+-------------
+This is a major refactoring of localshop focusing on first-class docker support.
+The release is for now also only compatible with Python 3.6
+
  * Add support for multiple indexes (repositories). Indexes can be managed via
    the web interface
  * Implement teams
  * Create separate user access keys and make the existing credentials only
    work in combination with repositories.
  * Update interface to bootstrap 3
- * Add support for Python 3.3 and 3.4
- * Update django-storages to django-storages-redux
+ * Drop support for Python 2.x
  * The `LOCALSHOP_PYPI_URL` is removed and now configurable per repository
- * Add button to package detail dashboard template to mirror a package 
+ * Add button to package detail dashboard template to mirror a package
    release file.
 
 
