@@ -14,7 +14,7 @@
 
 {% for release in releases %}
     {% for file in release.files.all %}
-        <a href="{{ file.get_absolute_url }}" rel="package">{{ file.filename }}</a>
+        <a href="{{ base_url }}{{ file.get_absolute_url }}" rel="package">{{ file.filename }}</a>
     {% empty %}
         {% if release.home_page and release.home_page != 'UNKNOWN' %}
             <a href="{{ release.home_page }}" rel="homepage">{{ release.version }} home_page</a>
