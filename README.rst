@@ -5,15 +5,11 @@ localshop
     :target: https://pypi.python.org/pypi/localshop/
     :alt: Latest Version
 
-.. image:: https://travis-ci.org/jazzband/localshop.svg?branch=develop
-    :target: https://travis-ci.org/jazzband/localshop
+.. image:: https://travis-ci.org/mvantellingen/localshop.svg?branch=develop
+    :target: https://travis-ci.org/mvantellingen/localshop
 
-.. image:: http://codecov.io/github/jazzband/localshop/coverage.svg?branch=develop
-    :target: http://codecov.io/github/jazzband/localshop?branch=develop
-
-.. image:: https://jazzband.co/static/img/badge.svg
-   :target: https://jazzband.co/
-   :alt: Jazzband
+.. image:: http://codecov.io/github/mvantellingen/localshop/coverage.svg?branch=develop
+    :target: http://codecov.io/github/mvantellingen/localshop?branch=develop
 
 
 A PyPI server which automatically proxies and mirrors PyPI packages based
