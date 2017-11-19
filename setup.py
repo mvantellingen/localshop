@@ -11,14 +11,13 @@ tests_require = [
     'pytest-cache==1.0',
     'requests-mock==1.3.0',
     'django-webtest==1.9.2',
-    'factory-boy==2.5.2',
-    'mock==1.0.1',
+    'factory-boy==2.9.2',
+    'mock==2.0.0',
 ]
-
 
 setup(
     name='localshop',
-    version='0.10.0.dev',
+    version='2.0.0-alpha.1',
     author='Michael van Tellingen',
     author_email='michaelvantellingen@gmail.com',
     url='http://github.com/mvantellingen/localshop',
@@ -26,8 +25,6 @@ setup(
     long_description='\n'.join(readme),
     zip_safe=False,
     install_requires=[
-        'Django==1.11.7',
-        'Pillow==3.4.2',
         'celery==4.1.0',
         'django-braces==1.11.0',
         'django-celery-beat==1.1.0',
@@ -36,8 +33,12 @@ setup(
         'django-model-utils==3.0.0',
         'django-storages==1.6.5',
         'django-widget-tweaks==1.4.1',
+        'Django==1.11.7',
         'docutils==0.12',
         'netaddr==0.7.12',
+        'Pillow==4.3.0',
+        'psycopg2==2.7.3.2',
+        'redis==2.10.6',
         'requests==2.18.4',
         'social-auth-app-django==1.2.0',
         'sqlparse==0.1.15',
