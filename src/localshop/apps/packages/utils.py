@@ -4,10 +4,7 @@ import logging
 import os
 
 from django.core.files.uploadedfile import TemporaryUploadedFile
-from django.db.models import FieldDoesNotExist
-from django.db.models.fields.files import FileField
 from django.http import QueryDict
-from django.utils import six
 from django.utils.datastructures import MultiValueDict
 
 logger = logging.getLogger(__name__)
