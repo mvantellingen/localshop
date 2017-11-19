@@ -10,8 +10,8 @@ from django.utils.timezone import now
 
 from localshop.apps.packages import forms, models, pypi
 from localshop.apps.packages.utils import md5_hash_file
-from localshop.utils import enqueue, no_duplicates
 from localshop.celery import app
+from localshop.utils import enqueue, no_duplicates
 
 
 @app.task

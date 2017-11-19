@@ -1,11 +1,10 @@
-from django.conf.urls import url
 from django.conf import settings
+from django.conf.urls import url
 from django.contrib.auth import views
 from django.urls import reverse_lazy
 from django.views.generic.base import RedirectView
 
 from localshop.apps.accounts.views import login as login_view
-
 
 urlpatterns = [
     url(r'^logout/$', views.logout, name='logout'),

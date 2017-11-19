@@ -1,15 +1,15 @@
-import uuid
 import logging
+import uuid
 
 from django.conf import settings
 from django.contrib.auth import login
 from django.http import HttpResponseForbidden
+from django.utils import timezone
 
+from localshop.apps.accounts.models import AccessKey
 from localshop.apps.permissions.utils import (
     authenticate_user, get_basic_auth_data)
 from localshop.http import HttpResponseUnauthorized
-from localshop.apps.accounts.models import AccessKey
-from django.utils import timezone
 
 logger = logging.getLogger(__name__)
 
