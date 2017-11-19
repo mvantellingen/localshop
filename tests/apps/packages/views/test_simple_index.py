@@ -3,6 +3,7 @@ from base64 import standard_b64encode
 
 import pytest
 from django.utils import six
+from requests_toolbelt.multipart.encoder import MultipartEncoder
 
 from localshop.apps.packages.models import Package
 from tests.factories import ReleaseFileFactory
@@ -16,146 +17,70 @@ def basic_auth_header(username, password):
     return 'Basic %s' % auth_str.decode('utf-8')
 
 
-REGISTER_POST = '\n'.join([
-    '',
-    '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-    'Content-Disposition: form-data; name="license"',
-    '',
-    'BSD',
-    '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-    'Content-Disposition: form-data; name="name"',
-    '',
-    'localshop',
-    '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-    'Content-Disposition: form-data; name="metadata_version"',
-    '',
-    '1.0',
-    '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-    'Content-Disposition: form-data; name="author"',
-    '',
-    'Michael van Tellingen',
-    '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-    'Content-Disposition: form-data; name="home_page"',
-    '',
-    'http://github.com/mvantellingen/localshop',
-    '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-    'Content-Disposition: form-data; name=":action"',
-    '',
-    'submit',
-    '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-    'Content-Disposition: form-data; name="download_url"',
-    '',
-    'UNKNOWN',
-    '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-    'Content-Disposition: form-data; name="summary"',
-    '',
-    'A private pypi server including auto-mirroring of pypi.',
-    '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-    'Content-Disposition: form-data; name="author_email"',
-    '',
-    'michaelvantellingen@gmail.com',
-    '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-    'Content-Disposition: form-data; name="version"',
-    '',
-    '0.1',
-    '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-    'Content-Disposition: form-data; name="platform"',
-    '',
-    'UNKNOWN',
-    '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-    'Content-Disposition: form-data; name="description"',
-    '',
-    'UNKNOWN',
-    '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254--',
-    ''])
+@pytest.fixture
+def register_post_data():
+    return MultipartEncoder(fields={
+        ':action': 'submit',
+        'author_email': 'michaelvantellingen@gmail.com',
+        'author': 'Michael van Tellingen',
+        'description': 'UNKNOWN',
+        'download_url': 'UNKNOWN',
+        'home_page': 'http://github.com/mvantellingen/localshop',
+        'license': 'BSD',
+        'metadata_version': '1.0',
+        'name': 'localshop',
+        'platform': 'UNKNOWN',
+        'summary': 'A private pypi server including auto-mirroring of pypi.',
+        'version': '0.1',
+    })
 
 
-@pytest.mark.parametrize('separator', ['\n', '\r\n'])
-def test_package_upload(django_app, admin_user, repository, separator):
-    post_data = separator.join([
-        '',
-        '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-        'Content-Disposition: form-data; name="comment"',
-        '',
-        '',
-        '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-        'Content-Disposition: form-data; name="metadata_version"',
-        '',
-        '1.0',
-        '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-        'Content-Disposition: form-data; name="filetype"',
-        '',
-        'sdist',
-        '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-        'Content-Disposition: form-data; name="protcol_version"',
-        '',
-        '1',
-        '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-        'Content-Disposition: form-data; name="author"',
-        '',
-        'Michael van Tellingen',
-        '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-        'Content-Disposition: form-data; name="home_page"',
-        '',
-        'http://github.com/mvantellingen/localshop',
-        '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-        'Content-Disposition: form-data; name="download_url"',
-        '',
-        'UNKNOWN',
-        '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-        'Content-Disposition: form-data; name="content";filename="tmpf3bcEV"',
-        '',
-        'binary-test-data-here',
-        '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-        'Content-Disposition: form-data; name="platform"',
-        '',
-        'UNKNOWN',
-        '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-        'Content-Disposition: form-data; name="version"',
-        '',
-        '0.1',
-        '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-        'Content-Disposition: form-data; name="description"',
-        '',
-        'UNKNOWN',
-        '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-        'Content-Disposition: form-data; name="md5_digest"',
-        '',
-        '06ffe94789d7bd9efba1109f40e935cf',
-        '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-        'Content-Disposition: form-data; name=":action"',
-        '',
-        'file_upload',
-        '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-        'Content-Disposition: form-data; name="name"',
-        '',
-        'localshop',
-        '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-        'Content-Disposition: form-data; name="license"',
-        '',
-        'BSD',
-        '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-        'Content-Disposition: form-data; name="pyversion"',
-        '',
-        'source',
-        '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-        'Content-Disposition: form-data; name="summary"',
-        '',
-        'A private pypi server including auto-mirroring of pypi.',
-        '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
-        'Content-Disposition: form-data; name="author_email"',
-        '',
-        'michaelvantellingen@gmail.com',
-        '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254--',
-        ''])
+@pytest.fixture
+def upload_post_data():
+    return MultipartEncoder(fields={
+        ':action': 'file_upload',
+
+        'author_email': 'michaelvantellingen@gmail.com',
+        'author': 'Michael van Tellingen',
+        'description': 'UNKNOWN',
+        'download_url': 'UNKNOWN',
+        'home_page': 'http://github.com/mvantellingen/localshop',
+        'license': 'BSD',
+        'metadata_version': '1.0',
+        'name': 'localshop',
+        'platform': 'UNKNOWN',
+        'summary': 'A private pypi server including auto-mirroring of pypi.',
+        'version': '0.1',
+
+        'comment': '',
+        'protocol_version': '1',
+        'content': ('tmpf3bcEV', 'binary-test-data-here'),
+        'filetype': 'sdist',
+        'md5_digest': '06ffe94789d7bd9efba1109f40e935cf',
+        'pyversion': 'source',
+    })
+
+
+
+@pytest.mark.parametrize('separator', [b'\n', b'\r\n'])
+def test_package_upload(django_app, admin_user, repository, upload_post_data,
+                        separator):
+    """Test package upload with \n and \r\n as separator.
+
+    \r\n is actually the correct separator but there was a bug in older python
+    versions which used \n. See http://bugs.python.org/issue10510
+    """
+    post_data = upload_post_data.to_string().replace(b'\r\n', separator)
 
     headers = {
-        'Content-type': str('multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254'),
+        'Content-type': upload_post_data.content_type,
         'Authorization': basic_auth_header('admin', 'password'),
     }
 
     response = django_app.post(
-        '/repo/%s/' % repository.slug, params=post_data, headers=headers,
+        '/repo/%s/' % repository.slug,
+        params=post_data,
+        headers=headers,
         user=admin_user)
 
     assert response.status_code == 200
@@ -188,15 +113,17 @@ def test_package_upload(django_app, admin_user, repository, separator):
     assert release_file.distribution.read() == six.b('binary-test-data-here')
 
 
-def test_package_register(django_app, repository, admin_user):
+def test_package_register(django_app, repository, admin_user, register_post_data):
     key = admin_user.access_keys.create(comment='For testing')
     headers = {
-        'Content-type': str('multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254'),
+        'Content-type': register_post_data.content_type,
         'Authorization': basic_auth_header(key.access_key, key.secret_key)
     }
 
     response = django_app.post(
-        '/repo/%s/' % repository.slug, params=REGISTER_POST, headers=headers)
+        '/repo/%s/' % repository.slug,
+        params=register_post_data.to_string(),
+        headers=headers)
 
     assert response.status_code == 200
 
@@ -219,39 +146,45 @@ def test_package_register(django_app, repository, admin_user):
     assert release.version == '0.1'
 
 
-def test_missing_auth(django_app, repository, admin_user):
+def test_missing_auth(django_app, repository, admin_user, register_post_data):
     headers = {
-        'Content-type': str('multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254'),
+        'Content-type': register_post_data.content_type
     }
 
     django_app.post(
-        '/repo/%s/' % repository.slug, params=REGISTER_POST, headers=headers,
+        '/repo/%s/' % repository.slug,
+        params=register_post_data.to_string(),
+        headers=headers,
         status=401)
 
 
-def test_invalid_auth(django_app, repository, admin_user):
+def test_invalid_auth(django_app, repository, admin_user, register_post_data):
     access_key = uuid.uuid4()
     secret_key = uuid.uuid4()
     headers = {
-        'Content-type': str('multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254'),
+        'Content-type': register_post_data.content_type,
         'Authorization': basic_auth_header(access_key, secret_key)
     }
 
     django_app.post(
-        '/repo/%s/' % repository.slug, params=REGISTER_POST, headers=headers,
+        '/repo/%s/' % repository.slug,
+        params=register_post_data.to_string(),
+        headers=headers,
         status=401)
 
 
-def test_invalid_auth_no_uuid(django_app, repository, admin_user):
+def test_invalid_auth_no_uuid(django_app, repository, admin_user, register_post_data):
     access_key = 'user'
     secret_key = 'password'
     headers = {
-        'Content-type': str('multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254'),
+        'Content-type': register_post_data.content_type,
         'Authorization': basic_auth_header(access_key, secret_key)
     }
 
     django_app.post(
-        '/repo/%s/' % repository.slug, params=REGISTER_POST, headers=headers,
+        '/repo/%s/' % repository.slug,
+        params=register_post_data.to_string(),
+        headers=headers,
         status=401)
 
 
@@ -313,19 +246,23 @@ def test_missing_version(django_app, repository, admin_user):
     assert response.unicode_body == 'No name or version given'
 
 
-def test_upload_should_not_overwrite_pypi_package(django_app, repository, admin_user):
+def test_upload_should_not_overwrite_pypi_package(
+    django_app, repository, admin_user, upload_post_data
+):
     ReleaseFileFactory(
         release__package__repository=repository,
         release__package__name='localshop')
 
     key = admin_user.access_keys.create(comment='For testing')
     headers = {
-        'Content-type': str('multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254'),
+        'Content-type': upload_post_data.content_type,
         'Authorization': basic_auth_header(key.access_key, key.secret_key)
     }
 
     response = django_app.post(
-        '/repo/%s/' % repository.slug, params=REGISTER_POST, headers=headers,
+        '/repo/%s/' % repository.slug,
+        params=upload_post_data.to_string(),
+        headers=headers,
         status=400)
 
     assert response.unicode_body == 'localshop is a pypi package!'
@@ -417,7 +354,8 @@ def test_invalid_version_upload(client, settings, repository, admin_user):
         '/repo/%s/' % repository.slug, data=data, **auth)
 
     assert response.status_code == 400
-    assert "Invalid version supplied '01.0' for 'versio.version_scheme.Simple3VersionScheme' scheme." == response.reason_phrase
+    assert response.reason_phrase == (
+        "Invalid version supplied '01.0' for 'versio.version_scheme.Simple3VersionScheme' scheme.")
 
 
 @pytest.mark.django_db
