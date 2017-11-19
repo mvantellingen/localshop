@@ -1,55 +1,12 @@
-import copy
-import imp
-import os
-
-import mock
-from django.test import TestCase
-from whitenoise.django import DjangoWhiteNoise
-
-from localshop import wsgi
 from localshop.runner import main
 
-manage_instance = mock.MagicMock()
-manage_mock = mock.MagicMock(return_value=manage_instance)
 
+def test_main(monkeypatch):
+    from django.core import management
 
-class TestWSGI(TestCase):
-    def test_init_wsgi_application(self):
-        self.assertIsInstance(wsgi.application, DjangoWhiteNoise)
+    def mock_exec(args):
+        return
 
-    def test_set_env_defaults(self):
-        # backup and remove global environment vars
-        oldenv = copy.copy(os.environ)
-        del os.environ['DJANGO_SETTINGS_MODULE']
-        imp.reload(wsgi)
-        self.assertIn('DJANGO_SETTINGS_MODULE', os.environ)
-        self.assertEqual(os.environ['DJANGO_SETTINGS_MODULE'], 'localshop.settings')
-        os.environ = oldenv
+    monkeypatch.setattr(management, 'execute_from_command_line', mock_exec)
 
-
-@mock.patch('django.core.management.ManagementUtility', manage_mock)
-class TestRunner(TestCase):
-    def tearDown(self):
-        manage_instance.reset_mock()
-        manage_mock.reset_mock()
-
-    @mock.patch('sys.argv', [])
-    def test_no_args_passed_manager(self):
-        main()
-        manage_mock.assert_called_once_with([])
-        manage_instance.execute.assert_called_once_with()
-
-    @mock.patch('sys.argv', ['init', '--no-superuser'])
-    def test_args_passed_manager(self):
-        main()
-        manage_mock.assert_called_once_with(['init', '--no-superuser'])
-        manage_instance.execute.assert_called_once_with()
-
-    def test_set_env_defaults(self):
-        # backup and remove global environment vars
-        oldenv = copy.copy(os.environ)
-        del os.environ['DJANGO_SETTINGS_MODULE']
-        main()
-        self.assertIn('DJANGO_SETTINGS_MODULE', os.environ)
-        self.assertEqual(os.environ['DJANGO_SETTINGS_MODULE'], 'localshop.settings')
-        os.environ = oldenv
+    main()
