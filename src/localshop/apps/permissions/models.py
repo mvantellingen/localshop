@@ -39,7 +39,7 @@ class CIDR(models.Model):
         )
 
 
-class CredentialManager(models.Manager):
+class CredentialQuerySet(models.QuerySet):
 
     def active(self):
         return self.filter(deactivated__isnull=True)
@@ -67,7 +67,7 @@ class Credential(models.Model):
         help_text=_("Indicate if these credentials allow uploading new files"))
     deactivated = models.DateTimeField(blank=True, null=True)
 
-    objects = CredentialManager()
+    objects = CredentialQuerySet.as_manager()
 
     def __str__(self):
         return self.access_key.hex
