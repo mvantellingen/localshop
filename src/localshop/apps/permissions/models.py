@@ -44,14 +44,11 @@ class CredentialManager(models.Manager):
     def active(self):
         return self.filter(deactivated__isnull=True)
 
-    def authenticate(self, key, secret):
-        try:
-            key = uuid.UUID(key)
-            secret = uuid.UUID(secret)
-        except ValueError:
-            return self.none()
-        else:
-            return self.active().filter(access_key=key, secret_key=secret).first()
+    def authenticate(self, access_key, secret_key):
+        return(
+            self.active()
+            .filter(access_key=access_key, secret_key=secret_key)
+            .first())
 
 
 class Credential(models.Model):

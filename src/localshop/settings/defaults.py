@@ -152,10 +152,9 @@ INSTALLED_APPS = [
 ]
 
 # Auth settings
-AUTHENTICATION_BACKENDS = (
-    'localshop.apps.accounts.backend.AccessKeyBackend',
+AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
-)
+]
 LOGIN_URL = '/accounts/login'
 LOGIN_REDIRECT_URL = '/dashboard/'
 LOGOUT_URL = '/accounts/logout'

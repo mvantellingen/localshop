@@ -43,9 +43,20 @@ class Repository(TimeStampedModel):
             'repo': self.slug
         })
 
+    def user_has_access(self, user):
+        if user.is_superuser:
+            return True
+
+        if not user.is_authenticated:
+            return False
+        return self.teams.filter(members__user=user).exists()
+
     def check_user_role(self, user, roles):
         if user.is_superuser:
             return True
+
+        if not user.is_authenticated:
+            return False
 
         return self.teams.filter(
             members__user=user,

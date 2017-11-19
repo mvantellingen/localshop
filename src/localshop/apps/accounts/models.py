@@ -14,6 +14,18 @@ class User(AbstractUser):
     pass
 
 
+class AccessKeyQuerySet(models.QuerySet):
+
+    def is_allowed(self, repository, access_key, secret_key):
+        return (
+            self
+            .filter(
+                user__team_memberships__team__repositories=repository,
+                access_key=access_key,
+                secret_key=secret_key)
+            .exists())
+
+
 class AccessKey(models.Model):
     created = AutoCreatedField()
 
@@ -32,8 +44,14 @@ class AccessKey(models.Model):
             "A comment about this credential, e.g. where it's being used"))
     last_usage = models.DateTimeField(null=True, blank=True)
 
+    objects = AccessKeyQuerySet.as_manager()
+
     class Meta:
         ordering = ['-created']
+
+    @property
+    def allow_upload(self):
+        return True
 
 
 @python_2_unicode_compatible

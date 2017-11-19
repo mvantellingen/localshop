@@ -17,7 +17,7 @@ def test_success(django_app, admin_user, repository, pypi_stub):
         reverse('packages:simple_detail', kwargs={
             'slug': release_file.release.package.name,
             'repo': release_file.release.package.repository.slug
-        }))
+        }), user=admin_user)
 
     assert response.status_code == 200
     assert 'Links for test-package' in response.unicode_body
@@ -42,7 +42,7 @@ def test_missing_package_local_package(django_app, admin_user, repository,
         reverse('packages:simple_detail', kwargs={
             'slug': 'minibar',
             'repo': repository.slug,
-        }))
+        }), user=admin_user)
 
     assert response.status_code == 200
     assert 'Links for minibar' in response.unicode_body
@@ -61,7 +61,7 @@ def test_nonexistent_package(django_app, admin_user, repository, pypi_stub):
         reverse('packages:simple_detail', kwargs={
             'slug': 'nonexistent',
             'repo': repository.slug,
-        }))
+        }), user=admin_user)
 
     assert response.url == '%s/nonexistent'  % pypi_stub.url
     assert response.status_code == 302
@@ -80,7 +80,7 @@ def test_wrong_package_name_case(django_app, admin_user, repository, pypi_stub):
         reverse('packages:simple_detail', kwargs={
             'slug': 'Minibar',
             'repo': 'default'
-        }))
+        }), user=admin_user)
 
     assert response.status_code == 302
     assert response.url == '/repo/default/minibar/'

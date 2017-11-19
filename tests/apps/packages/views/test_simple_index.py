@@ -1,5 +1,4 @@
-from __future__ import unicode_literals
-
+import uuid
 from base64 import standard_b64encode
 
 import pytest
@@ -11,14 +10,10 @@ from tests.utils import NamedStringIO
 
 
 def basic_auth_header(username, password):
-    auth_str = b':'.join((username.encode('utf-8'), password.encode('utf-8')))
-
-    string = 'Basic %s' % standard_b64encode(auth_str).decode('utf-8')
-    return tostr(string)
-
-
-def tostr(value):
-    return str(value)
+    username = str(username).encode('utf-8')
+    password = str(password).encode('utf-8')
+    auth_str = standard_b64encode(b':'.join((username, password)))
+    return 'Basic %s' % auth_str.decode('utf-8')
 
 
 REGISTER_POST = '\n'.join([
@@ -155,7 +150,7 @@ def test_package_upload(django_app, admin_user, repository, separator):
         ''])
 
     headers = {
-        'Content-type': tostr('multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254'),
+        'Content-type': str('multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254'),
         'Authorization': basic_auth_header('admin', 'password'),
     }
 
@@ -194,9 +189,10 @@ def test_package_upload(django_app, admin_user, repository, separator):
 
 
 def test_package_register(django_app, repository, admin_user):
+    key = admin_user.access_keys.create(comment='For testing')
     headers = {
-        'Content-type': tostr('multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254'),
-        'Authorization': basic_auth_header('admin', 'password'),
+        'Content-type': str('multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254'),
+        'Authorization': basic_auth_header(key.access_key, key.secret_key)
     }
 
     response = django_app.post(
@@ -225,7 +221,7 @@ def test_package_register(django_app, repository, admin_user):
 
 def test_missing_auth(django_app, repository, admin_user):
     headers = {
-        'Content-type': tostr('multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254'),
+        'Content-type': str('multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254'),
     }
 
     django_app.post(
@@ -234,9 +230,11 @@ def test_missing_auth(django_app, repository, admin_user):
 
 
 def test_invalid_auth(django_app, repository, admin_user):
+    access_key = uuid.uuid4()
+    secret_key = uuid.uuid4()
     headers = {
-        'Content-type': tostr('multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254'),
-        'Authorization': basic_auth_header('admin', 'invalid'),
+        'Content-type': str('multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254'),
+        'Authorization': basic_auth_header(access_key, secret_key)
     }
 
     django_app.post(
@@ -245,8 +243,22 @@ def test_invalid_auth(django_app, repository, admin_user):
 
 
 def test_invalid_auth_no_uuid(django_app, repository, admin_user):
+    access_key = 'user'
+    secret_key = 'password'
     headers = {
-        'Authorization': basic_auth_header('admin', 'password'),
+        'Content-type': str('multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254'),
+        'Authorization': basic_auth_header(access_key, secret_key)
+    }
+
+    django_app.post(
+        '/repo/%s/' % repository.slug, params=REGISTER_POST, headers=headers,
+        status=401)
+
+
+def test_invalid_action(django_app, repository, admin_user):
+    key = admin_user.access_keys.create(comment='For testing')
+    headers = {
+        'Authorization': basic_auth_header(key.access_key, key.secret_key)
     }
 
     data = {
@@ -264,8 +276,9 @@ def test_invalid_auth_no_uuid(django_app, repository, admin_user):
 
 
 def test_missing_name(django_app, repository, admin_user):
+    key = admin_user.access_keys.create(comment='For testing')
     headers = {
-        'Authorization': basic_auth_header('admin', 'password'),
+        'Authorization': basic_auth_header(key.access_key, key.secret_key)
     }
 
     data = {
@@ -282,8 +295,9 @@ def test_missing_name(django_app, repository, admin_user):
 
 
 def test_missing_version(django_app, repository, admin_user):
+    key = admin_user.access_keys.create(comment='For testing')
     headers = {
-        'Authorization': basic_auth_header('admin', 'password'),
+        'Authorization': basic_auth_header(key.access_key, key.secret_key)
     }
 
     data = {
@@ -304,9 +318,10 @@ def test_upload_should_not_overwrite_pypi_package(django_app, repository, admin_
         release__package__repository=repository,
         release__package__name='localshop')
 
+    key = admin_user.access_keys.create(comment='For testing')
     headers = {
-        'Content-type': tostr('multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254'),
-        'Authorization': basic_auth_header('admin', 'password'),
+        'Content-type': str('multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254'),
+        'Authorization': basic_auth_header(key.access_key, key.secret_key)
     }
 
     response = django_app.post(
@@ -317,8 +332,9 @@ def test_upload_should_not_overwrite_pypi_package(django_app, repository, admin_
 
 
 def test_package_name_with_whitespace(django_app, repository, admin_user):
+    key = admin_user.access_keys.create(comment='For testing')
     headers = {
-        'Authorization': basic_auth_header('admin', 'password'),
+        'Authorization': basic_auth_header(key.access_key, key.secret_key)
     }
 
     data = {
@@ -342,7 +358,7 @@ def test_package_name_with_whitespace(django_app, repository, admin_user):
 def test_package_name_with_hyphen_instead_underscore(django_app, repository, admin_user):
     key = admin_user.access_keys.create(comment='For testing')
     headers = {
-        'Authorization': basic_auth_header('admin', 'password'),
+        'Authorization': basic_auth_header(key.access_key, key.secret_key)
     }
 
     data = {
@@ -382,8 +398,9 @@ def test_package_name_with_hyphen_instead_underscore(django_app, repository, adm
 def test_invalid_version_upload(client, settings, repository, admin_user):
     settings.LOCALSHOP_VERSIONING_TYPE = 'versio.version_scheme.Simple3VersionScheme'
 
+    key = admin_user.access_keys.create(comment='For testing')
     auth = {
-        'HTTP_AUTHORIZATION': basic_auth_header('admin', 'password'),
+        'HTTP_AUTHORIZATION': basic_auth_header(key.access_key, key.secret_key)
     }
 
     data = {
@@ -408,8 +425,9 @@ def test_valid_version_upload(client, settings, repository, admin_user):
     """Test a valid version upload when enforcement is activated"""
     settings.LOCALSHOP_VERSIONING_TYPE = 'versio.version_scheme.Simple3VersionScheme'
 
+    key = admin_user.access_keys.create(comment='For testing')
     auth = {
-        'HTTP_AUTHORIZATION': basic_auth_header('admin', 'password'),
+        'HTTP_AUTHORIZATION': basic_auth_header(key.access_key, key.secret_key)
     }
 
     data = {
