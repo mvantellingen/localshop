@@ -11,3 +11,4 @@ localshop.db
 .coverage
 .cache
 /coverage.xml
+/src/localshop/public/
