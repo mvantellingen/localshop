@@ -11,9 +11,10 @@ from django.utils.timezone import now
 from localshop.apps.packages import forms, models, pypi
 from localshop.apps.packages.utils import md5_hash_file
 from localshop.utils import enqueue, no_duplicates
+from localshop.celery import app
 
 
-@shared_task
+@app.task
 @no_duplicates
 def fetch_package(repository_pk, slug):
     repository = models.Repository.objects.get(pk=repository_pk)
@@ -71,7 +72,7 @@ def fetch_package(repository_pk, slug):
     logging.info('done fetch_package: %s', slug)
 
 
-@shared_task
+@app.task
 def download_file(pk):
     """Download the file reference in `models.ReleaseFile` with the given pk.
 
@@ -120,7 +121,7 @@ def download_file(pk):
     logging.info("Complete")
 
 
-@shared_task
+@app.task
 def update_packages():
     """Update package information for all packages"""
     logging.info('Updated packages')
