@@ -35,6 +35,7 @@ class PackageForm(forms.ModelForm):
 
 
 class ReleaseForm(forms.ModelForm):
+    """Used to process upload or register actions from the pypi endpoint"""
 
     class Meta:
         model = models.Release
@@ -49,6 +50,13 @@ class ReleaseForm(forms.ModelForm):
             return ''
         return value
 
+    def clean(self):
+        # Distutils sends UNKNOWN for empty fields (e.g platform)
+        result = {
+            key: value if value != 'UNKNOWN' else ''
+            for key, value in self.cleaned_data.items()
+        }
+        return result
 
 class ReleaseFileForm(forms.ModelForm):
     class Meta:
@@ -69,3 +77,11 @@ class ReleaseFileForm(forms.ModelForm):
         if commit:
             obj.save()
         return obj
+
+    def clean(self):
+        # Distutils sends UNKNOWN for empty fields (e.g platform)
+        result = {
+            key: value if value != 'UNKNOWN' else ''
+            for key, value in self.cleaned_data.items()
+        }
+        return result

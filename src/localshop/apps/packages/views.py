@@ -22,7 +22,7 @@ from localshop.apps.packages.mixins import RepositoryMixin
 from localshop.apps.packages.pypi import get_search_names
 from localshop.apps.packages.tasks import fetch_package
 from localshop.apps.packages.utils import (
-    get_versio_versioning_scheme, parse_distutils_request)
+    get_versio_versioning_scheme, alter_old_distutils_request)
 from localshop.apps.permissions.mixins import RepositoryAccessMixin
 from localshop.utils import enqueue
 
@@ -43,7 +43,7 @@ class SimpleIndex(CsrfExemptMixin, RepositoryMixin, RepositoryAccessMixin,
     template_name = 'packages/simple_package_list.html'
 
     def post(self, request, repo):
-        parse_distutils_request(request)
+        alter_old_distutils_request(request)
 
         actions = {
             'submit': handle_register_or_upload,
@@ -210,6 +210,9 @@ def handle_register_or_upload(post_data, files, user, repository):
 
     # If this is an upload action then process the uploaded file
     if files:
+        files = {
+            'distribution': files['content']
+        }
         filename = files['distribution']._name
         try:
             release_file = release.files.get(filename=filename)

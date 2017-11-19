@@ -1,85 +1,61 @@
+from io import BytesIO
 import hashlib
 import importlib
 import logging
 import os
 
-from django.core.files.uploadedfile import TemporaryUploadedFile
-from django.http import QueryDict
-from django.utils.datastructures import MultiValueDict
+from django.core.handlers.wsgi import WSGIRequest
+from django.http.multipartparser import parse_header
 
 logger = logging.getLogger(__name__)
 
 
-def parse_distutils_request(request):
-    """
-    Due to a bug in the Python distutils library, the request post is sent using \n
-    as a separator instead of the \r\n that the HTTP spec demands. This breaks the Django
-    form parser and therefore we have to write a custom parser.
+def alter_old_distutils_request(request: WSGIRequest):
+    """Alter the request body for compatibility with older distutils clients
+
+    Due to a bug in the Python distutils library, the request post is sent
+    using \n as a separator instead of the \r\n that the HTTP spec demands.
+    This breaks the Django form parser and therefore we have to write a
+    custom parser.
 
     This bug was fixed in the Python 2.7.4 and 3.4:
 
     http://bugs.python.org/issue10510
     """
-    body = request.body.decode('latin-1')
-    request.POST = request.POST.copy()
+    # We first need to retrieve the body before accessing POST or FILES since
+    # it can only be read once.
+    body = request.body
+    if request.POST or request.FILES:
+        return
 
-    if not body.endswith('\r\n'):
-        sep = body.splitlines()[1]
+    new_body = BytesIO()
 
-        request.POST = QueryDict('', mutable=True)
-        try:
-            request._files = MultiValueDict()
-        except Exception:
-            pass
-
-        for part in filter(lambda e: e.strip(), body.split(sep)):
-            try:
-                header, content = part.lstrip().split('\n', 1)
-            except Exception:
-                continue
-
-            if content.startswith('\n'):
-                content = content[1:]
-
-            if content.endswith('\n'):
-                content = content[:-1]
-
-            headers = parse_header(header)
-
-            if "name" not in headers:
-                continue
-
-            if "filename" in headers and headers['name'] == 'content':
-                dist = TemporaryUploadedFile(name=headers["filename"],
-                                             size=len(content),
-                                             content_type="application/gzip",
-                                             charset='utf-8')
-                dist.write(content.encode('utf-8'))
-                dist.seek(0)
-                request.FILES.appendlist('distribution', dist)
-            else:
-                request.POST.appendlist(headers["name"], content)
-    else:
-        request.FILES['distribution'] = request.FILES['content']
-
-    # Distutils sends UNKNOWN for empty fields (e.g platform)
-    for key, value in request.POST.items():
-        if value == 'UNKNOWN':
-            request.POST[key] = None
-
-
-def parse_header(header):
-    headers = {}
-    for kvpair in filter(lambda p: p,
-                         map(lambda p: p.strip(),
-                             header.split(';'))):
-        try:
-            key, value = kvpair.split("=", 1)
-        except ValueError:
+    # Split the response in the various parts based on the boundary string
+    content_type, opts = parse_header(request.META['CONTENT_TYPE'].encode('ascii'))
+    parts = body.split(b'\n--' + opts['boundary'] + b'\n')
+    for part in parts:
+        if b'\n\n' not in part:
             continue
-        headers[key.strip()] = value.strip('"')
 
-    return headers
+        headers, content = part.split(b'\n\n', 1)
+        if not headers:
+            continue
+
+        new_body.write(b'--' + opts['boundary'] + b'\r\n')
+        new_body.write(headers.replace(b'\n', b'\r\n'))
+        new_body.write(b'\r\n\r\n')
+        new_body.write(content)
+        new_body.write(b'\r\n')
+    new_body.write(b'--' + opts['boundary'] + b'--\r\n')
+
+    request._body = new_body.getvalue()
+    request.META['CONTENT_LENGTH'] = len(request._body)
+
+    # Clear out _files and _post so that the request object re-parses the body
+    if hasattr(request, '_files'):
+        delattr(request, '_files')
+    if hasattr(request, '_post'):
+        delattr(request, '_post')
 
 
 def delete_files(sender, **kwargs):
