@@ -12,7 +12,7 @@ from django.test.utils import override_settings
 class TemporaryMediaRootMixin(object):
 
     def setUp(self):
-        super(TemporaryMediaRootMixin, self).setUp()
+        super().setUp()
 
         # Create path to temp dir and recreate it
         temp_media_root = os.path.join(
@@ -30,7 +30,7 @@ class TemporaryMediaRootMixin(object):
         shutil.rmtree(settings.MEDIA_ROOT)
         self.override.disable()
 
-        super(TemporaryMediaRootMixin, self).tearDown()
+        super().tearDown()
 
 
 def generate_key(function, *args, **kwargs):

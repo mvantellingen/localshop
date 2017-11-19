@@ -9,7 +9,7 @@ from localshop.apps.permissions.models import CIDR, Credential
 class RepositoryFormMixin(object):
     def __init__(self, *args, **kwargs):
         self.repository = kwargs.pop('repository')
-        super(RepositoryFormMixin, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
 
 class AccessControlForm(RepositoryFormMixin, forms.ModelForm):
@@ -19,7 +19,7 @@ class AccessControlForm(RepositoryFormMixin, forms.ModelForm):
         model = CIDR
 
     def save(self):
-        instance = super(AccessControlForm, self).save(commit=False)
+        instance = super().save(commit=False)
         instance.repository = self.repository
         instance.save()
         return instance
@@ -39,7 +39,7 @@ class RepositoryTeamForm(RepositoryFormMixin, forms.Form):
     team = forms.ModelChoiceField(Team.objects.all())
 
     def __init__(self, *args, **kwargs):
-        super(RepositoryTeamForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
         if not self.data:
             self.fields['team'].queryset = (
@@ -66,7 +66,7 @@ class CredentialModelForm(RepositoryFormMixin, forms.ModelForm):
         return timezone.now() if value else None
 
     def save(self, commit=True):
-        instance = super(CredentialModelForm, self).save(commit=False)
+        instance = super().save(commit=False)
 
         if commit:
             instance.repository = self.repository

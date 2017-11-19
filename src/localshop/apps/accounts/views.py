@@ -27,7 +27,7 @@ class TeamCreateView(LoginRequiredMixin, generic.CreateView):
     def form_valid(self, form):
         team = form.save()
         team.members.create(user=self.request.user, role='owner')
-        return super(TeamCreateView, self).form_valid(form)
+        return super().form_valid(form)
 
     def get_success_url(self):
         return reverse(
@@ -38,7 +38,7 @@ class TeamDetailView(LoginRequiredMixin, generic.DetailView):
     model = models.Team
 
     def get_context_data(self, *args, **kwargs):
-        ctx = super(TeamDetailView, self).get_context_data(*args, **kwargs)
+        ctx = super().get_context_data(*args, **kwargs)
         ctx.update({
             'form_member_add': forms.TeamMemberAddForm(team=self.object),
         })
@@ -65,10 +65,10 @@ class TeamDeleteView(LoginRequiredMixin, generic.DeleteView):
 class TeamMixin(object):
     def dispatch(self, request, pk):
         self.team = get_object_or_404(models.Team, pk=pk)
-        return super(TeamMixin, self).dispatch(request, pk)
+        return super().dispatch(request, pk)
 
     def get_form_kwargs(self, *args, **kwargs):
-        kwargs = super(TeamMixin, self).get_form_kwargs(*args, **kwargs)
+        kwargs = super().get_form_kwargs(*args, **kwargs)
         kwargs['team'] = self.team
         return kwargs
 
@@ -103,10 +103,10 @@ class ProfileView(LoginRequiredMixin, generic.FormView):
 
     def form_valid(self, form):
         form.save()
-        return super(ProfileView, self).form_valid(form)
+        return super().form_valid(form)
 
     def get_form_kwargs(self, *args, **kwargs):
-        kwargs = super(ProfileView, self).get_form_kwargs(*args, **kwargs)
+        kwargs = super().get_form_kwargs(*args, **kwargs)
         kwargs['instance'] = self.request.user
         return kwargs
 
@@ -126,10 +126,9 @@ class AccessKeyCreateView(LoginRequiredMixin, UserFormKwargsMixin,
     template_name = 'accounts/accesskey_form.html'
     form_class = forms.AccessKeyForm
 
-
     def form_valid(self, form):
         form.save()
-        return super(AccessKeyCreateView, self).form_valid(form)
+        return super().form_valid(form)
 
     def get_queryset(self):
         return self.request.user.access_keys.all()
@@ -155,10 +154,9 @@ class AccessKeyUpdateView(LoginRequiredMixin, UserFormKwargsMixin,
     template_name = 'accounts/accesskey_form.html'
     form_class = forms.AccessKeyForm
 
-
     def form_valid(self, form):
         form.save()
-        return super(AccessKeyUpdateView, self).form_valid(form)
+        return super().form_valid(form)
 
     def get_queryset(self):
         return self.request.user.access_keys.all()

@@ -21,13 +21,13 @@ class PackageForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         self._repository = kwargs.pop('repository')
-        super(PackageForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.base_fields['name'].error_messages.update({
             'invalid': 'Enter a valid name consisting of letters, numbers, underscores or hyphens'
         })
 
     def save(self):
-        obj = super(PackageForm, self).save(commit=False)
+        obj = super().save(commit=False)
         obj.is_local = True
         obj.repository = self._repository
         obj.save()
@@ -59,12 +59,12 @@ class ReleaseFileForm(forms.ModelForm):
         ]
 
     def __init__(self, *args, **kwargs):
-        super(ReleaseFileForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields['pyversion'] = self.fields.pop('python_version')
         self.fields['pyversion'].required = False
 
     def save(self, commit=True):
-        obj = super(ReleaseFileForm, self).save(False)
+        obj = super().save(False)
         obj.python_version = self.cleaned_data['pyversion'] or 'source'
         if commit:
             obj.save()

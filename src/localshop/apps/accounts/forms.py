@@ -25,13 +25,13 @@ class AccessKeyForm(UserKwargModelFormMixin, forms.ModelForm):
 
     def save(self):
         self.instance.user = self.user
-        return super(AccessKeyForm, self).save(commit=True)
+        return super().save(commit=True)
 
 
 class TeamFormMixin(object):
     def __init__(self, *args, **kwargs):
         self.team = kwargs.pop('team')
-        super(TeamFormMixin, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
 
 
 class TeamMemberAddForm(TeamFormMixin, forms.ModelForm):
@@ -47,7 +47,7 @@ class TeamMemberAddForm(TeamFormMixin, forms.ModelForm):
         return user
 
     def save(self, commit=True):
-        instance = super(TeamMemberAddForm, self).save(commit=False)
+        instance = super().save(commit=False)
         if commit:
             instance.team = self.team
             instance.save()
@@ -58,7 +58,7 @@ class TeamMemberRemoveForm(TeamFormMixin, forms.Form):
     member_obj = forms.ModelChoiceField(models.TeamMember.objects.all())
 
     def __init__(self, *args, **kwargs):
-        super(TeamMemberRemoveForm, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.fields['member_obj'] = forms.ModelChoiceField(
             self.team.members.all())
 
