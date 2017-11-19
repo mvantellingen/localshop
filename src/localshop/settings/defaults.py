@@ -1,4 +1,6 @@
+import importlib
 import os
+import sys
 import uuid
 
 import environ
@@ -34,7 +36,7 @@ MEDIA_ROOT = env.str('LOCALSHOP_ROOT', os.path.join(PROJECT_ROOT, 'public', 'med
 
 # Staticfiles
 STATIC_ROOT = env.str('STATIC_ROOT', os.path.join(PROJECT_ROOT, 'public', 'static'))
-STATIC_URL = '/assets/'
+STATIC_URL = '/static/'
 STATICFILES_DIRS = [
     os.path.join(PROJECT_ROOT, 'static')
 ]
@@ -168,18 +170,20 @@ EMAIL = env.email_url('EMAIL', 'smtp://localhost:25/')
 
 ALLOWED_HOSTS = ['*']
 
+DEFAULT_FILE_STORAGE = env.str(
+    'LOCALSHOP_FILE_STORAGE',
+    default='django.core.files.storage.FileSystemStorage')
+
+AWS_STORAGE_BUCKET_NAME = env.str('LOCALSHOP_FILE_BUCKET_NAME', default='')
+
 LOCALSHOP_DELETE_FILES = False
-
 LOCALSHOP_HTTP_PROXY = None
-
 LOCALSHOP_ISOLATED = False
-
 LOCALSHOP_RELEASE_OVERWRITE = True
 
 # Use X-Forwarded-For header as the source for the client's IP.
 # Use where you have Nginx/Apache/etc as a reverse proxy infront of Localshop/Gunicorn.
 LOCALSHOP_USE_PROXIED_IP = False
-
 LOCALSHOP_VERSIONING_TYPE = None
 
 OAUTH2_PROVIDER = env.str('OAUTH2_PROVIDER', '')
@@ -190,3 +194,18 @@ if OAUTH2_PROVIDER == 'azuread-oauth2':
     SOCIAL_AUTH_AZUREAD_OAUTH2_KEY = env.str('OAUTH2_APPLICATION_ID', default='')
     SOCIAL_AUTH_AZUREAD_OAUTH2_SECRET = env.str('OAUTH2_SECRET_KEY', default='')
     SOCIAL_AUTH_PROTECTED_USER_FIELDS = ['username']
+
+
+# Load the user settings
+filename = os.path.expanduser('~/conf/localshop.conf.py')
+spec = importlib.util.spec_from_file_location('localshop.settings.user', filename)
+user_settings = importlib.util.module_from_spec(spec)
+try:
+    spec.loader.exec_module(user_settings)
+except FileNotFoundError:
+    pass
+else:
+    for key, value in user_settings.__dict__.items():
+        if key.startswith('_'):
+            continue
+        setattr(sys.modules[__name__], key, value)
