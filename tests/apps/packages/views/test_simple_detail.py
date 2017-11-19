@@ -63,7 +63,7 @@ def test_nonexistent_package(django_app, admin_user, repository, pypi_stub):
             'repo': repository.slug,
         }), user=admin_user)
 
-    assert response.url == '%s/nonexistent'  % pypi_stub.url
+    assert response.url == '%s/nonexistent' % pypi_stub.url
     assert response.status_code == 302
 
 

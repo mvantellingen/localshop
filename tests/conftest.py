@@ -7,7 +7,6 @@ from django.contrib.auth.models import AnonymousUser
 from django.contrib.messages.storage.fallback import FallbackStorage
 from django.contrib.sessions.backends.db import SessionStore
 from django.test.client import RequestFactory as BaseRequestFactory
-from django_webtest import DjangoTestApp, WebTestMixin
 
 from localshop.apps.packages.pypi import get_search_names
 from tests.factories import CIDRFactory, RepositoryFactory

@@ -46,7 +46,7 @@ class TestTeamMemberAddForm:
     def test_duplicate(self):
         user = UserFactory()
         team = TeamFactory()
-        member = TeamMemberFactory(user=user, team=team, role='owner')
+        TeamMemberFactory(user=user, team=team, role='owner')
 
         data = {
             'user': user.pk,

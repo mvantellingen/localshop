@@ -1,13 +1,8 @@
+import xmlrpc.client as xmlrpclib
+
 import pytest
-from django.utils import six
 
 from tests.factories import ReleaseFactory
-
-if six.PY2:
-    import xmlrpclib
-else:
-    import xmlrpc.client as xmlrpclib
-
 
 
 @pytest.fixture(params=['/RPC2', '/pypi'])
