@@ -9,12 +9,12 @@ from tests.factories import ReleaseFileFactory
 
 
 @pytest.mark.django_db
-def test_success(app, admin_user, repository, pypi_stub):
+def test_success(django_app, admin_user, repository, pypi_stub):
     repository.upstream_pypi_url = pypi_stub
     repository.save()
     release_file = ReleaseFileFactory(release__package__repository=repository)
 
-    response = app.get(
+    response = django_app.get(
         reverse('packages:simple_detail', kwargs={
             'slug': release_file.release.package.name,
             'repo': release_file.release.package.repository.slug
@@ -32,14 +32,14 @@ def test_success(app, admin_user, repository, pypi_stub):
 
 
 @pytest.mark.django_db
-def test_missing_package_local_package(app, admin_user, repository,
+def test_missing_package_local_package(django_app, admin_user, repository,
                                        pypi_stub):
     repository.upstream_pypi_url = pypi_stub
     repository.save()
 
     fetch_package.run(repository.pk, 'minibar')
 
-    response = app.get(
+    response = django_app.get(
         reverse('packages:simple_detail', kwargs={
             'slug': 'minibar',
             'repo': repository.slug,
@@ -54,11 +54,11 @@ def test_missing_package_local_package(app, admin_user, repository,
 
 @pytest.mark.django_db
 @pytest.mark.skip
-def test_nonexistent_package(app, admin_user, repository, pypi_stub):
+def test_nonexistent_package(django_app, admin_user, repository, pypi_stub):
     repository.upstream_pypi_url = pypi_stub
     repository.save()
 
-    response = app.get(
+    response = django_app.get(
         reverse('packages:simple_detail', kwargs={
             'slug': 'nonexistent',
             'repo': repository.slug,
@@ -69,7 +69,7 @@ def test_nonexistent_package(app, admin_user, repository, pypi_stub):
 
 
 @pytest.mark.django_db
-def test_wrong_package_name_case(app, admin_user, repository, pypi_stub):
+def test_wrong_package_name_case(django_app, admin_user, repository, pypi_stub):
     repository.upstream_pypi_url = pypi_stub
     repository.save()
 
@@ -77,7 +77,7 @@ def test_wrong_package_name_case(app, admin_user, repository, pypi_stub):
         release__package__repository=repository,
         release__package__name='minibar')
 
-    response = app.get(
+    response = django_app.get(
         reverse('packages:simple_detail', kwargs={
             'slug': 'Minibar',
             'repo': 'default'

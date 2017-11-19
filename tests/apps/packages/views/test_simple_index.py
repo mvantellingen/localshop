@@ -77,7 +77,7 @@ REGISTER_POST = '\n'.join([
 
 
 @pytest.mark.parametrize('separator', ['\n', '\r\n'])
-def test_package_upload(app, admin_user, repository, separator):
+def test_package_upload(django_app, admin_user, repository, separator):
     post_data = separator.join([
         '',
         '----------------GHSKFJDLGDS7543FJKLFHRE75642756743254',
@@ -160,7 +160,7 @@ def test_package_upload(app, admin_user, repository, separator):
         'Authorization': basic_auth_header('admin', 'password'),
     }
 
-    response = app.post(
+    response = django_app.post(
         '/repo/%s/' % repository.slug, params=post_data, headers=headers,
         user=admin_user)
 
@@ -194,13 +194,13 @@ def test_package_upload(app, admin_user, repository, separator):
     assert release_file.distribution.read() == six.b('binary-test-data-here')
 
 
-def test_package_register(app, repository, admin_user):
+def test_package_register(django_app, repository, admin_user):
     headers = {
         'Content-type': tostr('multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254'),
         'Authorization': basic_auth_header('admin', 'password'),
     }
 
-    response = app.post(
+    response = django_app.post(
         '/repo/%s/' % repository.slug, params=REGISTER_POST, headers=headers)
 
     assert response.status_code == 200
@@ -224,28 +224,28 @@ def test_package_register(app, repository, admin_user):
     assert release.version == '0.1'
 
 
-def test_missing_auth(app, repository, admin_user):
+def test_missing_auth(django_app, repository, admin_user):
     headers = {
         'Content-type': tostr('multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254'),
     }
 
-    app.post(
+    django_app.post(
         '/repo/%s/' % repository.slug, params=REGISTER_POST, headers=headers,
         status=401)
 
 
-def test_invalid_auth(app, repository, admin_user):
+def test_invalid_auth(django_app, repository, admin_user):
     headers = {
         'Content-type': tostr('multipart/form-data; boundary=--------------GHSKFJDLGDS7543FJKLFHRE75642756743254'),
         'Authorization': basic_auth_header('admin', 'invalid'),
     }
 
-    app.post(
+    django_app.post(
         '/repo/%s/' % repository.slug, params=REGISTER_POST, headers=headers,
         status=401)
 
 
-def test_invalid_action(app, repository, admin_user):
+def test_invalid_auth_no_uuid(django_app, repository, admin_user):
     headers = {
         'Authorization': basic_auth_header('admin', 'password'),
     }
@@ -256,7 +256,7 @@ def test_invalid_action(app, repository, admin_user):
         'version': '1.0',
     }
 
-    response = app.post(
+    response = django_app.post(
         '/repo/%s/' % repository.slug, params=data,
         upload_files=[('content', 'file.tgz', b'Hi')],
         headers=headers, status=404)
@@ -264,7 +264,7 @@ def test_invalid_action(app, repository, admin_user):
     assert response.unicode_body == 'Unknown action: invalid'
 
 
-def test_missing_name(app, repository, admin_user):
+def test_missing_name(django_app, repository, admin_user):
     headers = {
         'Authorization': basic_auth_header('admin', 'password'),
     }
@@ -274,7 +274,7 @@ def test_missing_name(app, repository, admin_user):
         'version': '1.0',
     }
 
-    response = app.post(
+    response = django_app.post(
         '/repo/%s/' % repository.slug, params=data,
         upload_files=[('content', 'file.tgz', b'Hi')],
         headers=headers, status=400)
@@ -282,7 +282,7 @@ def test_missing_name(app, repository, admin_user):
     assert response.unicode_body == 'No name or version given'
 
 
-def test_missing_version(app, repository, admin_user):
+def test_missing_version(django_app, repository, admin_user):
     headers = {
         'Authorization': basic_auth_header('admin', 'password'),
     }
@@ -292,7 +292,7 @@ def test_missing_version(app, repository, admin_user):
         'name': 'test',
     }
 
-    response = app.post(
+    response = django_app.post(
         '/repo/%s/' % repository.slug, params=data,
         upload_files=[('content', 'file.tgz', b'Hi')],
         headers=headers, status=400)
@@ -300,7 +300,7 @@ def test_missing_version(app, repository, admin_user):
     assert response.unicode_body == 'No name or version given'
 
 
-def test_upload_should_not_overwrite_pypi_package(app, repository, admin_user):
+def test_upload_should_not_overwrite_pypi_package(django_app, repository, admin_user):
     ReleaseFileFactory(
         release__package__repository=repository,
         release__package__name='localshop')
@@ -310,14 +310,14 @@ def test_upload_should_not_overwrite_pypi_package(app, repository, admin_user):
         'Authorization': basic_auth_header('admin', 'password'),
     }
 
-    response = app.post(
+    response = django_app.post(
         '/repo/%s/' % repository.slug, params=REGISTER_POST, headers=headers,
         status=400)
 
     assert response.unicode_body == 'localshop is a pypi package!'
 
 
-def test_package_name_with_whitespace(app, repository, admin_user):
+def test_package_name_with_whitespace(django_app, repository, admin_user):
     headers = {
         'Authorization': basic_auth_header('admin', 'password'),
     }
@@ -331,7 +331,7 @@ def test_package_name_with_whitespace(app, repository, admin_user):
     }
     data["name"] = "invalid name"
 
-    response = app.post(
+    response = django_app.post(
         '/repo/%s/' % repository.slug, params=data,
         upload_files=[('content', 'file.tgz', b'Hi')],
         headers=headers, status=400)
@@ -340,8 +340,8 @@ def test_package_name_with_whitespace(app, repository, admin_user):
         '400 Enter a valid name consisting of letters, numbers, underscores or hyphens')
 
 
-def test_package_name_with_hyphen_instead_underscore(app, repository,
-                                                     admin_user):
+def test_package_name_with_hyphen_instead_underscore(django_app, repository, admin_user):
+    key = admin_user.access_keys.create(comment='For testing')
     headers = {
         'Authorization': basic_auth_header('admin', 'password'),
     }
@@ -355,7 +355,7 @@ def test_package_name_with_hyphen_instead_underscore(app, repository,
         'md5_digest': '06ffe94789d7bd9efba1109f40e935cf',
     }
 
-    response = app.post(
+    response = django_app.post(
         '/repo/%s/' % repository.slug, params=data,
         upload_files=[('content', 'file.tgz', b'Hi')],
         headers=headers)
@@ -364,7 +364,7 @@ def test_package_name_with_hyphen_instead_underscore(app, repository,
 
     data['name'] = 'package_name'
     data['version'] = '2.0'
-    response = app.post(
+    response = django_app.post(
         '/repo/%s/' % repository.slug, params=data,
         upload_files=[('content', 'file.tgz', b'Hi')],
         headers=headers)
