@@ -26,6 +26,7 @@ setup(
     zip_safe=False,
     install_requires=[
         'celery==4.1.0',
+        'boto3==1.4.7',
         'django-braces==1.11.0',
         'django-celery-beat==1.1.0',
         'django-celery-results==1.0.1',
