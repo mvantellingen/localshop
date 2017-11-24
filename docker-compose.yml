@@ -1,9 +1,9 @@
 db:
-    image: sameersbn/postgresql:9.4
+    image: postgres:9.6
     environment:
-        - DB_NAME=localshop
-        - DB_USER=localshop
-        - DB_PASS=shopping
+        - POSTGRES_DB
+        - POSTGRES_USER
+        - POSTGRES_PASSWORD
     ports:
         - "5432"
     volumes:
@@ -16,9 +16,9 @@ web:
     links:
         - db:db
     environment:
-        - DJANGO_SECRET_KEY=a7d03faa0c054b3dba38b396bf3c7996
-        - DATABASE_URL=postgresql://localshop:shopping@db/localshop
-        - DJANGO_MEDIA_ROOT=/localshop/media
+        - DJANGO_SECRET_KEY
+        - DATABASE_URL
+        - DJANGO_MEDIA_ROOT
     ports:
         - "8000:8000"
     command: uwsgi --http 0.0.0.0:8000 --module localshop.wsgi --master --die-on-term
@@ -31,10 +31,10 @@ worker:
     links:
         - db:db
     environment:
-        - DJANGO_SECRET_KEY=a7d03faa0c054b3dba38b396bf3c7996
-        - DATABASE_URL=postgresql://localshop:shopping@db/localshop
-        - DJANGO_MEDIA_ROOT=/localshop/media
+        - DJANGO_SECRET_KEY
+        - DATABASE_URL
+        - DJANGO_MEDIA_ROOT
     entrypoint:
         localshop
-    command: 
+    command:
         celery worker -B -E
