@@ -7,9 +7,19 @@ from django.contrib.auth.models import AnonymousUser
 from django.contrib.messages.storage.fallback import FallbackStorage
 from django.contrib.sessions.backends.db import SessionStore
 from django.test.client import RequestFactory as BaseRequestFactory
+from django.test.utils import override_settings
 
 from localshop.apps.packages.pypi import get_search_names
 from tests.factories import CIDRFactory, RepositoryFactory
+
+
+def pytest_configure(config):
+    override = override_settings(
+        ALLOWED_HOSTS=['*'],
+        STATICFILES_STORAGE='django.contrib.staticfiles.storage.StaticFilesStorage',
+        CELERY_TASK_ALWAYS_EAGER=True,
+    )
+    override.enable()
 
 
 @pytest.fixture(scope='function')
