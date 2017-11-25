@@ -39,6 +39,10 @@ class RepositoryAccessMixin(object):
 
         if self._allow_request(request, ip_addr):
             return super().dispatch(request, *args, **kwargs)
+        else:
+            logger.info(
+                "Denied upload to %s from %s with access key %s",
+                request.path, ip_addr, access_key)
 
         return HttpResponseUnauthorized("No permission")
 
