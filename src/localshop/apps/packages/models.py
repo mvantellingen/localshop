@@ -1,3 +1,4 @@
+import re
 import logging
 import os
 from shutil import copyfileobj
@@ -7,10 +8,12 @@ import docutils.core
 from django.conf import settings
 from django.core.files import File
 from django.core.urlresolvers import reverse
+from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models.signals import post_delete
 from django.utils.html import escape
 from django.utils.text import ugettext_lazy as _
+from django.utils.translation import ugettext_lazy as _
 from docutils.utils import SystemMessage
 from model_utils import Choices
 from model_utils.fields import AutoCreatedField, AutoLastModifiedField
@@ -30,7 +33,9 @@ class Repository(TimeStampedModel):
 
     enable_auto_mirroring = models.BooleanField(default=True)
     upstream_pypi_url = models.CharField(
-        max_length=500, default='https://pypi.python.org/simple',
+        max_length=500,
+        blank=True,
+        default='https://pypi.python.org/simple',
         help_text=_(
             "The upstream pypi URL (default: https://pypi.python.org/simple)"))
 
@@ -84,7 +89,12 @@ class Package(models.Model):
 
     repository = models.ForeignKey(Repository, related_name='packages')
 
-    name = models.SlugField(max_length=200)
+    name = models.CharField(max_length=200, db_index=True, validators=[
+        RegexValidator(
+            re.compile(r'^[-a-zA-Z0-9_\.]+\Z'),
+            _("Enter a valid package name consisting"),
+            'invalid')
+    ])
 
     #: Indicate if this package is local (a private package)
     is_local = models.BooleanField(default=False)
