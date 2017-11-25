@@ -170,6 +170,7 @@ EMAIL = env.email_url('EMAIL', 'smtp://localhost:25/')
 
 ALLOWED_HOSTS = ['*']
 
+DATA_UPLOAD_MAX_MEMORY_SIZE = 100 * 1024 * 1024  # 100 mb
 DEFAULT_FILE_STORAGE = env.str(
     'LOCALSHOP_FILE_STORAGE',
     default='django.core.files.storage.FileSystemStorage')
