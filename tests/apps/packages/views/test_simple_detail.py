@@ -25,8 +25,8 @@ def test_success(django_app, admin_user, repository, pypi_stub):
     a_elms = response.html.select('a')
     assert len(a_elms) == 1
     assert a_elms[0]['href'] == (
-        '/repo/default/download/test-package/1/test-1.0.0-sdist.zip' +
-        '#md5=62ecd3ee980023db87945470aa2b347b')
+        'http://testserver/repo/default/download/test-package/1/' +
+        'test-1.0.0-sdist.zip#md5=62ecd3ee980023db87945470aa2b347b')
     assert a_elms[0]['rel'][0] == 'package'
 
 
