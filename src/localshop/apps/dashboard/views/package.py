@@ -1,6 +1,6 @@
 from django.contrib import messages
 from django.core.urlresolvers import reverse
-from django.shortcuts import redirect
+from django.shortcuts import redirect, get_object_or_404
 from django.utils.text import ugettext_lazy as _
 from django.views import generic
 
@@ -62,11 +62,8 @@ class PackageMirrorFileView(RepositoryMixin, generic.View):
 
 class PackageRefreshView(RepositoryMixin, generic.View):
     def get(self, request, repo, name):
-        try:
-            package = self.repository.packages.get(name__iexact=name)
-        except self.repository.packages.DoesNotExist:
-            package = None
-            enqueue(fetch_package, self.repository.pk, name)
+        package = get_object_or_404(self.repository.packages, name__iexact=name)
+        enqueue(fetch_package, self.repository.pk, name)
         return redirect(package)
 
 

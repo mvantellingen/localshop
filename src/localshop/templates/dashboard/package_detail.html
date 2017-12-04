@@ -75,7 +75,7 @@
                         <li><a href="{{ pypi_url }}/{{ package.name }}">pypi</a></li>
                     </ul>
 
-                    <a href="{% url 'dashboard:package_refresh' repo=view.repository.slug name=package.name %}" class="btn"><span class="icon-refresh"></span> Refresh</a>
+                    <a href="{% url 'dashboard:package_refresh' repo=view.repository.slug name=package.name %}" class="btn btn-primary btn-small"><span class="icon-refresh"></span> Refresh</a>
                     {% endif %}
                 </div>
             </div>
