@@ -6,13 +6,14 @@ from django.utils.functional import cached_property
 from django.views import generic
 
 from localshop.apps.dashboard import forms
-from localshop.apps.packages import models
+from localshop.apps.packages import models, tasks
 
 __all__ = [
     'RepositoryCreateView',
     'RepositoryDetailView',
     'RepositoryUpdateView',
     'RepositoryDeleteView',
+    'RepositoryRefreshView',
 ]
 
 
@@ -107,3 +108,16 @@ class RepositoryDeleteView(RepositoryMixin, generic.DeleteView):
     @property
     def repository(self):
         return self.object
+
+
+class RepositoryRefreshView(RepositoryMixin, generic.View):
+    model = models.Repository
+    permission_required = 'packages.add_repository'
+    repository_slug_name = 'slug'
+    require_role = ['owner', 'developer']
+
+    def get(self, request, slug):
+        if not self.repository.enable_auto_mirroring:
+            return reverse('dashboard:index')
+        tasks.refresh_repository.delay(self.repository.pk)
+        return reverse('dashboard:index')

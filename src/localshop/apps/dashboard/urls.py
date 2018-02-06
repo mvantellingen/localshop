@@ -62,6 +62,7 @@ urlpatterns = [
         url('^$', views.RepositoryDetailView.as_view(), name='repository_detail'),
         url('^edit$', views.RepositoryUpdateView.as_view(), name='repository_edit'),
         url('^delete$', views.RepositoryDeleteView.as_view(), name='repository_delete'),
+        url('^refresh$', views.RepositoryRefreshView.as_view(), name='repository_refresh'),
     ])),
 
     url('^repositories/(?P<repo>[^/]+)/', include(repository_urls))

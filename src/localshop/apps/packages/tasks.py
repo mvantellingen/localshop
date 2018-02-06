@@ -12,6 +12,8 @@ from localshop.apps.packages.utils import md5_hash_file
 from localshop.celery import app
 from localshop.utils import no_duplicates
 
+logger = logging.getLogger(__name__)
+
 
 @app.task
 def refresh_repository_mirrors():
@@ -27,6 +29,7 @@ def refresh_repository_mirrors():
 @app.task
 def refresh_repository(repository_pk):
     repository = models.Repository.objects.get(pk=repository_pk)
+    logger.info("Refreshing repository %s", repository)
 
     qs = (
         repository.packages

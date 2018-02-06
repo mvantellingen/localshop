@@ -18,6 +18,7 @@
                         <tr>
                             <th>Name</th>
                             <th>Description</th>
+                            <th>&nbsp;</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -25,6 +26,13 @@
                         <tr>
                             <td><a href="{% url 'dashboard:repository_detail' slug=repository.slug %}">{{ repository.name }}</a></td>
                             <td>{{ repository.description }}</td>
+                            <td>
+                                {% if repository.enable_auto_mirroring %}
+                                <a href="{% url 'dashboard:repository_refresh' slug=repository.slug %}" class="btn btn-success btn-xs">
+                                    Refresh
+                                </a>
+                                {% endif %}
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
