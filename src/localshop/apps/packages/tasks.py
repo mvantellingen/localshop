@@ -10,7 +10,31 @@ from django.utils.timezone import now
 from localshop.apps.packages import forms, models, pypi
 from localshop.apps.packages.utils import md5_hash_file
 from localshop.celery import app
-from localshop.utils import enqueue, no_duplicates
+from localshop.utils import no_duplicates
+
+
+@app.task
+def refresh_repository_mirrors():
+    qs = (
+        models.Repository.objects
+        .filter(enable_auto_mirroring=True)
+        .values_list('pk', flat=True))
+
+    for pk in qs:
+        refresh_repository(pk)
+
+
+@app.task
+def refresh_repository(repository_pk):
+    repository = models.Repository.objects.get(pk=repository_pk)
+
+    qs = (
+        repository.packages
+        .filter(is_local=False)
+        .values_list('name', flat=True))
+
+    for slug in qs:
+        fetch_package(repository.pk, slug)
 
 
 @app.task
@@ -118,13 +142,3 @@ def download_file(pk):
         release_file.distribution.save(filename, temp_file)
         release_file.save()
     logging.info("Complete")
-
-
-@app.task
-def update_packages():
-    """Update package information for all packages"""
-    logging.info('Updated packages')
-    for package in models.Package.objects.filter(is_local=False):
-        logging.info('Updating package %s', package.name)
-        enqueue(fetch_package, package.repository_id, package.name)
-    logging.info('Complete')

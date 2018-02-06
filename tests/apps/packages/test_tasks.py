@@ -107,13 +107,13 @@ def test_download_file_with_proxy_enabled(requests_mock, settings):
         stream=True)
 
 
-@mock.patch('localshop.apps.packages.tasks.enqueue')
+@mock.patch('localshop.apps.packages.tasks.fetch_package')
 @pytest.mark.django_db
-def test_update_package_should_call_get_package_data(enqueue_mock):
+def test_update_package_should_call_get_package_data(fetch_pkg_mock):
     PackageFactory(name='local', is_local=True)
     pypi_package = PackageFactory(name='pypi', is_local=False)
 
-    tasks.update_packages()
+    tasks.refresh_repository_mirrors()
 
-    assert enqueue_mock.call_count == 1
-    enqueue_mock.assert_called_once_with(tasks.fetch_package, pypi_package.name)
+    assert fetch_pkg_mock.call_count == 1
+    fetch_pkg_mock.assert_called_once_with(pypi_package.repository.pk, pypi_package.name)

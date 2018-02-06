@@ -98,10 +98,9 @@ CELERY_PREFETCH_MULTIPLIER = 0
 CELERY_RESULT_BACKEND = 'django-db'
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers.DatabaseScheduler'
 CELERY_BEAT_SCHEDULE = {
-    # Executes every day at 1:00 AM
-    'every-day-1am': {
-        'task': 'localshop.apps.packages.tasks.update_packages',
-        'schedule': crontab(hour=1, minute=0),
+    'refresh-repos': {
+        'task': 'localshop.apps.packages.tasks.refresh_repository_mirrors',
+        'schedule': crontab(minute=30),
     },
 }
 CELERY_IMPORTS = [
