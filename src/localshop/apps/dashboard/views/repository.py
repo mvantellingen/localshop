@@ -1,7 +1,7 @@
 from django.contrib.auth.mixins import AccessMixin, PermissionRequiredMixin
 from django.core.urlresolvers import reverse
 from django.http import HttpResponseForbidden
-from django.shortcuts import get_object_or_404
+from django.shortcuts import get_object_or_404, redirect
 from django.utils.functional import cached_property
 from django.views import generic
 
@@ -118,6 +118,6 @@ class RepositoryRefreshView(RepositoryMixin, generic.View):
 
     def get(self, request, slug):
         if not self.repository.enable_auto_mirroring:
-            return reverse('dashboard:index')
+            return redirect('dashboard:index')
         tasks.refresh_repository.delay(self.repository.pk)
-        return reverse('dashboard:index')
+        return redirect('dashboard:index')
