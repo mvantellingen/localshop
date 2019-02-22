@@ -33,12 +33,11 @@ def fetch_package(self, repository_pk, slug):
 
     package_data = response.json()
     name = package_data['info']['name']
-
+    normalized_name = normalize_name(name)
     try:
-        package = repository.packages.get(name=name)
+        package = repository.packages.get(normalized_name=normalized_name)
         releases = package.get_all_releases()
     except models.Package.DoesNotExist:
-        normalized_name = normalize_name(name)
         package = repository.packages.create(
             name=name,
             normalized_name=normalized_name,
