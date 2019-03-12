@@ -135,7 +135,12 @@ def download_file(pk):
 def update_packages():
     """Update package information for all packages"""
     logging.info('Updated packages')
-    for package in models.Package.objects.filter(is_local=False):
-        logging.info('Updating package %s', package.name)
-        enqueue(fetch_package, package.repository.pk, package.name)
+    packages = (
+        models.Package.objects
+        .filter(is_local=False, repository__enable_auto_mirroring=True)
+        .values_list('repository_id', 'name')
+    )
+    for repository_id, package_name in packages:
+        logging.info('Updating package %s', package_name)
+        enqueue(fetch_package, repository_id, package_name)
     logging.info('Complete')
