@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from localshop.apps.dashboard import forms
+from localshop.dashboard import forms
 from tests.factories import CredentialFactory, RepositoryFactory, TeamFactory
 
 

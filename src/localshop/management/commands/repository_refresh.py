@@ -1,6 +1,6 @@
 from django.core.management.base import BaseCommand
 
-from localshop.apps.packages import tasks
+from localshop.packages import tasks
 
 
 class Command(BaseCommand):

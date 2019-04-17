@@ -1,9 +1,7 @@
-from __future__ import unicode_literals
-
 import pytest
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 
-from localshop.apps.packages.tasks import fetch_package
+from localshop.packages.tasks import fetch_package
 from tests.factories import ReleaseFileFactory
 
 

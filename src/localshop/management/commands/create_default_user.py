@@ -2,7 +2,7 @@ import uuid
 
 from django.core.management.base import BaseCommand
 
-from localshop.apps.accounts.models import User
+from localshop.accounts.models import User
 
 
 class Command(BaseCommand):

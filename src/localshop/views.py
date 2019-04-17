@@ -1,7 +1,7 @@
 from django.shortcuts import redirect
 from django.views.decorators.csrf import csrf_exempt
 
-from localshop.apps.packages import xmlrpc
+from localshop.packages import xmlrpc
 
 
 @csrf_exempt

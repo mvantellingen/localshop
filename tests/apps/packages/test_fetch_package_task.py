@@ -1,6 +1,6 @@
 import pytest
 
-from localshop.apps.packages.tasks import fetch_package
+from localshop.packages.tasks import fetch_package
 from tests.factories import PackageFactory, ReleaseFactory, RepositoryFactory
 
 

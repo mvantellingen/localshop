@@ -48,13 +48,13 @@ STATICFILES_FINDERS = [
 
 SESSION_COOKIE_AGE = 28 * 24 * 60 * 60  # 4 weeks
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
-)
+]
 
 TEMPLATES = [
     {
@@ -99,12 +99,12 @@ CELERY_RESULT_BACKEND = 'django-db'
 CELERY_BEAT_SCHEDULER = 'django_celery_beat.schedulers.DatabaseScheduler'
 CELERY_BEAT_SCHEDULE = {
     'refresh-repos': {
-        'task': 'localshop.apps.packages.tasks.refresh_repository_mirrors',
+        'task': 'localshop.packages.tasks.refresh_repository_mirrors',
         'schedule': crontab(minute=30),
     },
 }
 CELERY_IMPORTS = [
-    'localshop.apps.packages.tasks',
+    'localshop.packages.tasks',
 ]
 
 INSTALLED_APPS = [
@@ -123,10 +123,10 @@ INSTALLED_APPS = [
     'widget_tweaks',
 
     'localshop',
-    'localshop.apps.accounts',
-    'localshop.apps.dashboard',
-    'localshop.apps.packages',
-    'localshop.apps.permissions',
+    'localshop.accounts.apps.AccountsConfig',
+    'localshop.dashboard.apps.DashboardConfig',
+    'localshop.packages.apps.PackagesConfig',
+    'localshop.permissions.apps.PermissionsConfig',
 ]
 
 # Auth settings

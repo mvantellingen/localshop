@@ -3,15 +3,15 @@ from hashlib import md5
 
 import mock
 import pytest
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.utils import six
 from mock import Mock
 
-from localshop.apps.packages import views
+from localshop.packages import views
 from tests.factories import ReleaseFileFactory
 
 
-@mock.patch('localshop.apps.packages.tasks.download_file')
+@mock.patch('localshop.packages.tasks.download_file')
 @pytest.mark.django_db
 def test_download_pypi_release(download_file_mock, repository, rf):
     release_file = ReleaseFileFactory(
@@ -98,7 +98,7 @@ def test_download_local_release(rf, isolated, repository, settings):
     assert response.get('Content-Disposition') == 'attachment; filename=test-1.0.0-sdist.zip'
 
 
-@mock.patch('localshop.apps.packages.tasks.download_file')
+@mock.patch('localshop.packages.tasks.download_file')
 @pytest.mark.django_db
 def test_release_with_a_missing_file(download_file_mock, repository, rf):
     """

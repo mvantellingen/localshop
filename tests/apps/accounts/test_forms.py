@@ -1,6 +1,6 @@
 import pytest
 
-from localshop.apps.accounts import forms
+from localshop.accounts import forms
 from tests.factories import TeamFactory, TeamMemberFactory, UserFactory
 
 

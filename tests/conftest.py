@@ -9,7 +9,7 @@ from django.contrib.sessions.backends.db import SessionStore
 from django.test.client import RequestFactory as BaseRequestFactory
 from django.test.utils import override_settings
 
-from localshop.apps.packages.pypi import get_search_names
+from localshop.packages.pypi import get_search_names
 from tests.factories import CIDRFactory, RepositoryFactory
 
 

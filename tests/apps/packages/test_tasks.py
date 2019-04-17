@@ -4,7 +4,7 @@ import mock
 import pytest
 from django.utils import six
 
-from localshop.apps.packages import models, tasks
+from localshop.packages import models, tasks
 from tests.factories import PackageFactory, ReleaseFileFactory
 
 
@@ -107,7 +107,7 @@ def test_download_file_with_proxy_enabled(requests_mock, settings):
         stream=True)
 
 
-@mock.patch('localshop.apps.packages.tasks.fetch_package')
+@mock.patch('localshop.packages.tasks.fetch_package')
 @pytest.mark.django_db
 def test_update_package_should_call_get_package_data(fetch_pkg_mock):
     PackageFactory(name='local', is_local=True)

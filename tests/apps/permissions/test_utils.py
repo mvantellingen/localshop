@@ -3,7 +3,7 @@ from django.test import TestCase
 from django.test.client import RequestFactory
 from django.test.utils import override_settings
 
-from localshop.apps.permissions.utils import credentials_required
+from localshop.permissions.utils import credentials_required
 from tests.factories import CIDRFactory
 
 

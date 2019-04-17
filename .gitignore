@@ -12,3 +12,4 @@ localshop.db
 .cache
 /coverage.xml
 /src/localshop/public/
+.venv

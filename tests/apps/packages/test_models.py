@@ -3,7 +3,8 @@ import os.path
 import pytest
 from django.utils import six
 
-from localshop.apps.packages import models, utils
+from localshop.packages import models
+from localshop.packages import utils
 from tests import factories
 
 

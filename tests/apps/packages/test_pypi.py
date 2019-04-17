@@ -1,4 +1,4 @@
-from localshop.apps.packages import pypi
+from localshop.packages import pypi
 
 
 def test_get_package_information(pypi_stub):

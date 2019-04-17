@@ -3,7 +3,7 @@ from django.test.client import FakePayload
 from django.utils.datastructures import MultiValueDict
 from versio.version_scheme import VersionScheme
 
-from localshop.apps.packages.utils import (
+from localshop.packages.utils import (
     alter_old_distutils_request, get_versio_versioning_scheme)
 
 

@@ -5,7 +5,7 @@ import pytest
 from django.utils import six
 from requests_toolbelt.multipart.encoder import MultipartEncoder
 
-from localshop.apps.packages.models import Package
+from localshop.packages.models import Package
 from tests.factories import ReleaseFileFactory
 from tests.utils import NamedStringIO
 

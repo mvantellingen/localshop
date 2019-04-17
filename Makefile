@@ -1,24 +1,34 @@
-.PHONY: install clean test retest coverage lint css
+BIN = .venv/bin
 
+.PHONY: install
 install:
-	pip install -e .[test]
+	pyenv install -s
+	pyenv local
+	python -m venv .venv
+	$(BIN)/pip install -e .[test]
 
+.PHONY: clean
 clean:
 	find . -name '*.pyc' -delete
-	find . -name '__pycache__' -delete
+	find . -name '__pycache__' -type d | xargs rm -fr
 
+.PHONY: test
 test:
-	pytest
+	$(BIN)/pytest
 
+.PHONY: retest
 retest:
-	pytest --lf
+	$(BIN)/pytest --lf
 
+.PHONY: coverage
 coverage:
-	py.test --cov=localshop --cov-report=term-missing --nomigrations tests/
+	$(BIN)/pytest --cov=localshop --cov-report=term-missing --nomigrations tests/
 
+.PHONY: lint
 lint:
-	flake8 src/ tests/
+	$(BIN)/flake8 src/ tests/
 
+.PHONY: css
 css:
 	lessc --source-map --source-map-less-inline localshop/static/localshop/less/main.less localshop/static/localshop/css/main.css
 

@@ -1,6 +1,6 @@
 from django.test import TestCase
 
-from localshop.apps.permissions import models
+from localshop.permissions import models
 from tests.factories import CIDRFactory
 
 
