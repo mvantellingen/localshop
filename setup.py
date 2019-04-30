@@ -1,4 +1,4 @@
-from setuptools import setup, find_packages
+from setuptools import find_packages, setup
 
 readme = []
 with open('README.rst', 'r') as fh:
@@ -25,8 +25,8 @@ setup(
     long_description='\n'.join(readme),
     zip_safe=False,
     install_requires=[
-        'celery==4.1.0',
         'boto3==1.4.7',
+        'celery==4.1.0',
         'django-braces==1.11.0',
         'django-celery-beat==1.1.0',
         'django-celery-results==1.0.1',
@@ -36,6 +36,7 @@ setup(
         'django-widget-tweaks==1.4.1',
         'Django==1.11.7',
         'docutils==0.12',
+        'kombu==4.1.0',
         'netaddr==0.7.12',
         'Pillow==4.3.0',
         'psycopg2==2.7.3.2',
