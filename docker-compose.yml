@@ -1,5 +1,5 @@
 db:
-    image: sameersbn/postgresql:9.4
+    image: postgres:latest
     environment:
         - DB_NAME=localshop
         - DB_USER=localshop
@@ -36,5 +36,5 @@ worker:
         - DJANGO_MEDIA_ROOT=/localshop/media
     entrypoint:
         localshop
-    command: 
+    command:
         celery worker -B -E
