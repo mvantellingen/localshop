@@ -54,7 +54,7 @@ class SimpleIndex(CsrfExemptMixin, RepositoryMixin, RepositoryAccessMixin,
         if not handler:
             return HttpResponseNotFound('Unknown action: %s' % action)
 
-        if not request.user.is_authenticated() and not request.credentials:
+        if not request.user.is_authenticated and not request.credentials:
             return HttpResponseForbidden(
                 "You need to be authenticated to upload packages")
 
