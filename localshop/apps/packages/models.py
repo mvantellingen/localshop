@@ -210,6 +210,8 @@ class ReleaseFile(models.Model):
 
     python_version = models.CharField(max_length=25)
 
+    requires_python = models.CharField(max_length=255, blank=True, null=True)
+
     url = models.CharField(max_length=1024, blank=True)
 
     user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True)

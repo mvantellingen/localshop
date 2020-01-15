@@ -71,6 +71,7 @@ def fetch_package(self, repository_pk, slug):
                     release=release, filename=data['filename'])
 
             release_file.python_version = data['python_version']
+            release_file.requires_python = data['requires_python']
             release_file.filetype = data['packagetype']
             release_file.url = data['url']
             release_file.size = data['size']
