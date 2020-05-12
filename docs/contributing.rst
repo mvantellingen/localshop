@@ -15,7 +15,7 @@ Get started
    will be approved if it lacks tests. Even if your're making a small bug fix
    we want to ensure that it will not introduce any another bug.
 
-3. Help to keep the documentation up-to-date is really appreaciated. Always
+3. Help to keep the documentation up-to-date is really appreciated. Always
    check if your're making changes that make the documentation obsolete and
    update it.
 
