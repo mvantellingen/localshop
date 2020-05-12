@@ -59,8 +59,8 @@ class Migration(migrations.Migration):
                 ('summary', models.TextField(blank=True)),
                 ('version', models.CharField(max_length=512)),
                 ('classifiers', models.ManyToManyField(to='packages.Classifier')),
-                ('package', models.ForeignKey(related_name='releases', to='packages.Package')),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, null=True)),
+                ('package', models.ForeignKey(related_name='releases', to='packages.Package', on_delete=models.CASCADE)),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, null=True, on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ['-version'],
@@ -80,8 +80,8 @@ class Migration(migrations.Migration):
                 ('md5_digest', models.CharField(max_length=512)),
                 ('python_version', models.CharField(max_length=25)),
                 ('url', models.CharField(max_length=1024, blank=True)),
-                ('release', models.ForeignKey(related_name='files', to='packages.Release')),
-                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, null=True)),
+                ('release', models.ForeignKey(related_name='files', to='packages.Release', on_delete=models.CASCADE)),
+                ('user', models.ForeignKey(to=settings.AUTH_USER_MODEL, null=True, on_delete=models.CASCADE)),
             ],
             options={
             },

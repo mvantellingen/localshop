@@ -14,7 +14,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='package',
             name='repository',
-            field=models.ForeignKey(related_name='packages', default=1, to='packages.Repository'),
+            field=models.ForeignKey(related_name='packages', default=1, to='packages.Repository', on_delete=models.CASCADE),
             preserve_default=False,
         ),
         migrations.AlterField(

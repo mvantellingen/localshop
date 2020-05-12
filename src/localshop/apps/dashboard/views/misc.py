@@ -36,7 +36,7 @@ class TeamAccessView(RepositoryMixin, generic.FormView):
     template_name = 'dashboard/repository_settings/teams.html'
 
     def get_success_url(self):
-        return reverse('dashboard:repo_settings:team_access', kwargs={
+        return reverse('dashboard:team_access', kwargs={
             'repo': self.repository.slug,
         })
 

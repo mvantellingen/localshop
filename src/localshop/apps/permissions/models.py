@@ -17,7 +17,7 @@ class CIDRManager(models.Manager):
 class CIDR(models.Model):
     """Allow access based on the IP address of the client."""
     repository = models.ForeignKey(
-        'packages.Repository', related_name='cidr_list')
+        'packages.Repository', related_name='cidr_list', on_delete=models.CASCADE)
     cidr = models.CharField(
         'CIDR', max_length=128, help_text='IP addresses and/or subnet')
     label = models.CharField(
@@ -55,7 +55,7 @@ class Credential(models.Model):
     """Credentials are repository bound"""
     created = AutoCreatedField()
 
-    repository = models.ForeignKey('packages.Repository', related_name='credentials')
+    repository = models.ForeignKey('packages.Repository', related_name='credentials', on_delete=models.CASCADE)
     access_key = models.UUIDField(
         verbose_name='Access key',
         help_text='The access key',

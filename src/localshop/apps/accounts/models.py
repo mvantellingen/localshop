@@ -30,7 +30,7 @@ class AccessKey(models.Model):
     created = AutoCreatedField()
 
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, related_name='access_keys')
+        settings.AUTH_USER_MODEL, related_name='access_keys', on_delete=models.CASCADE)
 
     access_key = models.UUIDField(
         verbose_name='Access key', help_text='The access key',
@@ -72,9 +72,9 @@ class Team(TimeStampedModel):
 
 
 class TeamMember(TimeStampedModel):
-    team = models.ForeignKey(Team, related_name='members')
+    team = models.ForeignKey(Team, related_name='members', on_delete=models.CASCADE)
     user = models.ForeignKey(
-        settings.AUTH_USER_MODEL, related_name='team_memberships')
+        settings.AUTH_USER_MODEL, related_name='team_memberships', on_delete=models.CASCADE)
     role = models.CharField(max_length=100, choices=[
         ('owner', _("Owner")),
         ('developer', _("Developer")),

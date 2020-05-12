@@ -13,7 +13,7 @@
 
     <div class="form-actions">
         <button type="submit" class="btn btn-danger"><span class="icon-trash icon-white"></span> Delete</button>
-        <a href="{% url 'dashboard:repo_settings:index' repo=repository.slug %}" class="btn">Cancel</a>
+        <a href="{% url 'dashboard:index' repo=repository.slug %}" class="btn">Cancel</a>
     </div>
     {% csrf_token %}
 </form>
