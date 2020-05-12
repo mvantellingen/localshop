@@ -39,7 +39,7 @@ setup(
         'docutils==0.12',
         'kombu==4.1.0',
         'netaddr==0.7.12',
-        'Pillow==4.3.0',
+        'Pillow==6.2.2',
         'psycopg2==2.7.3.2',
         'redis==2.10.6',
         'requests==2.20.0',
