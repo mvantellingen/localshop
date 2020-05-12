@@ -42,7 +42,7 @@ setup(
         'Pillow==4.3.0',
         'psycopg2==2.7.3.2',
         'redis==2.10.6',
-        'requests==2.18.4',
+        'requests==2.20.0',
         'social-auth-app-django==1.2.0',
         'sqlparse==0.1.15',
         'Versio==0.3.0',
