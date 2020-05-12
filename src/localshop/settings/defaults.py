@@ -48,7 +48,7 @@ STATICFILES_FINDERS = [
 
 SESSION_COOKIE_AGE = 28 * 24 * 60 * 60  # 4 weeks
 
-MIDDLEWARE_CLASSES = (
+MIDDLEWARE = (
     'django.middleware.common.CommonMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',

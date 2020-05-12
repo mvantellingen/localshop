@@ -50,7 +50,7 @@ class Migration(migrations.Migration):
                 ('created', models.DateTimeField(default=django.utils.timezone.now)),
                 ('deactivated', models.DateTimeField(null=True, blank=True)),
                 ('comment', models.CharField(default=b'', max_length=255, null=True, help_text=b"A comment about this credential, e.g. where it's being used", blank=True)),
-                ('creator', models.ForeignKey(to=settings.AUTH_USER_MODEL)),
+                ('creator', models.ForeignKey(to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ['-created'],

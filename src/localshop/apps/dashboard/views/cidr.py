@@ -25,7 +25,7 @@ class CidrCreateView(RepositoryMixin, generic.CreateView):
     template_name = 'dashboard/repository_settings/cidr_form.html'
 
     def get_success_url(self):
-        return reverse('dashboard:repo_settings:cidr_index', kwargs={
+        return reverse('dashboard:cidr_index', kwargs={
             'repo': self.repository.slug,
         })
 
@@ -38,7 +38,7 @@ class CidrUpdateView(RepositoryMixin, generic.UpdateView):
     template_name = 'dashboard/repository_settings/cidr_form.html'
 
     def get_success_url(self):
-        return reverse('dashboard:repo_settings:cidr_index', kwargs={
+        return reverse('dashboard:cidr_index', kwargs={
             'repo': self.repository.slug,
         })
 
@@ -51,7 +51,7 @@ class CidrDeleteView(RepositoryMixin, generic.DeleteView):
     template_name = 'dashboard/repository_settings/cidr_confirm_delete.html'
 
     def get_success_url(self):
-        return reverse('dashboard:repo_settings:cidr_index', kwargs={
+        return reverse('dashboard:cidr_index', kwargs={
             'repo': self.repository.slug,
         })
 

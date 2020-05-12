@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='cidr',
             name='repository',
-            field=models.ForeignKey(related_name='cidr_list', default=1, to='packages.Repository'),
+            field=models.ForeignKey(related_name='cidr_list', default=1, to='packages.Repository', on_delete=models.CASCADE),
             preserve_default=False,
         ),
         migrations.AddField(
@@ -32,7 +32,7 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='credential',
             name='repository',
-            field=models.ForeignKey(related_name='credentials', default=1, to='packages.Repository'),
+            field=models.ForeignKey(related_name='credentials', default=1, to='packages.Repository', on_delete=models.CASCADE),
             preserve_default=False,
         ),
         migrations.AlterField(

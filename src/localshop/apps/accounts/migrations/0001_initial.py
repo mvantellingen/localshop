@@ -48,7 +48,7 @@ class Migration(migrations.Migration):
                 ('secret_key', models.UUIDField(editable=False, max_length=32, blank=True, help_text=b'The secret key', unique=True, verbose_name=b'Secret key', db_index=True)),
                 ('comment', models.CharField(default=b'', max_length=255, null=True, help_text="A comment about this credential, e.g. where it's being used", blank=True)),
                 ('last_usage', models.DateTimeField(null=True, blank=True)),
-                ('user', models.ForeignKey(related_name='access_keys', to=settings.AUTH_USER_MODEL)),
+                ('user', models.ForeignKey(related_name='access_keys', to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
             options={
                 'ordering': ['-created'],
@@ -76,8 +76,8 @@ class Migration(migrations.Migration):
                 ('created', model_utils.fields.AutoCreatedField(default=django.utils.timezone.now, verbose_name='created', editable=False)),
                 ('modified', model_utils.fields.AutoLastModifiedField(default=django.utils.timezone.now, verbose_name='modified', editable=False)),
                 ('role', models.CharField(max_length=100, choices=[(b'owner', 'Owner'), (b'developer', 'Developer')])),
-                ('team', models.ForeignKey(related_name='members', to='accounts.Team')),
-                ('user', models.ForeignKey(related_name='team_memberships', to=settings.AUTH_USER_MODEL)),
+                ('team', models.ForeignKey(related_name='members', to='accounts.Team', on_delete=models.CASCADE)),
+                ('user', models.ForeignKey(related_name='team_memberships', to=settings.AUTH_USER_MODEL, on_delete=models.CASCADE)),
             ],
             options={
             },

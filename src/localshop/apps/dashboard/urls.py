@@ -2,69 +2,66 @@ from django.conf.urls import include, url
 
 from localshop.apps.dashboard import views
 
+app_name = 'dashboard'
+
 repository_urls = [
     # Package urls
-    url('^packages/add/$',
+    url(r'^packages/add/$',
         views.PackageAddView.as_view(),
         name='package_add'),
-    url('^packages/(?P<name>[-\._\w]+)/', include([
-        url('^$',
+    url(r'^packages/(?P<name>[-\._\w]+)/', include([
+        url(r'^$',
             views.PackageDetailView.as_view(),
             name='package_detail'),
-        url('^refresh-from-upstream/$',
+        url(r'^refresh-from-upstream/$',
             views.PackageRefreshView.as_view(),
             name='package_refresh'),
-        url('^release-mirror-file/$',
+        url(r'^release-mirror-file/$',
             views.PackageMirrorFileView.as_view(),
             name='package_mirror_file'),
     ])),
 
-    # Settings
-    url(r'^settings/', include([
+    # CIDR
+    url(r'^settings/cidr/$',
+        views.CidrListView.as_view(), name='cidr_index'),
+    url(r'^settings/cidr/create$',
+        views.CidrCreateView.as_view(), name='cidr_create'),
+    url(r'^settings/cidr/(?P<pk>\d+)/edit',
+        views.CidrUpdateView.as_view(), name='cidr_edit'),
+    url(r'^settings/cidr/(?P<pk>\d+)/delete',
+        views.CidrDeleteView.as_view(), name='cidr_delete'),
 
-        # CIDR
-        url(r'^cidr/$',
-            views.CidrListView.as_view(), name='cidr_index'),
-        url(r'^cidr/create$',
-            views.CidrCreateView.as_view(), name='cidr_create'),
-        url(r'^cidr/(?P<pk>\d+)/edit',
-            views.CidrUpdateView.as_view(), name='cidr_edit'),
-        url(r'^cidr/(?P<pk>\d+)/delete',
-            views.CidrDeleteView.as_view(), name='cidr_delete'),
+    # Credentials
+    url(r'^settings/credentials/$',
+        views.CredentialListView.as_view(),
+        name='credential_index'),
+    url(r'^settings/credentials/create$',
+        views.CredentialCreateView.as_view(),
+        name='credential_create'),
+    url(r'^settings/credentials/(?P<access_key>[-a-f0-9]+)/secret',
+        views.CredentialSecretKeyView.as_view(),
+        name='credential_secret'),
+    url(r'^settings/credentials/(?P<access_key>[-a-f0-9]+)/edit',
+        views.CredentialUpdateView.as_view(),
+        name='credential_edit'),
+    url(r'^settings/credentials/(?P<access_key>[-a-f0-9]+)/delete',
+        views.CredentialDeleteView.as_view(),
+        name='credential_delete'),
 
-        # Credentials
-        url(r'^credentials/$',
-            views.CredentialListView.as_view(),
-            name='credential_index'),
-        url(r'^credentials/create$',
-            views.CredentialCreateView.as_view(),
-            name='credential_create'),
-        url(r'^credentials/(?P<access_key>[-a-f0-9]+)/secret',
-            views.CredentialSecretKeyView.as_view(),
-            name='credential_secret'),
-        url(r'^credentials/(?P<access_key>[-a-f0-9]+)/edit',
-            views.CredentialUpdateView.as_view(),
-            name='credential_edit'),
-        url(r'^credentials/(?P<access_key>[-a-f0-9]+)/delete',
-            views.CredentialDeleteView.as_view(),
-            name='credential_delete'),
-
-        url(r'^teams/$', views.TeamAccessView.as_view(), name='team_access'),
-
-    ], namespace='repo_settings')),
+    url(r'^settings/teams/$', views.TeamAccessView.as_view(), name='team_access'),
 ]
 
 urlpatterns = [
-    url('^$', views.IndexView.as_view(), name='index'),
-    url('^repositories/create$', views.RepositoryCreateView.as_view(), name='repository_create'),
+    url(r'^$', views.IndexView.as_view(), name='index'),
+    url(r'^repositories/create$', views.RepositoryCreateView.as_view(), name='repository_create'),
 
-    url('^repositories/(?P<slug>[^/]+)/', include([
-        url('^$', views.RepositoryDetailView.as_view(), name='repository_detail'),
-        url('^edit$', views.RepositoryUpdateView.as_view(), name='repository_edit'),
-        url('^delete$', views.RepositoryDeleteView.as_view(), name='repository_delete'),
-        url('^refresh$', views.RepositoryRefreshView.as_view(), name='repository_refresh'),
+    url(r'^repositories/(?P<slug>[^/]+)/', include([
+        url(r'^$', views.RepositoryDetailView.as_view(), name='repository_detail'),
+        url(r'^edit$', views.RepositoryUpdateView.as_view(), name='repository_edit'),
+        url(r'^delete$', views.RepositoryDeleteView.as_view(), name='repository_delete'),
+        url(r'^refresh$', views.RepositoryRefreshView.as_view(), name='repository_refresh'),
     ])),
 
-    url('^repositories/(?P<repo>[^/]+)/', include(repository_urls))
+    url(r'^repositories/(?P<repo>[^/]+)/', include(repository_urls))
 
 ]

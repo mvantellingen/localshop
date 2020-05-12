@@ -87,7 +87,7 @@ class Package(models.Model):
 
     modified = AutoLastModifiedField()
 
-    repository = models.ForeignKey(Repository, related_name='packages')
+    repository = models.ForeignKey(Repository, related_name='packages', on_delete=models.CASCADE)
 
     name = models.CharField(max_length=200, db_index=True, validators=[
         RegexValidator(
@@ -155,11 +155,11 @@ class Release(models.Model):
 
     metadata_version = models.CharField(max_length=64, default=1.0)
 
-    package = models.ForeignKey(Package, related_name="releases")
+    package = models.ForeignKey(Package, related_name="releases", on_delete=models.CASCADE)
 
     summary = models.TextField(blank=True)
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.CASCADE)
 
     version = models.CharField(max_length=512)
 
@@ -208,7 +208,7 @@ class ReleaseFile(models.Model):
 
     modified = AutoLastModifiedField()
 
-    release = models.ForeignKey(Release, related_name="files")
+    release = models.ForeignKey(Release, related_name="files", on_delete=models.CASCADE)
 
     size = models.IntegerField(null=True)
 
@@ -224,7 +224,7 @@ class ReleaseFile(models.Model):
 
     url = models.CharField(max_length=1024, blank=True)
 
-    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True)
+    user = models.ForeignKey(settings.AUTH_USER_MODEL, null=True, on_delete=models.CASCADE)
 
     class Meta:
         unique_together = ('release', 'filetype', 'python_version', 'filename')

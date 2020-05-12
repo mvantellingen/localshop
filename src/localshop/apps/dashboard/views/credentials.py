@@ -38,7 +38,7 @@ class CredentialCreateView(RepositoryMixin, generic.CreateView):
         return self.repository.credentials.all()
 
     def get_success_url(self):
-        return reverse('dashboard:repo_settings:credential_index', kwargs={
+        return reverse('dashboard:credential_index', kwargs={
             'repo': self.repository.slug,
         })
 
@@ -63,7 +63,7 @@ class CredentialUpdateView(RepositoryMixin, generic.UpdateView):
         return self.repository.credentials.all()
 
     def get_success_url(self):
-        return reverse('dashboard:repo_settings:credential_index', kwargs={
+        return reverse('dashboard:credential_index', kwargs={
             'repo': self.repository.slug,
         })
 
@@ -73,6 +73,6 @@ class CredentialDeleteView(RepositoryMixin, generic.DeleteView):
     slug_url_kwarg = 'access_key'
 
     def get_success_url(self):
-        return reverse('dashboard:repo_settings:credential_index', kwargs={
+        return reverse('dashboard:credential_index', kwargs={
             'repo': self.repository.slug,
         })
