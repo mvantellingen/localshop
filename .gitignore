@@ -12,3 +12,6 @@ localshop.db
 .cache
 /coverage.xml
 /src/localshop/public/
+
+# Virtualenv
+.venv
