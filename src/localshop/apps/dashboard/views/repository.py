@@ -1,5 +1,5 @@
 from django.contrib.auth.mixins import AccessMixin, PermissionRequiredMixin
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.http import HttpResponseForbidden
 from django.shortcuts import get_object_or_404, redirect
 from django.utils.functional import cached_property
