@@ -4,7 +4,7 @@ from wsgiref.util import FileWrapper
 from braces.views import CsrfExemptMixin
 from django.conf import settings
 from django.core.exceptions import ObjectDoesNotExist
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.db.models import Q
 from django.http import (
     Http404, HttpResponse, HttpResponseBadRequest, HttpResponseForbidden,

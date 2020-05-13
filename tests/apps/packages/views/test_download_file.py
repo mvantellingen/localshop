@@ -3,7 +3,7 @@ from hashlib import md5
 
 import mock
 import pytest
-from django.core.urlresolvers import reverse
+from django.urls import reverse
 from django.utils import six
 from mock import Mock
 
