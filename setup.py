@@ -5,14 +5,13 @@ with open('README.rst', 'r') as fh:
     readme = fh.readlines()
 
 tests_require = [
-    'django-webtest==1.9.2',
-    'factory-boy==2.9.2',
-    'mock==2.0.0',
-    'pytest-cache==1.0',
-    'pytest-cov>=1.7.0',
-    'pytest-django>=2.8.0',
-    'pytest>=2.6.0',
-    'requests-mock==1.3.0',
+    'django-webtest==1.9.7',
+    'factory-boy==2.12.0',
+    'mock==4.0.2',
+    'pytest-cov==2.8.1',
+    'pytest-django==3.9.0',
+    'pytest==5.4.2',
+    'requests-mock==1.8.0',
     'requests-toolbelt==0.9.1',
 ]
 
