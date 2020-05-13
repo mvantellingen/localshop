@@ -8,10 +8,13 @@
 localshop.db
 *.pyc
 *.swp
-.coverage
 .cache
-/coverage.xml
 /src/localshop/public/
 
 # Virtualenv
 .venv
+
+# Coverage
+htmlcov
+.coverage
+coverage.xml
