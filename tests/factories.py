@@ -1,10 +1,9 @@
 import factory
-
 from django.contrib.auth import get_user_model
 
 from localshop.apps.accounts.models import Team, TeamMember
 from localshop.apps.packages.models import (
-    Repository, Package, Release, ReleaseFile)
+    Package, Release, ReleaseFile, Repository)
 from localshop.apps.permissions.models import CIDR, Credential
 
 

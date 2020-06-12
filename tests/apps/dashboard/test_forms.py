@@ -1,8 +1,7 @@
 from django.test import TestCase
 
 from localshop.apps.dashboard import forms
-
-from tests.factories import CredentialFactory, TeamFactory, RepositoryFactory
+from tests.factories import CredentialFactory, RepositoryFactory, TeamFactory
 
 
 class TestAccessControlForm(TestCase):
@@ -23,7 +22,7 @@ class TestAccessControlForm(TestCase):
 class TestRepositoryTeamForm(TestCase):
     def test_init(self):
         repository = RepositoryFactory()
-        form = forms.RepositoryTeamForm(repository=repository)
+        forms.RepositoryTeamForm(repository=repository)
 
     def test_save_add(self):
         team = TeamFactory()
@@ -74,7 +73,7 @@ class TestCredentialModelForm(TestCase):
         assert credential.allow_upload is False
         assert credential.deactivated is None
 
-    def test_save_new(self):
+    def test_save_update(self):
         repository = RepositoryFactory()
         credential = CredentialFactory(
             repository=repository, allow_upload=True)

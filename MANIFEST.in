@@ -1,4 +1,17 @@
-include setup.py README.rst MANIFEST.in LICENSE AUTHORS CHANGES requirements.txt requirements-test.txt
-recursive-include localshop/templates *
-recursive-include localshop/static *
-global-exclude *~
+exclude *
+recursive-exclude * *
+
+include CHANGES
+include LICENSE
+include MANIFEST.in
+include README.rst
+include manage.py
+include setup.cfg
+include setup.py
+
+graft src
+graft tests
+
+global-exclude __pycache__
+global-exclude *.py[co]
+global-exclude .DS_Store

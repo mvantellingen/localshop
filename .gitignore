@@ -5,9 +5,17 @@
 /dist/
 /source/
 /public/
+/src/localshop/public/
 localshop.db
 *.pyc
 *.swp
-.coverage
 .cache
 .idea
+
+# Virtualenv
+.venv
+
+# Coverage
+htmlcov
+.coverage
+coverage.xml

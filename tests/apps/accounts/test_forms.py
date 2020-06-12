@@ -1,11 +1,12 @@
-from django.test import TestCase
+import pytest
 
 from localshop.apps.accounts import forms
+from tests.factories import TeamFactory, TeamMemberFactory, UserFactory
 
-from tests.factories import TeamFactory, UserFactory, TeamMemberFactory
 
+class TestAccessKeyForm:
 
-class TestAccessKeyForm(TestCase):
+    @pytest.mark.django_db
     def test_save(self):
         user = UserFactory()
         data = {
@@ -21,7 +22,8 @@ class TestAccessKeyForm(TestCase):
         assert key.comment == 'something'
 
 
-class TestTeamMemberAddForm(TestCase):
+class TestTeamMemberAddForm:
+    @pytest.mark.django_db
     def test_save(self):
         user = UserFactory()
         team = TeamFactory()
@@ -40,10 +42,11 @@ class TestTeamMemberAddForm(TestCase):
         assert member.user == user
         assert member.role == 'owner'
 
+    @pytest.mark.django_db
     def test_duplicate(self):
         user = UserFactory()
         team = TeamFactory()
-        member = TeamMemberFactory(user=user, team=team, role='owner')
+        TeamMemberFactory(user=user, team=team, role='owner')
 
         data = {
             'user': user.pk,
@@ -53,7 +56,8 @@ class TestTeamMemberAddForm(TestCase):
         assert not form.is_valid()
 
 
-class TestTeamMemberRemoveForm(TestCase):
+class TestTeamMemberRemoveForm:
+    @pytest.mark.django_db
     def test_save(self):
         user = UserFactory()
         team = TeamFactory()
@@ -68,6 +72,7 @@ class TestTeamMemberRemoveForm(TestCase):
         cleaned_data = form.clean()
         assert cleaned_data == {'member_obj': member}
 
+    @pytest.mark.django_db
     def test_invalid_team(self):
         user = UserFactory()
         team = TeamFactory()

@@ -15,7 +15,7 @@ Get started
    will be approved if it lacks tests. Even if your're making a small bug fix
    we want to ensure that it will not introduce any another bug.
 
-3. Help to keep the documentation up-to-date is really appreaciated. Always
+3. Help to keep the documentation up-to-date is really appreciated. Always
    check if your're making changes that make the documentation obsolete and
    update it.
 
@@ -37,16 +37,57 @@ Get started
 Running Tests
 -------------
 
-To run all tests, simply use `tox`::
+To run all tests, simply use `tox`_:
+
+  .. code-block:: bash
 
     pip install tox
 
-    tox  # use `tox -r` to rebuild the virtual environment
+    tox -e py27 # use `tox -e py27 -r` to rebuild the virtual environment
 
 
-To run a specific test, pass the test module filename as an argument::
+To run a specific test, pass the test module filename as an argument:
 
-    tox tests/apps/packages/test_models.py
+  .. code-block:: bash
+
+    tox -e py27 tests/apps/packages/test_models.py
+
+
+If you would like `tox`_ to run tests for all supported python versions, you should first `install pyenv`_.
+
+After installing `pyenv`_ you should download all required python versions (see .python-version), and then simply run `tox`_ without the `-e` argument; e.g:
+
+
+  .. code-block:: bash
+
+    # install pyenv
+    curl -L https://raw.githubusercontent.com/yyuu/pyenv-installer/master/bin/pyenv-installer | bash
+
+    # install all required python versions
+    cat .python-version | xargs -I{} pyenv install {}
+
+    # run all tests
+    tox
+
+
+`tox`_ automatically creates an environment and installs dependencies on each run. When actively developing, you may want to reuse your existing environment to quickly rerun the tests. In this case first install the test dependencies and
+then run `py.test`_ directly. E.g :
+
+  .. code-block:: bash
+
+    # recommended: set up a virtual environment
+    localshop $ virtualenv -a . -r requirements.txt localshop
+
+    # install the requirements
+    (localshop) localshop $ pip install -r requirements.txt
+    (localshop) localshop $ pip install -e .[test]
+
+    # run the tests for the module you are working on
+    (localshop) localshop (develop)$ py.test tests/apps/packages/test_models.py
+
+    ================================= test session starts =================================
+    ...
+    ============================== 3 passed in 0.92 seconds ===============================
 
 
 Style guide
@@ -131,6 +172,10 @@ Commit messages
 .. [#rf1] :ref:`installation-instructions`
 
 .. _`Squash your commits`: http://git-scm.com/book/en/v2/Git-Tools-Rewriting-History#Squashing-Commits
+.. _`tox`: https://tox.readthedocs.org/en/latest/
+.. _`install pyenv`: https://github.com/yyuu/pyenv#installation
+.. _`pyenv`: https://github.com/yyuu/pyenv
+.. _`py.test`: http://pytest.org/latest/
 .. _`pull request`: https://help.github.com/articles/using-pull-requests/
 .. _`use emojis`: http://www.emoji-cheat-sheet.com
 .. _PEP8: https://www.python.org/dev/peps/pep-0008/

@@ -4,8 +4,6 @@ from django.test.client import RequestFactory
 from django.test.utils import override_settings
 
 from localshop.apps.permissions.utils import credentials_required
-from localshop.apps.permissions import models
-
 from tests.factories import CIDRFactory
 
 
