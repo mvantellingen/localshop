@@ -23,9 +23,9 @@ class AccessKeyForm(UserKwargModelFormMixin, forms.ModelForm):
         model = models.AccessKey
         fields = ['comment']
 
-    def save(self):
+    def save(self, commit=True):
         self.instance.user = self.user
-        return super().save(commit=True)
+        return super().save(commit=commit)
 
 
 class TeamFormMixin(object):

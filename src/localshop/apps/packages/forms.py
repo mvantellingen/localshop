@@ -26,8 +26,8 @@ class PackageForm(forms.ModelForm):
             'invalid': 'Enter a valid name consisting of letters, numbers, underscores or hyphens'
         })
 
-    def save(self):
-        obj = super().save(commit=False)
+    def save(self, commit=False):
+        obj = super().save(commit=commit)
         obj.is_local = True
         obj.repository = self._repository
         obj.save()
@@ -57,6 +57,7 @@ class ReleaseForm(forms.ModelForm):
             for key, value in self.cleaned_data.items()
         }
         return result
+
 
 class ReleaseFileForm(forms.ModelForm):
     class Meta:

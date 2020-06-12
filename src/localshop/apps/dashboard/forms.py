@@ -18,7 +18,7 @@ class AccessControlForm(RepositoryFormMixin, forms.ModelForm):
         fields = ['label', 'cidr', 'require_credentials']
         model = CIDR
 
-    def save(self):
+    def save(self, commit=True):
         instance = super().save(commit=False)
         instance.repository = self.repository
         instance.save()

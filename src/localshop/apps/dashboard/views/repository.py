@@ -50,7 +50,7 @@ class RepositoryMixin(AccessMixin):
         return super().dispatch(request, *args, **kwargs)
 
     def get_form_kwargs(self, *args, **kwargs):
-        kwargs = super().get_form_kwargs(*args, **kwargs)
+        kwargs = super().get_form_kwargs(**kwargs)
         kwargs['repository'] = self.repository
         return kwargs
 
@@ -67,8 +67,8 @@ class RepositoryDetailView(RepositoryMixin, generic.DetailView):
     require_role = ['owner', 'developer']
     template_name = 'dashboard/repository_detail.html'
 
-    def get_context_data(self, *args, **kwargs):
-        ctx = super().get_context_data(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
 
         ctx.update({
             'simple_index_url': self.request.build_absolute_uri(
@@ -85,8 +85,7 @@ class RepositoryUpdateView(RepositoryMixin, generic.UpdateView):
     template_name = 'dashboard/repository_settings/edit.html'
 
     def get_success_url(self):
-        return reverse(
-            'dashboard:repository_detail', kwargs={'slug': self.object.slug})
+        return reverse('dashboard:repository_detail', kwargs={'slug': self.object.slug})
 
     def get_object(self):
         return self.repository

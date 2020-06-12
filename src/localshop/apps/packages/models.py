@@ -12,7 +12,6 @@ from django.core.validators import RegexValidator
 from django.db import models
 from django.db.models.signals import post_delete
 from django.utils.html import escape
-from django.utils.text import ugettext_lazy as _
 from django.utils.translation import ugettext_lazy as _
 from docutils.utils import SystemMessage
 from model_utils import Choices
@@ -91,7 +90,7 @@ class Package(models.Model):
 
     name = models.CharField(max_length=200, db_index=True, validators=[
         RegexValidator(
-            re.compile(r'^[-a-zA-Z0-9_\.]+\Z'),
+            re.compile(r'^[-a-zA-Z0-9_.]+\Z'),
             _("Enter a valid package name consisting"),
             'invalid')
     ])
@@ -109,9 +108,6 @@ class Package(models.Model):
         unique_together = [
             ('repository', 'name')
         ]
-        permissions = (
-            ("view_package", "Can view package"),
-        )
 
     def __str__(self):
         return self.name

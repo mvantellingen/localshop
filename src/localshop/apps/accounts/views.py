@@ -41,7 +41,7 @@ class TeamDetailView(LoginRequiredMixin, generic.DetailView):
     model = models.Team
 
     def get_context_data(self, *args, **kwargs):
-        ctx = super().get_context_data(*args, **kwargs)
+        ctx = super().get_context_data(**kwargs)
         ctx.update({
             'form_member_add': forms.TeamMemberAddForm(team=self.object),
         })
@@ -71,7 +71,7 @@ class TeamMixin(object):
         return super().dispatch(request, pk)
 
     def get_form_kwargs(self, *args, **kwargs):
-        kwargs = super().get_form_kwargs(*args, **kwargs)
+        kwargs = super().get_form_kwargs()
         kwargs['team'] = self.team
         return kwargs
 
@@ -109,7 +109,7 @@ class ProfileView(LoginRequiredMixin, generic.FormView):
         return super().form_valid(form)
 
     def get_form_kwargs(self, *args, **kwargs):
-        kwargs = super().get_form_kwargs(*args, **kwargs)
+        kwargs = super().get_form_kwargs()
         kwargs['instance'] = self.request.user
         return kwargs
 
@@ -145,7 +145,7 @@ class AccessKeySecretView(LoginRequiredMixin, generic.DetailView):
     def get_queryset(self):
         return self.request.user.access_keys.all()
 
-    def get(self, request, pk):
+    def get(self, request, pk, *args, **kwargs):
         if not request.is_ajax():
             raise SuspiciousOperation
         key = get_object_or_404(self.request.user.access_keys, pk=pk)
@@ -199,7 +199,7 @@ def login(request, template_name='registration/login.html',
         if form.is_valid():
 
             # Ensure the user-originating redirection url is safe.
-            if not is_safe_url(url=redirect_to, host=request.get_host()):
+            if not is_safe_url(url=redirect_to, allowed_hosts=request.get_host()):
                 redirect_to = resolve_url(settings.LOGIN_REDIRECT_URL)
 
             if not form.cleaned_data['remember_me']:
