@@ -9,7 +9,7 @@ repository_urls = [
     url(r'^packages/add/$',
         views.PackageAddView.as_view(),
         name='package_add'),
-    url(r'^packages/(?P<name>[-\._\w]+)/', include([
+    url(r'^packages/(?P<name>[-._\w]+)/', include([
         url(r'^$',
             views.PackageDetailView.as_view(),
             name='package_detail'),

@@ -3,6 +3,7 @@ import mimetypes
 import os
 
 import requests
+from celery.utils.log import get_task_logger
 from django.conf import settings
 from django.core.files.uploadedfile import TemporaryUploadedFile
 from django.utils.timezone import now
@@ -12,7 +13,7 @@ from localshop.apps.packages.utils import md5_hash_file
 from localshop.celery import app
 from localshop.utils import no_duplicates
 
-logger = logging.getLogger(__name__)
+logger = get_task_logger(__name__)
 
 
 @app.task
@@ -44,7 +45,7 @@ def refresh_repository(repository_pk):
 @no_duplicates
 def fetch_package(repository_pk, slug):
     repository = models.Repository.objects.get(pk=repository_pk)
-    logging.info('start fetch_package: %s', slug)
+    logger.info('start fetch_package: %s', slug)
 
     package_data = pypi.get_package_information(
         repository.upstream_pypi_url_api, slug)
@@ -95,7 +96,7 @@ def fetch_package(repository_pk, slug):
 
     package.update_timestamp = now()
     package.save()
-    logging.info('done fetch_package: %s', slug)
+    logger.info('done fetch_package: %s', slug)
 
 
 @app.task
@@ -104,7 +105,7 @@ def download_file(pk):
 
     """
     release_file = models.ReleaseFile.objects.get(pk=pk)
-    logging.info("Downloading %s", release_file.url)
+    logger.info("Downloading %s", release_file.url)
 
     proxies = None
     if settings.LOCALSHOP_HTTP_PROXY:
@@ -138,10 +139,10 @@ def download_file(pk):
         # Validate the md5 hash of the downloaded file
         md5_hash = md5_hash_file(temp_file)
         if md5_hash != release_file.md5_digest:
-            logging.error("MD5 hash mismatch: %s (expected: %s)" % (
+            logger.error("MD5 hash mismatch: %s (expected: %s)" % (
                 md5_hash, release_file.md5_digest))
             return
 
         release_file.distribution.save(filename, temp_file)
         release_file.save()
-    logging.info("Complete")
+    logger.info("Complete")

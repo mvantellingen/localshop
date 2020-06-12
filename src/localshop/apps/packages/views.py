@@ -107,8 +107,8 @@ class SimpleDetail(RepositoryMixin, RepositoryAccessMixin, generic.DetailView):
             releases=list(package.releases.all()))
         return self.render_to_response(context)
 
-    def get_context_data(self, *args, **kwargs):
-        ctx = super().get_context_data(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
         ctx['base_url'] = self.request.build_absolute_uri('/')[:-1]
         return ctx
 

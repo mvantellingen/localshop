@@ -34,9 +34,6 @@ class CIDR(models.Model):
         unique_together = [
             ('repository', 'cidr'),
         ]
-        permissions = (
-            ("view_cidr", "Can view CIDR"),
-        )
 
 
 class CredentialQuerySet(models.QuerySet):
@@ -79,6 +76,3 @@ class Credential(models.Model):
 
     class Meta:
         ordering = ['-created']
-        permissions = (
-            ("view_credential", "Can view credential"),
-        )

@@ -1,7 +1,7 @@
 from django.contrib import messages
 from django.urls import reverse
 from django.shortcuts import redirect, get_object_or_404
-from django.utils.text import ugettext_lazy as _
+from django.utils.text import gettext_lazy as _
 from django.views import generic
 
 from localshop.apps.dashboard import forms
@@ -77,7 +77,7 @@ class PackageDetailView(RepositoryMixin, generic.DetailView):
     def get_queryset(self):
         return self.repository.packages.all()
 
-    def get_context_data(self, *args, **kwargs):
-        context = super().get_context_data(*args, **kwargs)
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
         context['release'] = self.object.last_release
         return context
