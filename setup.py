@@ -8,9 +8,9 @@ tests_require = [
     'django-webtest==1.9.7',
     'factory-boy==2.12.0',
     'mock==4.0.2',
-    'pytest-cov==2.8.1',
+    'pytest-cov==2.9.0',
     'pytest-django==3.9.0',
-    'pytest==5.4.2',
+    'pytest==5.4.3',
     'requests-mock==1.8.0',
     'requests-toolbelt==0.9.1',
 ]
