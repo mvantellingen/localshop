@@ -65,7 +65,7 @@ class TestReleaseFile:
         dummy_fh = six.BytesIO(six.b("release-file-contents"))
         release_file.save_filecontent('dummy.txt', dummy_fh)
 
-        assert release_file.distribution.name == 'default/2.7/t/test-package/dummy.txt'
+        assert release_file.distribution.name == 'default/2.7/T/Test_Package/dummy.txt'
         assert os.path.exists(release_file.distribution.path)
 
     @pytest.mark.django_db

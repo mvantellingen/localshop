@@ -94,7 +94,7 @@
                             </tr>
                         </thead>
                         <tbody>
-                            {% for release in package.get_ordered_releases %}
+                            {% for release in package.releases.all %}
                             <tr>
                                 <th colspan="8">{{ release.version }}</th>
                             </tr>

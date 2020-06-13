@@ -7,7 +7,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('packages', '0006_repository_upstream_pypi_url'),
+        ('packages', '0008_requires_python'),
     ]
 
     operations = [

@@ -250,7 +250,8 @@ def test_upload_should_not_overwrite_pypi_package(
 ):
     ReleaseFileFactory(
         release__package__repository=repository,
-        release__package__name='localshop')
+        release__package__name='localshop',
+        release__package__normalized_name='localshop')
 
     key = admin_user.access_keys.create(comment='For testing')
     headers = {

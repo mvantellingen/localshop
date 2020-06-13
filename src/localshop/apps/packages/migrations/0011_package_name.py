@@ -10,7 +10,7 @@ import re
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('packages', '0008_auto_20171116_2112'),
+        ('packages', '0010_auto_20171116_2112'),
     ]
 
     operations = [

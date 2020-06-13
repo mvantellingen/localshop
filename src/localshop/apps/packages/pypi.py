@@ -31,3 +31,7 @@ def get_package_information(index_url, package_name):
     response = requests.get('%s/%s/json' % (index_url, package_name))
     if response.status_code == 200:
         return response.json()
+
+
+def normalize_name(name):
+    return re.sub(r'[-_.]+', '-', name).lower()

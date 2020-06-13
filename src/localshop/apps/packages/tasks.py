@@ -11,7 +11,8 @@ from localshop.apps.packages import forms, models, pypi
 from localshop.apps.packages.pypi import normalize_name
 from localshop.apps.packages.utils import md5_hash_file
 from localshop.celery import app
-from localshop.utils import no_duplicates, enqueue
+from localshop.utils import no_duplicates
+
 
 logger = logging.getLogger(__name__)
 
@@ -150,18 +151,3 @@ def download_file(pk):
         release_file.distribution.save(filename, temp_file)
         release_file.save()
     logging.info("Complete")
-
-
-@app.task
-def update_packages():
-    """Update package information for all packages"""
-    logging.info('Updated packages')
-    packages = (
-        models.Package.objects
-        .filter(is_local=False, repository__enable_auto_mirroring=True)
-        .values_list('repository_id', 'name')
-    )
-    for repository_id, package_name in packages:
-        logging.info('Updating package %s', package_name)
-        enqueue(fetch_package, repository_id, package_name)
-    logging.info('Complete')

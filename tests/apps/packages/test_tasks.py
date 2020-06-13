@@ -32,7 +32,7 @@ def test_download_file(requests_mock, tmpdir, settings):
     assert release_file.distribution.read() == file_data
     assert release_file.distribution.size == len(file_data)
     assert release_file.distribution.name == (
-        'default/2.7/t/test-package/test-1.0.0-sdist.zip')
+        'default/2.7/T/Test_Package/test-1.0.0-sdist.zip')
 
 
 @mock.patch('requests.get')
@@ -78,7 +78,7 @@ def test_download_file_missing_content_length(requests_mock, settings, tmpdir):
     assert release_file.distribution.read() == file_data
     assert release_file.distribution.size == len(file_data)
     assert release_file.distribution.name == (
-        'default/2.7/t/test-package/test-1.0.0-sdist.zip')
+        'default/2.7/T/Test_Package/test-1.0.0-sdist.zip')
 
 
 @mock.patch('requests.get')
@@ -110,8 +110,8 @@ def test_download_file_with_proxy_enabled(requests_mock, settings):
 @mock.patch('localshop.apps.packages.tasks.fetch_package')
 @pytest.mark.django_db
 def test_update_package_should_call_get_package_data(fetch_pkg_mock):
-    PackageFactory(name='local', is_local=True)
-    pypi_package = PackageFactory(name='pypi', is_local=False)
+    PackageFactory(name='local', normalized_name='local', is_local=True)
+    pypi_package = PackageFactory(name='pypi', normalized_name='pypi', is_local=False)
 
     tasks.refresh_repository_mirrors()
 

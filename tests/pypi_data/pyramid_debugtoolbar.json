@@ -30,6 +30,7 @@
         "maintainer": "",
         "maintainer_email": "",
         "name": "pyramid_debugtoolbar",
+        "normalized_name":"pyramid-debugtoolbar",
         "platform": "",
         "project_url": "https://pypi.org/project/pyramid_debugtoolbar/",
         "release_url": "https://pypi.org/project/pyramid_debugtoolbar/4.3/",
@@ -63,6 +64,7 @@
                 "md5_digest": "24e63abf400260565f93bd8199f9e6ef",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 1449280,
                 "upload_time": "2011-07-30T20:17:22",
                 "url": "https://files.pythonhosted.org/packages/af/c9/be618cda4cab47cdc67a10ddcba1fc8a9a3711761e33e37307151209fd4b/pyramid_debugtoolbar-0.1.tar.gz"
@@ -81,6 +83,7 @@
                 "md5_digest": "5771c6edcab7c39d1347e0479a4b0044",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 1450325,
                 "upload_time": "2011-08-07T05:22:22",
                 "url": "https://files.pythonhosted.org/packages/bc/d1/9df6f67e02d1b1f26b0b992ad6d9333ecd679793e00409c7671080712f83/pyramid_debugtoolbar-0.2.tar.gz"
@@ -99,6 +102,7 @@
                 "md5_digest": "fc430136950cf2c7b334dad87ca61008",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 1452632,
                 "upload_time": "2011-08-15T06:13:54",
                 "url": "https://files.pythonhosted.org/packages/18/fe/b1f19760c34c633d35b13f23cc35963e14f3717ddd6d9f03ee84090e40aa/pyramid_debugtoolbar-0.3.tar.gz"
@@ -117,6 +121,7 @@
                 "md5_digest": "45e43e5e5d9ec3f47b9f3dbc73c9142b",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 1453644,
                 "upload_time": "2011-08-18T18:44:47",
                 "url": "https://files.pythonhosted.org/packages/f3/c0/e239a47af5bbb511fcb58da61e6a03edb621cb954b2a87fe9b84a1fc5c0e/pyramid_debugtoolbar-0.4.tar.gz"
@@ -135,6 +140,7 @@
                 "md5_digest": "fe72bcd836dafe1f8b6fa8880a583be6",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 1453752,
                 "upload_time": "2011-08-18T18:48:46",
                 "url": "https://files.pythonhosted.org/packages/e0/db/491d9fd63230a9d1d2d2a77312c4b6248bb703bf7065bf6ee2f1469ddaf4/pyramid_debugtoolbar-0.5.tar.gz"
@@ -153,6 +159,7 @@
                 "md5_digest": "df765179cba5f5124ee5dc8f94749d84",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 1453838,
                 "upload_time": "2011-08-21T07:32:52",
                 "url": "https://files.pythonhosted.org/packages/d1/05/1cabd33b837c19b23cfd461be9258835ca4b53b3d0623238c71c21843304/pyramid_debugtoolbar-0.6.tar.gz"
@@ -171,6 +178,7 @@
                 "md5_digest": "cf67ecf743c597ba26b8c27af039e11d",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 1453729,
                 "upload_time": "2011-08-24T07:42:35",
                 "url": "https://files.pythonhosted.org/packages/83/68/967e3a53d60fd9144274bd0855e8bdb5a8f9216b3a313616efcb6c45c729/pyramid_debugtoolbar-0.7.tar.gz"
@@ -189,6 +197,7 @@
                 "md5_digest": "9548392f438baa4653b886c16d2137c4",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 1453954,
                 "upload_time": "2011-08-24T20:18:37",
                 "url": "https://files.pythonhosted.org/packages/0a/6a/b3d5324132cd88d8b5d0ca73a9f98684f51cb364622e4d28b0ce2e0b471d/pyramid_debugtoolbar-0.8.tar.gz"
@@ -207,6 +216,7 @@
                 "md5_digest": "6c74d17ea311b85b4d8a2319c1c255b8",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 1454537,
                 "upload_time": "2011-08-29T17:10:22",
                 "url": "https://files.pythonhosted.org/packages/99/a1/122b192e3c699ccd5f84130e6fa1fbb78704a319cb5c595c40f1d1396bfa/pyramid_debugtoolbar-0.9.tar.gz"
@@ -225,6 +235,7 @@
                 "md5_digest": "61e962d6bc1d6eb3bbdd183790ae6c1b",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 1456059,
                 "upload_time": "2011-08-31T00:46:46",
                 "url": "https://files.pythonhosted.org/packages/c2/ec/1fbea261fb9976837dd254187f2858a73b2f1fc94ee754616ae7e4323920/pyramid_debugtoolbar-0.9.1.tar.gz"
@@ -243,6 +254,7 @@
                 "md5_digest": "2c52d4b6d2f0feedc7b98ffcb180368c",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 1456250,
                 "upload_time": "2011-09-05T09:35:32",
                 "url": "https://files.pythonhosted.org/packages/be/7c/2804f13d4030eb95e76087a20f7dd45f5363aa8c6d90bd31c8673da4b828/pyramid_debugtoolbar-0.9.2.tar.gz"
@@ -261,6 +273,7 @@
                 "md5_digest": "5b69497e5dd54bbca8c5fd0d20f15f0d",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 1456740,
                 "upload_time": "2011-09-13T04:22:17",
                 "url": "https://files.pythonhosted.org/packages/b2/d5/cca15951fcc38b49912fc3a3b6527321e2d9a744300f7121c4a53256cea9/pyramid_debugtoolbar-0.9.3.tar.gz"
@@ -279,6 +292,7 @@
                 "md5_digest": "d21f83e7016e6f7135d27247f7223a77",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 1458900,
                 "upload_time": "2011-09-28T09:06:33",
                 "url": "https://files.pythonhosted.org/packages/7f/57/236ed7462007a3365dafb35c044ef22fe18b9eed40d164ea2df559f7ef5e/pyramid_debugtoolbar-0.9.4.tar.gz"
@@ -297,6 +311,7 @@
                 "md5_digest": "47250653c08b7e8492d9df32a4d8087e",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 1500154,
                 "upload_time": "2011-11-12T23:47:35",
                 "url": "https://files.pythonhosted.org/packages/32/e0/d0e2053aa9bf718b157b9a966cce6a9ebbb4bc1d1cbc7d2ba68d0ca0134c/pyramid_debugtoolbar-0.9.5.tar.gz"
@@ -315,6 +330,7 @@
                 "md5_digest": "f6f3401d86692bed43ba2504320af0e7",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 1603379,
                 "upload_time": "2011-12-09T09:12:43",
                 "url": "https://files.pythonhosted.org/packages/38/2f/b7d9bd327797ff1fa675cf9c113c14809db35691a92acae9f68458b043f0/pyramid_debugtoolbar-0.9.6.tar.gz"
@@ -333,6 +349,7 @@
                 "md5_digest": "1190a578fa0f9bf64c653bc5f4b19e79",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 1603909,
                 "upload_time": "2011-12-09T20:17:51",
                 "url": "https://files.pythonhosted.org/packages/07/bd/fd17bacafc36c0c0d4ae9c789ca64fad417ec156750ddf528bf7941212f9/pyramid_debugtoolbar-0.9.7.tar.gz"
@@ -351,6 +368,7 @@
                 "md5_digest": "a83133089d3580e0ae3e453b6bd07b91",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 1604662,
                 "upload_time": "2012-01-09T21:46:05",
                 "url": "https://files.pythonhosted.org/packages/88/91/95860cc97619a25ad1be3b59cb0da3b7e48d3076fb2778fa8058ee16b016/pyramid_debugtoolbar-0.9.8.tar.gz"
@@ -369,6 +387,7 @@
                 "md5_digest": "f7df3ac2305bb2b02c65ea9e7028babc",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 1605672,
                 "upload_time": "2012-02-20T00:01:50",
                 "url": "https://files.pythonhosted.org/packages/63/2f/d575b15c7c43da0ce4205e8652268ae1f1c2dd241cf7c147e2c604722178/pyramid_debugtoolbar-0.9.9.tar.gz"
@@ -387,6 +406,7 @@
                 "md5_digest": "9db9c0cc6c6cdfada23fbba32ba6bd59",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 1605949,
                 "upload_time": "2012-02-23T02:52:38",
                 "url": "https://files.pythonhosted.org/packages/e6/fa/8f8e5ef4fdc524f5da80b0f8c04193769cfe176609d7d3037810d13d4f1d/pyramid_debugtoolbar-0.9.9.1.tar.gz"
@@ -405,6 +425,7 @@
                 "md5_digest": "37bff0f1d44941b97137dab24facc978",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 1626279,
                 "upload_time": "2012-03-17T22:43:08",
                 "url": "https://files.pythonhosted.org/packages/11/3a/60fc405bc137a43ff0f194e57e74b1d7b55658df0dbcb79f47511a8408d0/pyramid_debugtoolbar-1.0.tar.gz"
@@ -423,6 +444,7 @@
                 "md5_digest": "c03750506585e30183e84e5678ef0c3d",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 1626432,
                 "upload_time": "2012-03-27T06:07:59",
                 "url": "https://files.pythonhosted.org/packages/5f/fd/443e8418a96d9dc1abb49381882901b0c0acfba80f372cf1ead6cd9bccdd/pyramid_debugtoolbar-1.0.1.tar.gz"
@@ -441,6 +463,7 @@
                 "md5_digest": "4da4cb7d2c53b40b71d16fec9e1ca9a7",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 1760483,
                 "upload_time": "2012-04-19T18:31:42",
                 "url": "https://files.pythonhosted.org/packages/c4/55/35ad68c46bcc734e5401c7335942f4ac4edb1957ce958fcf302149fd89fb/pyramid_debugtoolbar-1.0.2.tar.gz"
@@ -459,6 +482,7 @@
                 "md5_digest": "67324e75a0b3ecf3fe1804ce82a430cb",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 1760974,
                 "upload_time": "2012-09-23T05:47:52",
                 "url": "https://files.pythonhosted.org/packages/58/65/3fcc670301ef11b1c2caca94183464dcaeab52a7bb48509935ad6532152a/pyramid_debugtoolbar-1.0.3.tar.gz"
@@ -477,6 +501,7 @@
                 "md5_digest": "0133cacdb0fb08b15d6945d2e01b2d8f",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 1762091,
                 "upload_time": "2013-01-05T06:37:38",
                 "url": "https://files.pythonhosted.org/packages/73/b3/a03db5050d84506633e95c04a2c6979010b22fae08f6ca7e3bd5e22e87fe/pyramid_debugtoolbar-1.0.4.tar.gz"
@@ -495,6 +520,7 @@
                 "md5_digest": "e5fe098fd0dcdb899d393e703635a287",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 57602,
                 "upload_time": "2013-04-17T19:34:01",
                 "url": "https://files.pythonhosted.org/packages/96/50/1e17f0758efca7b3d9cc64833fa67a4ff1c4b3748fe1a35f23f742c12c42/pyramid_debugtoolbar-1.0.5.tar.gz"
@@ -513,6 +539,7 @@
                 "md5_digest": "3230293866dd5dfdec54a4888d47924c",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 1771819,
                 "upload_time": "2013-04-17T21:20:03",
                 "url": "https://files.pythonhosted.org/packages/3d/2b/3b997852916c1b28a43f1f341eb6024b2a23ebb3c9bd83a55798cb3f2a8a/pyramid_debugtoolbar-1.0.6.tar.gz"
@@ -531,6 +558,7 @@
                 "md5_digest": "c1ea9b0fc8938a2bec1e36f15ad6c3cb",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 1769482,
                 "upload_time": "2013-08-30T00:18:00",
                 "url": "https://files.pythonhosted.org/packages/69/ea/252a042f91c233e3e37d3cbb2eecb51f5fafecdf5d135d86d5e1c0633c17/pyramid_debugtoolbar-1.0.7.tar.gz"
@@ -549,6 +577,7 @@
                 "md5_digest": "222012b25b2ac01b6de597233a2e46c7",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 1767994,
                 "upload_time": "2013-09-09T22:24:00",
                 "url": "https://files.pythonhosted.org/packages/1e/a0/94cebdc731f0ae4b586a4e854d227cf2c9d82cede2da96f3c2f883b85f21/pyramid_debugtoolbar-1.0.8.tar.gz"
@@ -567,6 +596,7 @@
                 "md5_digest": "450543b9d990719624131e07131f93fd",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 1773867,
                 "upload_time": "2013-10-21T02:58:59",
                 "url": "https://files.pythonhosted.org/packages/54/e3/f23042c309899075aa13978226d8752a5d4b922efd13ecd2e69c1b0d83b3/pyramid_debugtoolbar-1.0.9.tar.gz"
@@ -585,6 +615,7 @@
                 "md5_digest": "6b856b9b724f2526d2553a3d1004c39a",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 3009179,
                 "upload_time": "2014-02-13T00:27:44",
                 "url": "https://files.pythonhosted.org/packages/bf/85/067f8cdac7b52c27fa1b9558f7bb4b67c927d08b70c65f81d39e0b9dbdca/pyramid_debugtoolbar-2.0.tar.gz"
@@ -603,6 +634,7 @@
                 "md5_digest": "db77e4362fb0e1a1db7e97d7d880906f",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 3009325,
                 "upload_time": "2014-02-13T00:41:03",
                 "url": "https://files.pythonhosted.org/packages/ff/8b/b9ab7168fc3b0feea6ee7b59e3a17573b79027bde0ec78080bd6697c0ce0/pyramid_debugtoolbar-2.0.1.tar.gz"
@@ -621,6 +653,7 @@
                 "md5_digest": "be3914e1967f6421261af7705ed35dbc",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 3009442,
                 "upload_time": "2014-02-13T16:56:07",
                 "url": "https://files.pythonhosted.org/packages/69/26/d51dc9250b8cbec4c408149816c85a55ff47612c764657c717e574685082/pyramid_debugtoolbar-2.0.2.tar.gz"
@@ -639,6 +672,7 @@
                 "md5_digest": "2c7c9fdba41184d4e6bca0874ea806e4",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 3014159,
                 "upload_time": "2014-05-22T16:31:48",
                 "url": "https://files.pythonhosted.org/packages/ea/9a/8df1240d6849d4490bca239904d42e4216f84b363ba8900436cb22cb41ec/pyramid_debugtoolbar-2.1.tar.gz"
@@ -657,6 +691,7 @@
                 "md5_digest": "2f927278ec680277ef72dd85bf49d73b",
                 "packagetype": "bdist_wheel",
                 "python_version": "any",
+                "requires_python": null,
                 "size": 449618,
                 "upload_time": "2014-08-12T18:52:14",
                 "url": "https://files.pythonhosted.org/packages/24/84/020ea51780d2102b42c690e21470169d7d873e48ef58a37dec1e3710b298/pyramid_debugtoolbar-2.2-py2-none-any.whl"
@@ -673,6 +708,7 @@
                 "md5_digest": "9b20b80a33e319e90a96e58fefd1895b",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 3014816,
                 "upload_time": "2014-08-12T18:48:12",
                 "url": "https://files.pythonhosted.org/packages/97/59/2cae06dd824bdd4b32a0745957bb34df3932563b39ac9327b5bc06304f27/pyramid_debugtoolbar-2.2.tar.gz"
@@ -691,6 +727,7 @@
                 "md5_digest": "017884cadd4897e63028d7020bc74dde",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 64710,
                 "upload_time": "2014-11-10T02:51:24",
                 "url": "https://files.pythonhosted.org/packages/a6/f8/b6b72f96b886aa50feede639c3d68c961379aa92fd12430376073da14c86/pyramid_debugtoolbar-2.2.1.tar.gz"
@@ -709,6 +746,7 @@
                 "md5_digest": "0e247dd114aef17b1f1255f8b7222748",
                 "packagetype": "bdist_wheel",
                 "python_version": "any",
+                "requires_python": null,
                 "size": 448704,
                 "upload_time": "2014-11-10T02:57:13",
                 "url": "https://files.pythonhosted.org/packages/8f/e4/74698713840f2a5e0fbbe47d9c89406729798378ba5f88d985900f6dc94a/pyramid_debugtoolbar-2.2.2-py2.py3-none-any.whl"
@@ -725,6 +763,7 @@
                 "md5_digest": "232daa3f2defa5d47d8acc1b8d670e01",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 3015869,
                 "upload_time": "2014-11-10T02:55:37",
                 "url": "https://files.pythonhosted.org/packages/89/96/9223dea6354ceca277cb23e4afc02072c540c652e0795158ceb129207f50/pyramid_debugtoolbar-2.2.2.tar.gz"
@@ -743,6 +782,7 @@
                 "md5_digest": "64e1cfcf6a988edb189af13e36ab875c",
                 "packagetype": "bdist_wheel",
                 "python_version": "2.7",
+                "requires_python": null,
                 "size": 449260,
                 "upload_time": "2015-01-05T21:45:08",
                 "url": "https://files.pythonhosted.org/packages/82/92/730f9b8e9ec2a84a4ec8c2ccfacd522067e041f22f6f84bfd48ea14e6ecf/pyramid_debugtoolbar-2.3-py2.py3-none-any.whl"
@@ -759,6 +799,7 @@
                 "md5_digest": "3d4c2af7d4f45efd796cdd58126ac446",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 3017109,
                 "upload_time": "2015-01-05T21:44:32",
                 "url": "https://files.pythonhosted.org/packages/78/a9/ef0f8382bf948a57efe9d389f652d9a3f733be54a5acc7e595891006e0c8/pyramid_debugtoolbar-2.3.tar.gz"
@@ -777,6 +818,7 @@
                 "md5_digest": "194d84fa3a91050024c69a7afa8e0cb8",
                 "packagetype": "bdist_wheel",
                 "python_version": "py2.py3",
+                "requires_python": null,
                 "size": 455725,
                 "upload_time": "2015-06-04T17:00:47",
                 "url": "https://files.pythonhosted.org/packages/35/71/e9c9c4496a294fd6ff4a14c42cef52a645ed1e5cf258a1105824e9515da2/pyramid_debugtoolbar-2.4-py2.py3-none-any.whl"
@@ -793,6 +835,7 @@
                 "md5_digest": "7fe77dd0ce5b12f8e11a6853fdb8a704",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 3042917,
                 "upload_time": "2015-06-04T17:00:52",
                 "url": "https://files.pythonhosted.org/packages/09/3b/a554704488991e87748cc01ea02617709045027e35b84adb7c57451753ac/pyramid_debugtoolbar-2.4.tar.gz"
@@ -811,6 +854,7 @@
                 "md5_digest": "de0a708b38609ff02272ce74b2da4f60",
                 "packagetype": "bdist_wheel",
                 "python_version": "py2.py3",
+                "requires_python": null,
                 "size": 455815,
                 "upload_time": "2015-08-12T17:32:17",
                 "url": "https://files.pythonhosted.org/packages/74/5d/e3b44db7b6777d27a64ce4974a6011bf0ead8a7cd1ff85b6a2741917d2a0/pyramid_debugtoolbar-2.4.1-py2.py3-none-any.whl"
@@ -827,6 +871,7 @@
                 "md5_digest": "a0fc99c07b758477e35d0f344216ee2f",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 3043264,
                 "upload_time": "2015-08-12T17:32:23",
                 "url": "https://files.pythonhosted.org/packages/3f/f3/252c40f4efdaf6ba921afac66f316ebd54e0153aab2f9819d1c9fb565cd6/pyramid_debugtoolbar-2.4.1.tar.gz"
@@ -845,6 +890,7 @@
                 "md5_digest": "8289e54d4e3d8d8b949caff22b087f7b",
                 "packagetype": "bdist_wheel",
                 "python_version": "py2.py3",
+                "requires_python": null,
                 "size": 456043,
                 "upload_time": "2015-10-28T23:13:56",
                 "url": "https://files.pythonhosted.org/packages/84/9b/e24fba208da29695b4aa8c549fd835f94952cc5e459a3f089bf3415d01b4/pyramid_debugtoolbar-2.4.2-py2.py3-none-any.whl"
@@ -861,6 +907,7 @@
                 "md5_digest": "073ea67086cc4bd5decc3a000853642d",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 3043662,
                 "upload_time": "2015-10-29T01:42:01",
                 "url": "https://files.pythonhosted.org/packages/89/00/ed5426ee41ed747ba3ffd30e8230841a6878286ea67d480b1444d24f06a2/pyramid_debugtoolbar-2.4.2.tar.gz"
@@ -879,6 +926,7 @@
                 "md5_digest": "33f36a7213b58f05ee72395b1c4eb40c",
                 "packagetype": "bdist_wheel",
                 "python_version": "py2.py3",
+                "requires_python": null,
                 "size": 458464,
                 "upload_time": "2016-04-21T03:35:59",
                 "url": "https://files.pythonhosted.org/packages/b6/0e/771f911e7b1bc91128a543430a954b011455cb0ed69d3f3f0b4d43024f3b/pyramid_debugtoolbar-2.5-py2.py3-none-any.whl"
@@ -895,6 +943,7 @@
                 "md5_digest": "903192fd516b2c21d72c02e213b22618",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 3046726,
                 "upload_time": "2016-04-21T03:36:35",
                 "url": "https://files.pythonhosted.org/packages/69/38/bc1f3e3e0b328fd6cf692e59691df217a210ec14284bd3140e90e8ba063f/pyramid_debugtoolbar-2.5.tar.gz"
@@ -913,6 +962,7 @@
                 "md5_digest": "60021bfa30ed6568cabce38b5cce1ca9",
                 "packagetype": "bdist_wheel",
                 "python_version": "py2.py3",
+                "requires_python": null,
                 "size": 353235,
                 "upload_time": "2016-04-23T17:08:29",
                 "url": "https://files.pythonhosted.org/packages/27/92/7d69a9bfc45279b70be867b9bca2a9b13ea2f086d8491587cb4e4466ef5d/pyramid_debugtoolbar-3.0-py2.py3-none-any.whl"
@@ -929,6 +979,7 @@
                 "md5_digest": "2542d08cd70b12a64bb76912a4e381e4",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 2938004,
                 "upload_time": "2016-04-23T17:11:23",
                 "url": "https://files.pythonhosted.org/packages/11/46/e65ef1a78569c1974a39a4b819f59620e20f215eb663b7a4d3d0be54f4f4/pyramid_debugtoolbar-3.0.tar.gz"
@@ -947,6 +998,7 @@
                 "md5_digest": "26b376925bf8ee23e39404e500a5ca90",
                 "packagetype": "bdist_wheel",
                 "python_version": "py2.py3",
+                "requires_python": null,
                 "size": 353747,
                 "upload_time": "2016-05-20T05:24:18",
                 "url": "https://files.pythonhosted.org/packages/74/78/63414cf488f659204af260ac3830ac60e28d7b96ff38d85e4ae57d9b78f2/pyramid_debugtoolbar-3.0.1-py2.py3-none-any.whl"
@@ -963,6 +1015,7 @@
                 "md5_digest": "b5871b259b8c0bb0ce5c3b3ebbc5d495",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 2938648,
                 "upload_time": "2016-05-20T05:24:39",
                 "url": "https://files.pythonhosted.org/packages/79/a4/a92f161920ac1a2b71000299ad6bd1449c7729cd94eead18ab7a52d68c70/pyramid_debugtoolbar-3.0.1.tar.gz"
@@ -981,6 +1034,7 @@
                 "md5_digest": "9c0d90a497ee2967afa4677d97864cea",
                 "packagetype": "bdist_wheel",
                 "python_version": "py2.py3",
+                "requires_python": null,
                 "size": 353838,
                 "upload_time": "2016-07-03T02:38:45",
                 "url": "https://files.pythonhosted.org/packages/cc/ef/774ae64bb92946663604b450e8eb02ebfd92a1cb289a2635bc1f483c0ee4/pyramid_debugtoolbar-3.0.2-py2.py3-none-any.whl"
@@ -997,6 +1051,7 @@
                 "md5_digest": "d562573dd5808946dc0b32ef4eb06ba9",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 2938804,
                 "upload_time": "2016-07-03T02:38:53",
                 "url": "https://files.pythonhosted.org/packages/8e/2c/2b72775dcda1f7897ce605f942c9a76a86193fbd8c8f29dca1173bacd51a/pyramid_debugtoolbar-3.0.2.tar.gz"
@@ -1015,6 +1070,7 @@
                 "md5_digest": "83ef20edfef5b5029ba1453c27b97d69",
                 "packagetype": "bdist_wheel",
                 "python_version": "py2.py3",
+                "requires_python": null,
                 "size": 83616,
                 "upload_time": "2016-07-26T23:10:32",
                 "url": "https://files.pythonhosted.org/packages/c8/ea/c86ca83d9f204cd74b65f1d9eee1d352e26802c47e21fceebcc881ea7cea/pyramid_debugtoolbar-3.0.3-py2.py3-none-any.whl"
@@ -1031,6 +1087,7 @@
                 "md5_digest": "a414511c169fe67fb0501d70e8c77163",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 2682361,
                 "upload_time": "2016-07-26T23:10:38",
                 "url": "https://files.pythonhosted.org/packages/6b/c1/e4a9e1dd412e82e38a29693264055651d9bd62f310be273bf7cd875bb7fd/pyramid_debugtoolbar-3.0.3.tar.gz"
@@ -1049,6 +1106,7 @@
                 "md5_digest": "dedfc7ebc3d82050c79948cf43082787",
                 "packagetype": "bdist_wheel",
                 "python_version": "py2.py3",
+                "requires_python": null,
                 "size": 354073,
                 "upload_time": "2016-07-26T23:15:23",
                 "url": "https://files.pythonhosted.org/packages/80/ed/a2428bca8201307d29db0de2283366f4f9a42dce2e94991af1992aaa5b45/pyramid_debugtoolbar-3.0.4-py2.py3-none-any.whl"
@@ -1065,6 +1123,7 @@
                 "md5_digest": "51ff68a733ae994641027f10116e519d",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 2939582,
                 "upload_time": "2016-07-26T23:15:30",
                 "url": "https://files.pythonhosted.org/packages/b0/c5/aae5d99983600146875d471aab9142b925fd3596e6e637f6c35d158d09cc/pyramid_debugtoolbar-3.0.4.tar.gz"
@@ -1083,6 +1142,7 @@
                 "md5_digest": "6e4455811a822e137dab2bed1058b556",
                 "packagetype": "bdist_wheel",
                 "python_version": "py2.py3",
+                "requires_python": null,
                 "size": 353637,
                 "upload_time": "2016-11-01T05:50:32",
                 "url": "https://files.pythonhosted.org/packages/13/b1/344c7a7cd2db825c01992faa25b7a7279019b636efa57b49cfc25fa824e5/pyramid_debugtoolbar-3.0.5-py2.py3-none-any.whl"
@@ -1099,6 +1159,7 @@
                 "md5_digest": "aebab8c3bfdc6f89e4d3adc1d126538e",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 2939005,
                 "upload_time": "2016-11-01T05:50:37",
                 "url": "https://files.pythonhosted.org/packages/64/0e/df00bfb55605900e7a2f7e4a18dd83575a6651688e297d5a0aa4c208fd7d/pyramid_debugtoolbar-3.0.5.tar.gz"
@@ -1117,6 +1178,7 @@
                 "md5_digest": "0912c402bb9a00028500ae3f262133de",
                 "packagetype": "bdist_wheel",
                 "python_version": "py2.py3",
+                "requires_python": null,
                 "size": 364366,
                 "upload_time": "2017-05-03T05:30:15",
                 "url": "https://files.pythonhosted.org/packages/d4/58/b5c2f289c360ddd5bdfccf0d07e12a45d68ea64dea63f7f7f956cfa659ce/pyramid_debugtoolbar-4.0-py2.py3-none-any.whl"
@@ -1133,6 +1195,7 @@
                 "md5_digest": "29280b5ca996e7c34abe3a69400d1469",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 2952473,
                 "upload_time": "2017-05-03T05:30:20",
                 "url": "https://files.pythonhosted.org/packages/c9/e6/d90ce2bb3512eb09403bd790561d31ade8eed7c0f7e47a922bbde3f31a5f/pyramid_debugtoolbar-4.0.tar.gz"
@@ -1151,6 +1214,7 @@
                 "md5_digest": "2b18db21f7d0ec0f8d5c2074ac7b57c7",
                 "packagetype": "bdist_wheel",
                 "python_version": "py2.py3",
+                "requires_python": null,
                 "size": 364474,
                 "upload_time": "2017-05-10T00:32:06",
                 "url": "https://files.pythonhosted.org/packages/06/53/5945c6d63af588be9a994186e1b54732232df877862ce589550518d5398e/pyramid_debugtoolbar-4.0.1-py2.py3-none-any.whl"
@@ -1167,6 +1231,7 @@
                 "md5_digest": "2f7dd10a9c7b2faa59e956fdc66f42e9",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 2952821,
                 "upload_time": "2017-05-10T00:32:17",
                 "url": "https://files.pythonhosted.org/packages/a3/e0/7d34bae384ab2692ebc6d43101006e8804e8a838dfc037bd1588287261fb/pyramid_debugtoolbar-4.0.1.tar.gz"
@@ -1185,6 +1250,7 @@
                 "md5_digest": "d3e99b8918b72500355d4a54434d7e46",
                 "packagetype": "bdist_wheel",
                 "python_version": "py2.py3",
+                "requires_python": null,
                 "size": 354304,
                 "upload_time": "2017-05-31T02:50:46",
                 "url": "https://files.pythonhosted.org/packages/4d/a4/a27135e1d8a049bd7a9c901165240c3af8f2a5a3a2ea3dd8f1453126320d/pyramid_debugtoolbar-4.1-py2.py3-none-any.whl"
@@ -1201,6 +1267,7 @@
                 "md5_digest": "6a9f0f8f39b730e51a9f49920d132f59",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 2932999,
                 "upload_time": "2017-05-31T02:50:51",
                 "url": "https://files.pythonhosted.org/packages/4b/92/0c484de9c2657a9ca15dfd9588d5e9ecbe5482834221135294ec031d5c82/pyramid_debugtoolbar-4.1.tar.gz"
@@ -1219,6 +1286,7 @@
                 "md5_digest": "6ae9eb14e49f62e352e5b0617ccec2c3",
                 "packagetype": "bdist_wheel",
                 "python_version": "py2.py3",
+                "requires_python": null,
                 "size": 354833,
                 "upload_time": "2017-06-22T00:57:25",
                 "url": "https://files.pythonhosted.org/packages/93/e3/a5645a2f2d67155a8dffaa068012bb22a3731f0cc248f193a9d3a16c4319/pyramid_debugtoolbar-4.2-py2.py3-none-any.whl"
@@ -1235,6 +1303,7 @@
                 "md5_digest": "babaa2124b7a5286c1231130155adcf4",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 2933666,
                 "upload_time": "2017-06-22T00:57:30",
                 "url": "https://files.pythonhosted.org/packages/ee/f6/607cdbd06c964ef8ef1939669eb51ec2715a5a64dabd4d9330c8fb8e5edd/pyramid_debugtoolbar-4.2.tar.gz"
@@ -1253,6 +1322,7 @@
                 "md5_digest": "79dd7e9a79d6c1d34570d0397e1cc1e1",
                 "packagetype": "bdist_wheel",
                 "python_version": "py2.py3",
+                "requires_python": null,
                 "size": 354934,
                 "upload_time": "2017-07-01T01:35:59",
                 "url": "https://files.pythonhosted.org/packages/95/c7/7aa120244565dc3a9e8fa85ab252c705d637fc501431e00e060b27e5591e/pyramid_debugtoolbar-4.2.1-py2.py3-none-any.whl"
@@ -1269,6 +1339,7 @@
                 "md5_digest": "3dfaced2fab1644ff5284017be9d92b9",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 2933954,
                 "upload_time": "2017-07-01T01:36:05",
                 "url": "https://files.pythonhosted.org/packages/db/26/94620b7752936e2cd74838263ff366db9b454f7394bfb62d1eb2f84b29c1/pyramid_debugtoolbar-4.2.1.tar.gz"
@@ -1287,6 +1358,7 @@
                 "md5_digest": "393ca48d7c8f13ccc78f493c67a7cb18",
                 "packagetype": "bdist_wheel",
                 "python_version": "py2.py3",
+                "requires_python": null,
                 "size": 355739,
                 "upload_time": "2017-07-15T01:08:10",
                 "url": "https://files.pythonhosted.org/packages/28/40/f12b2cfd19e6091a44f1d1fdeccc87498a13fd7c2f20c2f37839d4a24cdf/pyramid_debugtoolbar-4.3-py2.py3-none-any.whl"
@@ -1303,6 +1375,7 @@
                 "md5_digest": "9c49029e9f0695130499ef6416ffaaf8",
                 "packagetype": "sdist",
                 "python_version": "source",
+                "requires_python": null,
                 "size": 2935933,
                 "upload_time": "2017-07-15T01:08:15",
                 "url": "https://files.pythonhosted.org/packages/a4/40/f09d8800bfc3c09bdb6c95f37bb61c890dc62c19c4e7caa304da7aa77403/pyramid_debugtoolbar-4.3.tar.gz"
@@ -1322,6 +1395,7 @@
             "md5_digest": "393ca48d7c8f13ccc78f493c67a7cb18",
             "packagetype": "bdist_wheel",
             "python_version": "py2.py3",
+            "requires_python": null,
             "size": 355739,
             "upload_time": "2017-07-15T01:08:10",
             "url": "https://files.pythonhosted.org/packages/28/40/f12b2cfd19e6091a44f1d1fdeccc87498a13fd7c2f20c2f37839d4a24cdf/pyramid_debugtoolbar-4.3-py2.py3-none-any.whl"
@@ -1338,6 +1412,7 @@
             "md5_digest": "9c49029e9f0695130499ef6416ffaaf8",
             "packagetype": "sdist",
             "python_version": "source",
+            "requires_python": null,
             "size": 2935933,
             "upload_time": "2017-07-15T01:08:15",
             "url": "https://files.pythonhosted.org/packages/a4/40/f09d8800bfc3c09bdb6c95f37bb61c890dc62c19c4e7caa304da7aa77403/pyramid_debugtoolbar-4.3.tar.gz"

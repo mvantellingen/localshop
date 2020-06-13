@@ -118,12 +118,6 @@ class Package(models.Model):
             'repo': self.repository.slug, 'name': self.name
         })
 
-    def get_ordered_releases(self):
-        releases = list(self.releases.all())
-        releases.sort(key=lambda rel: pkg_resources.parse_version(rel.version),
-                      reverse=True)
-        return releases
-
     def get_all_releases(self):
         result = {}
         for release in self.releases.all():

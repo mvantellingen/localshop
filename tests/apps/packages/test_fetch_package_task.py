@@ -47,6 +47,7 @@ def test_fetch_package(pypi_stub):
     assert file_1.filename == 'minibar-0.4.0-py2.py3-none-any.whl'
     assert file_1.md5_digest == '0bbdf41e028a4e6c75dfbd59660b6328'
     assert file_1.python_version == '3.4'
+    assert file_1.requires_python is None
     assert file_1.url == 'https://pypi.python.org/packages/6c/60/8554f591f2a5a830c06070397df765d2cce36277459f3cb4ff2c2fa08369/minibar-0.4.0-py2.py3-none-any.whl'  # noqa
 
     assert file_2.size == 3956
@@ -54,6 +55,7 @@ def test_fetch_package(pypi_stub):
     assert file_2.filename == 'minibar-0.4.0.tar.gz'
     assert file_2.md5_digest == 'a3768a7f948871d8e47b146053265100'
     assert file_2.python_version == 'source'
+    assert file_1.requires_python is None
     assert file_2.url == 'https://pypi.python.org/packages/57/f3/fecf00ba7ec1989aa55d98be1eccd26a9c38a9cbe3ec70487908a8749ba1/minibar-0.4.0.tar.gz'  # noqa
 
     assert release_2.files.count() == 1
@@ -65,6 +67,7 @@ def test_fetch_package(pypi_stub):
     assert file_1.filename == 'minibar-0.1.tar.gz'
     assert file_1.md5_digest == 'c935bfa49cb49e4f97fb8e24371105d7'
     assert file_1.python_version == 'source'
+    assert file_1.requires_python is None
     assert file_1.url == 'https://files.pythonhosted.org/packages/4e/c5/9275972ae0aff6a8102978b677290aae7e7ca1133bc0765b685cc2d5b1f1/minibar-0.1.tar.gz' # noqa
 
 
@@ -95,7 +98,7 @@ def test_fetch_package_with_inexistent_package(pypi_stub):
 @pytest.mark.django_db
 def test_fetch_package_should_update_existing_package(pypi_stub):
     repository = RepositoryFactory(upstream_pypi_url=pypi_stub)
-    package = PackageFactory(repository=repository, name='minibar')
+    package = PackageFactory(repository=repository, name='minibar', normalized_name='minibar')
     ReleaseFactory(package=package, version='0.1')
     ReleaseFactory(package=package, version='0.2')
 
