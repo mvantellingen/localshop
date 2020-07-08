@@ -38,6 +38,9 @@ class Repository(TimeStampedModel):
         help_text=_(
             "The upstream pypi URL (default: https://pypi.python.org/simple)"))
 
+    class Meta:
+        verbose_name_plural = "Repositories"
+
     def __str__(self):
         return self.name
 
