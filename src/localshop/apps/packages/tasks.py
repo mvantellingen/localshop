@@ -16,7 +16,7 @@ from localshop.utils import no_duplicates
 logger = get_task_logger(__name__)
 
 
-@app.task
+@app.task(ignore_result=True)
 def refresh_repository_mirrors():
     qs = (
         models.Repository.objects
@@ -27,7 +27,7 @@ def refresh_repository_mirrors():
         refresh_repository(pk)
 
 
-@app.task
+@app.task(ignore_result=True)
 def refresh_repository(repository_pk):
     repository = models.Repository.objects.get(pk=repository_pk)
     logger.info("Refreshing repository %s", repository)
@@ -41,7 +41,7 @@ def refresh_repository(repository_pk):
         fetch_package(repository.pk, slug)
 
 
-@app.task
+@app.task(ignore_result=True)
 @no_duplicates
 def fetch_package(repository_pk, slug):
     repository = models.Repository.objects.get(pk=repository_pk)
@@ -99,7 +99,7 @@ def fetch_package(repository_pk, slug):
     logger.info('done fetch_package: %s', slug)
 
 
-@app.task
+@app.task(ignore_result=True)
 def download_file(pk):
     """Download the file reference in `models.ReleaseFile` with the given pk.
 
