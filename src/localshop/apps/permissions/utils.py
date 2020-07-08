@@ -71,7 +71,7 @@ def credentials_required(view_func):
             return HttpResponseForbidden('No permission')
 
         # Just return the original view because already logged in
-        if request.user.is_authenticated():
+        if request.user.is_authenticated:
             return view_func(request, *args, **kwargs)
 
         user = authenticate_user(request)
