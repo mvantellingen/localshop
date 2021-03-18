@@ -37,7 +37,7 @@ setup(
         'Django==2.2.13',
         'docutils==0.15.2',
         'netaddr==0.7.19',
-        'Pillow==7.1.2',
+        'Pillow==8.1.1',
         'psycopg2-binary==2.8.5',
         'redis==3.5.3',
         'requests==2.23.0',
