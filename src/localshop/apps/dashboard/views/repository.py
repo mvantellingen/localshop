@@ -104,10 +104,6 @@ class RepositoryDeleteView(RepositoryMixin, generic.DeleteView):
     def get_success_url(self):
         return reverse('dashboard:index')
 
-    @property
-    def repository(self):
-        return self.object
-
 
 class RepositoryRefreshView(RepositoryMixin, generic.View):
     model = models.Repository

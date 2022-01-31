@@ -35,7 +35,7 @@ setup(
         'django-storages==1.9.1',
         'django-widget-tweaks==1.4.8',
         'Django==2.2.13',
-        'docutils==0.16',
+        'docutils==0.15.2',
         'netaddr==0.7.19',
         'Pillow==7.1.2',
         'psycopg2-binary==2.8.5',
