@@ -57,7 +57,7 @@ proxy such as Nginx or Apache and you want to use IP-based permissions.
 
 :default: ``True``
 
-If set to ``False``, users will be preveneted from overwriting already existing
+If set to ``False``, users will be prevented from overwriting already existing
 release files. Can be used to encourage developers to bump versions rather than
 overwriting. This is PyPI's behaviour.
 

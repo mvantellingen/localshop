@@ -188,7 +188,7 @@ def login(request, template_name='registration/login.html',
           current_app=None, extra_context=None):
     """Displays the login form and handles the login action.
 
-    Copy from Django source code, added abilithy to set remember_me
+    Copy from Django source code, added ability to set remember_me
 
     """
     redirect_to = request.POST.get(redirect_field_name,

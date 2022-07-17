@@ -2,7 +2,7 @@ Contributing
 ############
 
 Want to contribute with Localshop? Great! We really appreciate your help. But
-before digging into your new fluffy-next-millionaine-feature code keep in mind
+before digging into your new fluffy-next-millionaire-feature code keep in mind
 that you **MUST** follow this guide to get your pull requests approved.
 
 
@@ -131,7 +131,7 @@ Commit messages
     - |book| ``:book:`` when writing docs
     - |green_heart| ``:green_heart:`` when fixing the CI build
     - |white_check_mark| ``:white_check_mark:`` when adding tests
-    - |x| ``:x:`` when commiting code with failed tests
+    - |x| ``:x:`` when committing code with failed tests
     - |arrow_up| ``:arrow_up:`` when upgrading dependencies
     - |arrow_down| ``:arrow_down:`` when downgrading dependencies
 
