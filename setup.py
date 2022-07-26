@@ -29,7 +29,7 @@ setup(
         'celery==4.4.0',
         'django-braces==1.14.0',
         'django-celery-beat==2.0.0',
-        'django-celery-results==1.2.1',
+        'django-celery-results==2.4.0',
         'django-environ==0.4.5',
         'django-model-utils==4.0.0',
         'django-storages==1.9.1',
