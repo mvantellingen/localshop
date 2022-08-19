@@ -62,7 +62,10 @@ def delete_files(sender, **kwargs):
     """Signal callback for deleting old files when database item is deleted"""
     instance = kwargs['instance']
 
-    if not hasattr(instance.distribution, 'path'):
+    try:
+        if not hasattr(instance.distribution, 'path'):
+            return
+    except ValueError:
         return
 
     if not os.path.exists(instance.distribution.path):
