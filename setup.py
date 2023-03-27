@@ -39,7 +39,7 @@ setup(
         'netaddr==0.7.19',
         'Pillow==7.1.2',
         'psycopg2-binary==2.8.5',
-        'redis==3.5.3',
+        'redis==4.3.6',
         'requests==2.23.0',
         'social-auth-app-django==3.4.0',
         'sqlparse==0.3.1',
