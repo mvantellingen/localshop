@@ -42,7 +42,7 @@ setup(
         'redis==3.5.3',
         'requests==2.23.0',
         'social-auth-app-django==3.4.0',
-        'sqlparse==0.3.1',
+        'sqlparse==0.4.4',
         'Versio==0.4.0',
     ],
     tests_require=tests_require,
